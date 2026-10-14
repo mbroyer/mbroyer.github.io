@@ -40,12 +40,13 @@
   html { -webkit-text-size-adjust: 100%; background: var(--band); }
   body {
     margin: 0;
-    background: var(--paper);
+    background: var(--band);
     color: var(--ink);
     font: 400 17px/1.55 "Archivo", system-ui, sans-serif;
     min-height: 100vh; display: flex; flex-direction: column;
   }
-  body > .wrap { width: 100%; }
+  .page { background: var(--paper); flex: 1 0 auto; }
+  .topedge { position: fixed; top: 0; left: 0; right: 0; height: 1px; background: var(--paper); z-index: 10; }
   .wrap { max-width: 880px; margin: 0 auto; padding: 0 20px; }
   .mono { font-family: "JetBrains Mono", ui-monospace, monospace; }
 
@@ -74,7 +75,7 @@
   .project.soon { border-style: dashed; background: transparent; }
   .project.soon .status::before { background: var(--muted); }
 
-  .band { background: var(--band); color: var(--band-ink); margin-top: auto; }
+  .band { background: var(--band); color: var(--band-ink); }
   main { padding-bottom: 24px; }
   .band .wrap { padding-top: 26px; padding-bottom: calc(40px + env(safe-area-inset-bottom)); }
   .quote { margin: 40px 0 0; text-align: center; }
@@ -91,6 +92,8 @@
 </style>
 </head>
 <body>
+<div class="topedge" aria-hidden="true"></div>
+<div class="page">
 <div class="wrap">
   <div class="top">
     <img src="logo.png" alt="A Simple Man's Lab" width="320" height="354">
@@ -140,6 +143,7 @@
     </div>
   </main>
 
+</div>
 </div>
 
 <div class="band">
