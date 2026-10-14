@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#07202b">
+<title>Vokamon</title>
+<style>
+:root{color-scheme:dark;--bg:#07202b;--surface:#0f3342;--ink:#e8f8ff;--muted:#8fbccc;--line:#1d4d61;--accent:#2fd6d0;--accent-edge:#169a96;--accent-ink:#042321;--bad:#ff7c82}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:var(--bg);color:var(--ink);font:17px/1.45 system-ui,-apple-system,'Segoe UI',sans-serif;display:flex;align-items:center;justify-content:center;padding:16px}
+.card{width:100%;max-width:380px;background:var(--surface);border:2px solid var(--line);border-radius:22px;padding:24px;display:flex;flex-direction:column;gap:14px;text-align:center}
+h1{margin:0;font-size:2rem}
+p{margin:0;color:var(--muted)}
+input{width:100%;font:inherit;font-size:1.3rem;font-weight:700;padding:12px 14px;border-radius:16px;border:3px solid var(--line);background:#fff;color:#1b2340;text-align:center}
+input:focus{border-color:var(--accent);outline:none}
+button{font:inherit;font-weight:700;font-size:1.2rem;padding:14px 22px;border-radius:18px;border:0;background:var(--accent);color:var(--accent-ink);box-shadow:0 5px 0 var(--accent-edge);cursor:pointer}
+button:disabled{opacity:.5;cursor:wait}
+.err{color:var(--bad);font-weight:700;min-height:1.4em}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<form class="card" id="f" hidden>
+  <h1>Vokamon</h1>
+  <p>Gib den Code ein, den du von Mark bekommen hast. Danach merkt sich dieses Gerät den Code.</p>
+  <input id="c" autocomplete="off" autocapitalize="none" spellcheck="false" aria-label="Code">
+  <button id="b">Los</button>
+  <div class="err" id="e" role="alert"></div>
+</form>
+<div class="card" id="w"><h1>Vokamon</h1><p id="wt">Lädt …</p></div>
+<script>
+(function(){
+  var DATA="vokamon-e911e3f8b1.bin",ITER=300000,STORE='vokamon-code';
+  var f=document.getElementById('f'),c=document.getElementById('c'),b=document.getElementById('b'),e=document.getElementById('e'),w=document.getElementById('w');
+  var blob=null;
+  function load(){
+    if(blob)return Promise.resolve(blob);
+    return fetch(DATA).then(function(r){if(!r.ok)throw new Error('net');return r.arrayBuffer();}).then(function(x){blob=new Uint8Array(x);return blob;});
+  }
+  function unlock(code){
+    return load().then(function(d){
+      var salt=d.slice(0,16),iv=d.slice(16,28),ct=d.slice(28),s=crypto.subtle;
+      return s.importKey('raw',new TextEncoder().encode(code.trim().toLowerCase()),'PBKDF2',false,['deriveKey'])
+        .then(function(k){return s.deriveKey({name:'PBKDF2',salt:salt,iterations:ITER,hash:'SHA-256'},k,{name:'AES-GCM',length:256},false,['decrypt']);})
+        .then(function(key){return s.decrypt({name:'AES-GCM',iv:iv},key,ct);});
+    }).then(function(pt){
+      try{localStorage.setItem(STORE,code.trim().toLowerCase());}catch(_){}
+      var html=new TextDecoder().decode(pt);
+      document.open();document.write(html);document.close();
+    });
+  }
+  function ask(msg){w.hidden=true;f.hidden=false;e.textContent=msg||'';b.disabled=false;c.focus();}
+  f.addEventListener('submit',function(ev){
+    ev.preventDefault();
+    if(!c.value.trim()){ask('Bitte den Code eingeben.');return;}
+    b.disabled=true;e.textContent='';
+    unlock(c.value).catch(function(err){ask(err&&err.message==='net'?'Keine Verbindung. Bitte später nochmal versuchen.':'Der Code stimmt nicht.');});
+  });
+  if(!window.crypto||!crypto.subtle){document.getElementById('wt').textContent='Dieser Browser ist zu alt für Vokamon.';return;}
+  var saved=null;try{saved=localStorage.getItem(STORE);}catch(_){}
+  if(saved)unlock(saved).catch(function(err){ask(err&&err.message==='net'?'Keine Verbindung. Bitte später nochmal versuchen.':'');});
+  else ask();
+})();
+</script>
+</body>
+</html>
