@@ -17,6 +17,7 @@
     --line: #d9d3c6;
     --card: #fbf9f4;
     --accent: #e4472b;
+    --hl: rgba(255, 92, 170, .42);
     --logo-filter: none;
   }
   @media (prefers-color-scheme: dark) {
@@ -27,6 +28,7 @@
       --line: #2c2a27;
       --card: #1a1918;
       --accent: #ff6a4d;
+      --hl: rgba(255, 79, 163, .75);
       --logo-filter: invert(1);
     }
   }
@@ -46,7 +48,7 @@
   header { padding: 64px 0 48px; text-align: center; }
   .intro h1 { font-size: clamp(28px, 4.5vw, 40px); line-height: 1.1; font-weight: 800; letter-spacing: -0.02em; margin: 0 0 14px; }
   .intro p { margin: 0 auto; color: var(--muted); max-width: 30em; }
-  .intro .mark { background: linear-gradient(transparent 62%, color-mix(in srgb, var(--accent) 35%, transparent) 62%); }
+  .intro .mark { background: linear-gradient(transparent 62%, var(--hl) 62%); }
 
   .label { font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin: 0 0 14px; display: flex; align-items: center; gap: 12px; }
   .label::after { content: ""; flex: 1; height: 1px; background: var(--line); }
