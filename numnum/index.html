@@ -32,25 +32,45 @@ button:disabled{opacity:.5;cursor:wait}
 <div class="card" id="w"><h1>NumNum</h1><p id="wt">Lädt …</p></div>
 <script>
 (function(){
-  var DATA="numnum-9bdd1a2a24.bin",ITER=300000,STORE='numnum-code';
+  var DATA="numnum-986fb85aaf.bin",KEYS="numnum-b40f7e0bbe.keys",ITER=300000,STORE='numnum-code',SAVE='zahli-mathe-v1';
   var f=document.getElementById('f'),c=document.getElementById('c'),b=document.getElementById('b'),e=document.getElementById('e'),w=document.getElementById('w');
-  var blob=null;
-  function load(){
-    if(blob)return Promise.resolve(blob);
-    return fetch(DATA).then(function(r){if(!r.ok)throw new Error('net');return r.arrayBuffer();}).then(function(x){blob=new Uint8Array(x);return blob;});
+  var s=window.crypto&&crypto.subtle,files={};
+  function get(n){
+    if(files[n])return Promise.resolve(files[n]);
+    return fetch(n).then(function(r){if(!r.ok)throw new Error('net');return r.arrayBuffer();}).then(function(x){return files[n]=new Uint8Array(x);});
+  }
+  // Jeder Code entschlüsselt denselben Datenschlüssel plus seinen Spielstand-Namen
+  function openKey(code){
+    return get(KEYS).then(function(d){
+      return s.importKey('raw',new TextEncoder().encode(code),'PBKDF2',false,['deriveKey'])
+        .then(function(k){return s.deriveKey({name:'PBKDF2',salt:d.slice(0,16),iterations:ITER,hash:'SHA-256'},k,{name:'AES-GCM',length:256},false,['decrypt']);})
+        .then(function(kek){
+          var i=16,tries=[];
+          while(i<d.length){var n=d[i]<<8|d[i+1];tries.push([d.slice(i+2,i+14),d.slice(i+14,i+14+n)]);i+=14+n;}
+          function next(j){
+            if(j>=tries.length)return Promise.reject(new Error('code'));
+            return s.decrypt({name:'AES-GCM',iv:tries[j][0]},kek,tries[j][1]).then(function(x){return JSON.parse(new TextDecoder().decode(x));},function(){return next(j+1);});
+          }
+          return next(0);
+        });
+    });
   }
   function unlock(code){
-    return load().then(function(d){
-      var salt=d.slice(0,16),iv=d.slice(16,28),ct=d.slice(28),s=crypto.subtle;
-      return s.importKey('raw',new TextEncoder().encode(code.trim().toLowerCase()),'PBKDF2',false,['deriveKey'])
-        .then(function(k){return s.deriveKey({name:'PBKDF2',salt:salt,iterations:ITER,hash:'SHA-256'},k,{name:'AES-GCM',length:256},false,['decrypt']);})
-        .then(function(key){return s.decrypt({name:'AES-GCM',iv:iv},key,ct);});
-    }).then(function(pt){
-      try{localStorage.setItem(STORE,code.trim().toLowerCase());}catch(_){}
+    code=code.trim().toLowerCase();
+    var prof;
+    return openKey(code).then(function(o){
+      prof=o.p;
+      return Promise.all([get(DATA),s.importKey('raw',Uint8Array.from(atob(o.k),function(ch){return ch.charCodeAt(0);}),'AES-GCM',false,['decrypt'])]);
+    }).then(function(r){return s.decrypt({name:'AES-GCM',iv:r[0].slice(0,12)},r[1],r[0].slice(12));}).then(function(pt){
+      try{localStorage.setItem(STORE,code);}catch(_){}
       var html=new TextDecoder().decode(pt);
+      // Eigener Spielstand je Code: zahli-mathe-v1@<name>, der erste Code behält zahli-mathe-v1
+      if(prof)html=html.replace('<head>','<head>\n<script>(function(){var K='+JSON.stringify(SAVE)+',P='+JSON.stringify(K_(prof))+',S=Storage.prototype;["getItem","setItem","removeItem"].forEach(function(m){var o=S[m];S[m]=function(k){var a=[].slice.call(arguments);if(this===window.localStorage&&k===K)a[0]=P;return o.apply(this,a);};});})();<\/script>');
       document.open();document.write(html);document.close();
     });
   }
+  function K_(p){return SAVE+'@'+p;}
+  if(/[?&]wechseln\b/.test(location.search)){try{localStorage.removeItem(STORE);}catch(_){}history.replaceState(null,'',location.pathname);}
   function ask(msg){w.hidden=true;f.hidden=false;e.textContent=msg||'';b.disabled=false;c.focus();}
   f.addEventListener('submit',function(ev){
     ev.preventDefault();
