@@ -51,19 +51,19 @@
   .mono { font-family: "JetBrains Mono", ui-monospace, monospace; }
 
   .top { padding: 28px 0 0; display: flex; justify-content: center; }
-  :root[data-c="salbei"] { --band: #a9c4a1; --band-ink: #141414; --hl: rgba(110, 160, 100, .42); --hl-top: 62%; --tt: #4f7a47; }
-  :root[data-c="pink"] { --band: #f6b3cf; --band-ink: #141414; --hl: rgba(255, 92, 170, .42); --hl-top: 62%; --tt: #c2407e; }
-  :root[data-c="gelb"] { --band: #ffd23f; --band-ink: #141414; --hl: rgba(255, 196, 0, .55); --hl-top: 62%; --tt: #a37400; }
-  :root[data-c="koralle"] { --band: #ff8a6a; --band-ink: #141414; --hl: rgba(255, 110, 80, .42); --hl-top: 62%; --tt: #cf4f2c; }
-  :root[data-c="petrol"] { --band: #0f5560; --band-ink: #eef4f3; --hl: rgba(22, 140, 150, .38); --hl-top: 62%; --tt: #0f5560; }
-  :root[data-c="nachtblau"] { --band: #1f3a5f; --band-ink: #eef2f7; --hl: rgba(70, 110, 180, .32); --hl-top: 62%; --tt: #1f3a5f; }
+  :root[data-c="salbei"] { --band: #a9c4a1; --band-ink: #141414; --hl: rgba(110, 160, 100, .42); --hl-top: 62%; }
+  :root[data-c="pink"] { --band: #f6b3cf; --band-ink: #141414; --hl: rgba(255, 92, 170, .42); --hl-top: 62%; }
+  :root[data-c="gelb"] { --band: #ffd23f; --band-ink: #141414; --hl: rgba(255, 196, 0, .55); --hl-top: 62%; }
+  :root[data-c="koralle"] { --band: #ff8a6a; --band-ink: #141414; --hl: rgba(255, 110, 80, .42); --hl-top: 62%; }
+  :root[data-c="petrol"] { --band: #0f5560; --band-ink: #eef4f3; --hl: rgba(22, 140, 150, .38); --hl-top: 62%; }
+  :root[data-c="nachtblau"] { --band: #1f3a5f; --band-ink: #eef2f7; --hl: rgba(70, 110, 180, .32); --hl-top: 62%; }
   @media (prefers-color-scheme: dark) {
-    :root[data-c="salbei"] { --hl: rgba(169, 196, 161, .85); --hl-top: 76%; --tt: #b9d3b1; }
-    :root[data-c="pink"] { --hl: rgba(246, 179, 207, .9); --hl-top: 76%; --tt: #f6b3cf; }
-    :root[data-c="gelb"] { --hl: rgba(255, 210, 63, .9); --hl-top: 76%; --tt: #ffd23f; }
-    :root[data-c="koralle"] { --hl: rgba(255, 138, 106, .9); --hl-top: 76%; --tt: #ff8a6a; }
-    :root[data-c="petrol"] { --hl: #1d7a86; --hl-top: 62%; --tt: #5fbcc7; }
-    :root[data-c="nachtblau"] { --hl: #2f5687; --hl-top: 62%; --tt: #9bb8e6; }
+    :root[data-c="salbei"] { --hl: rgba(169, 196, 161, .85); --hl-top: 76%; }
+    :root[data-c="pink"] { --hl: rgba(246, 179, 207, .9); --hl-top: 76%; }
+    :root[data-c="gelb"] { --hl: rgba(255, 210, 63, .9); --hl-top: 76%; }
+    :root[data-c="koralle"] { --hl: rgba(255, 138, 106, .9); --hl-top: 76%; }
+    :root[data-c="petrol"] { --hl: #1d7a86; --hl-top: 62%; }
+    :root[data-c="nachtblau"] { --hl: #2f5687; --hl-top: 62%; }
   }
   .top { position: relative; }
   .cbtn { position: absolute; right: 0; top: 24px; display: inline-flex; align-items: center; gap: 7px; cursor: pointer; background: none; border: 1px solid var(--line); border-radius: 999px; color: var(--muted); font: 500 12px/1 "JetBrains Mono", ui-monospace, monospace; padding: 5px 11px 5px 5px; }
@@ -92,11 +92,10 @@
     transition: transform .15s ease, border-color .15s ease;
   }
   .project .nr { font-size: 13px; color: var(--muted); }
-  .project h2 { font-size: 22px; font-weight: 700; margin: 0 0 2px; letter-spacing: -0.01em;  color: var(--tt, var(--ink)); }
+  .project h2 { font-size: 22px; font-weight: 700; margin: 0 0 2px; letter-spacing: -0.01em; }
   .project p { margin: 0; color: var(--muted); font-size: 15px; }
   .status { font-size: 12px; white-space: nowrap; display: inline-flex; align-items: center; gap: 7px; }
   .status::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: #2fb36b; }
-  .project.soon h2 { color: var(--ink); }
   .project.soon { border-style: dashed; background: transparent; }
   .project.soon .status::before { background: var(--muted); }
 
