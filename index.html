@@ -63,6 +63,13 @@
   .project .nr { font-size: 13px; color: var(--muted); }
   .project h2 { font-size: 22px; font-weight: 700; margin: 0 0 2px; letter-spacing: -0.01em; }
   .project p { margin: 0; color: var(--muted); font-size: 15px; }
+  .wordmark { display: block; margin: 0 0 6px; }
+  .wordmark img { height: 34px; width: auto; display: block; }
+  .wm-voka { position: relative; display: block; width: 96px; height: 43px; margin: -4px 0 -2px; --m: url(vokamon.png); }
+  .wm-voka::before, .wm-voka::after { content: ""; position: absolute; inset: 0; -webkit-mask: var(--m) center/contain no-repeat; mask: var(--m) center/contain no-repeat; }
+  .wm-voka::before { background: var(--ink); clip-path: polygon(0 0, 62.5% 0, 49.7% 100%, 0 100%); }
+  .wm-voka::after { background: #2fd6d0; clip-path: polygon(62.5% 0, 100% 0, 100% 100%, 49.7% 100%); }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
   .status { font-size: 12px; white-space: nowrap; display: inline-flex; align-items: center; gap: 7px; }
   .status::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
   .project.soon { border-style: dashed; background: transparent; }
@@ -96,7 +103,7 @@
       <div class="project">
         <span class="nr mono">Nr. 001</span>
         <div>
-          <h2>Vokamon</h2>
+          <h2 class="wordmark"><i class="wm-voka" role="img" aria-label="Vokamon"></i></h2>
           <p>Fotografier Vokabelliste, Buchseite oder Hausaufgabe, und daraus wird dein eigenes Vokabeltraining.</p>
         </div>
         <span class="status mono">im Test</span>
@@ -112,7 +119,7 @@
       <div class="project">
         <span class="nr mono">Nr. 003</span>
         <div>
-          <h2>Readster</h2>
+          <h2 class="wordmark"><img src="readster.png" alt="Readster" width="600" height="179"></h2>
           <p>Lesetraining für Kinder mit LRS. Vorlesen, aufnehmen, besser werden.</p>
         </div>
         <span class="status mono">im Test</span>
