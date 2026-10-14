@@ -115,7 +115,8 @@
     .project .nr { grid-column: 1 / -1; }
   }
 </style>
-<script>try{var c=localStorage.getItem('asml.farbe');if(c)document.documentElement.setAttribute('data-c',c);}catch(e){}</script>
+<meta name="theme-color" id="tc" content="#a9c4a1">
+<script>var ASML_C={"salbei": "#a9c4a1", "pink": "#f6b3cf", "gelb": "#ffd23f", "koralle": "#ff8a6a", "petrol": "#0f5560", "nachtblau": "#1f3a5f"};try{var c=localStorage.getItem('asml.farbe');if(c&&ASML_C[c]){document.documentElement.setAttribute('data-c',c);document.getElementById('tc').content=ASML_C[c];}}catch(e){}</script>
 </head>
 <body>
 <div class="topedge" aria-hidden="true"></div>
@@ -189,7 +190,7 @@
 <script>
 (function(){
   var root=document.documentElement,btn=document.getElementById('cbtn'),pop=document.getElementById('cpop'),nm=document.getElementById('cname'),bs=pop.querySelectorAll('button');
-  function apply(k){root.setAttribute('data-c',k);bs.forEach(function(b){var on=b.dataset.k===k;b.setAttribute('aria-checked',on?'true':'false');if(on)nm.textContent=b.dataset.n;});}
+  function apply(k){root.setAttribute('data-c',k);var m=document.getElementById('tc');if(m&&ASML_C[k])m.setAttribute('content',ASML_C[k]);bs.forEach(function(b){var on=b.dataset.k===k;b.setAttribute('aria-checked',on?'true':'false');if(on)nm.textContent=b.dataset.n;});}
   apply(root.getAttribute('data-c')||'salbei');
   function open(o){pop.hidden=!o;btn.setAttribute('aria-expanded',o?'true':'false');}
   btn.addEventListener('click',function(e){e.stopPropagation();open(pop.hidden);});
