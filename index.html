@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A Simple Man's Lab</title>
+<meta name="description" content="Kleine Werkzeuge für echte Probleme. Gebaut von Mark Broyer.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23141414'/%3E%3Cpath d='M25 14h14M28 14v14L17 48a4 4 0 0 0 3.5 6h23a4 4 0 0 0 3.5-6L36 28V14' fill='none' stroke='%23f4f1ea' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #f4f1ea;
+    --ink: #141414;
+    --muted: #6b665d;
+    --line: #d9d3c6;
+    --card: #fbf9f4;
+    --accent: #e4472b;
+    --logo-filter: none;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper: #121212;
+      --ink: #f1eee7;
+      --muted: #9b968c;
+      --line: #2c2a27;
+      --card: #1a1918;
+      --accent: #ff6a4d;
+      --logo-filter: invert(1);
+    }
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font: 400 17px/1.55 "Archivo", system-ui, sans-serif;
+  }
+  .wrap { max-width: 880px; margin: 0 auto; padding: 0 20px; }
+  .mono { font-family: "JetBrains Mono", ui-monospace, monospace; }
+
+  header { padding: 56px 0 40px; display: grid; grid-template-columns: auto 1fr; gap: 40px; align-items: end; }
+  header img { width: 190px; height: auto; display: block; filter: var(--logo-filter); }
+  .intro h1 { font-size: clamp(28px, 4.5vw, 40px); line-height: 1.1; font-weight: 800; letter-spacing: -0.02em; margin: 0 0 14px; }
+  .intro p { margin: 0; color: var(--muted); max-width: 30em; }
+  .intro .mark { background: linear-gradient(transparent 62%, color-mix(in srgb, var(--accent) 35%, transparent) 62%); }
+
+  .label { font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin: 0 0 14px; display: flex; align-items: center; gap: 12px; }
+  .label::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+
+  .projects { display: grid; gap: 14px; padding-bottom: 48px; }
+  .project {
+    display: grid; grid-template-columns: 74px 1fr auto; gap: 20px; align-items: center;
+    background: var(--card); border: 1px solid var(--line); border-radius: 14px;
+    padding: 20px 22px; color: inherit; text-decoration: none;
+    transition: transform .15s ease, border-color .15s ease;
+  }
+  a.project:hover { transform: translateY(-2px); border-color: var(--ink); }
+  .project .nr { font-size: 13px; color: var(--muted); }
+  .project h2 { font-size: 22px; font-weight: 700; margin: 0 0 2px; letter-spacing: -0.01em; }
+  .project p { margin: 0; color: var(--muted); font-size: 15px; }
+  .status { font-size: 12px; white-space: nowrap; display: inline-flex; align-items: center; gap: 7px; }
+  .status::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
+  .project.soon { border-style: dashed; background: transparent; }
+  .project.soon .status::before { background: var(--muted); }
+  .arrow { font-size: 20px; margin-left: 10px; }
+
+  footer { border-top: 1px solid var(--line); padding: 22px 0 40px; font-size: 13px; color: var(--muted); display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+
+  @media (max-width: 620px) {
+    header { grid-template-columns: 1fr; gap: 28px; padding-top: 40px; }
+    header img { width: 150px; }
+    .project { grid-template-columns: 1fr auto; gap: 6px 14px; padding: 18px; }
+    .project .nr { grid-column: 1 / -1; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <img src="logo.png" alt="A Simple Man's Lab" width="320" height="354">
+    <div class="intro">
+      <h1>Kleine Werkzeuge<br>für <span class="mark">echte Probleme.</span></h1>
+      <p>Hier sammle ich Dinge, die ich baue, weil ich oder Menschen um mich herum sie brauchen. Ohne Schnickschnack, ohne Werbung.</p>
+    </div>
+  </header>
+
+  <main>
+    <p class="label mono">Experimente</p>
+    <div class="projects">
+      <a class="project" href="/readster/">
+        <span class="nr mono">Nr. 001</span>
+        <div>
+          <h2>Readster</h2>
+          <p>Lesetraining für Kinder mit LRS. Vorlesen, aufnehmen, besser werden.</p>
+        </div>
+        <span class="status mono">läuft<span class="arrow">→</span></span>
+      </a>
+      <div class="project soon">
+        <span class="nr mono">Nr. 002</span>
+        <div>
+          <h2>Kommt bald</h2>
+          <p>Das nächste Experiment ist schon auf dem Labortisch.</p>
+        </div>
+        <span class="status mono">in Arbeit</span>
+      </div>
+    </div>
+  </main>
+
+  <footer class="mono">
+    <span>© 2026 Mark Broyer</span>
+    <span>asimplemanslab.com</span>
+  </footer>
+</div>
+</body>
+</html>
