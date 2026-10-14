@@ -20,6 +20,8 @@
     --card: #fbf9f4;
     --accent: #e4472b;
     --hl: rgba(255, 92, 170, .42);
+    --band: #f6b3cf;
+    --band-ink: #141414;
     --logo-filter: none;
   }
   @media (prefers-color-scheme: dark) {
@@ -35,7 +37,7 @@
     }
   }
   * { box-sizing: border-box; }
-  html { -webkit-text-size-adjust: 100%; background: var(--ink); }
+  html { -webkit-text-size-adjust: 100%; background: var(--band); }
   body {
     margin: 0;
     background: var(--paper);
@@ -72,7 +74,7 @@
   .project.soon { border-style: dashed; background: transparent; }
   .project.soon .status::before { background: var(--muted); }
 
-  .band { background: var(--ink); color: var(--paper); margin-top: auto; }
+  .band { background: var(--band); color: var(--band-ink); margin-top: auto; }
   main { padding-bottom: 24px; }
   .band .wrap { padding-top: 26px; padding-bottom: calc(40px + env(safe-area-inset-bottom)); }
   .quote { margin: 40px 0 0; text-align: center; }
