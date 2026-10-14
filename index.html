@@ -46,8 +46,7 @@
     min-height: 100vh; display: flex; flex-direction: column;
   }
   .page { background: var(--paper); flex: 1 0 auto; }
-  .topedge { position: fixed; top: 0; left: 0; right: 0; height: calc(8px + env(safe-area-inset-top)); background: var(--band); z-index: 10; }
-  .page { padding-top: 8px; }
+  .topedge { position: fixed; top: 0; left: 0; right: 0; height: calc(12px + env(safe-area-inset-top)); background: var(--paper); z-index: 10; }
   .wrap { max-width: 880px; margin: 0 auto; padding: 0 20px; }
   .mono { font-family: "JetBrains Mono", ui-monospace, monospace; }
 
@@ -115,8 +114,9 @@
     .project .nr { grid-column: 1 / -1; }
   }
 </style>
-<meta name="theme-color" id="tc" content="#a9c4a1">
-<script>var ASML_C={"salbei": "#a9c4a1", "pink": "#f6b3cf", "gelb": "#ffd23f", "koralle": "#ff8a6a", "petrol": "#0f5560", "nachtblau": "#1f3a5f"};try{var c=localStorage.getItem('asml.farbe');if(c&&ASML_C[c]){document.documentElement.setAttribute('data-c',c);document.getElementById('tc').content=ASML_C[c];}}catch(e){}</script>
+<meta name="theme-color" content="#f4f1ea" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#121212" media="(prefers-color-scheme: dark)">
+<script>var ASML_C={"salbei": "#a9c4a1", "pink": "#f6b3cf", "gelb": "#ffd23f", "koralle": "#ff8a6a", "petrol": "#0f5560", "nachtblau": "#1f3a5f"};try{var c=localStorage.getItem('asml.farbe');if(c&&ASML_C[c]){document.documentElement.setAttribute('data-c',c);}}catch(e){}</script>
 </head>
 <body>
 <div class="topedge" aria-hidden="true"></div>
@@ -190,7 +190,7 @@
 <script>
 (function(){
   var root=document.documentElement,btn=document.getElementById('cbtn'),pop=document.getElementById('cpop'),nm=document.getElementById('cname'),bs=pop.querySelectorAll('button');
-  function apply(k){root.setAttribute('data-c',k);var m=document.getElementById('tc');if(m&&ASML_C[k])m.setAttribute('content',ASML_C[k]);bs.forEach(function(b){var on=b.dataset.k===k;b.setAttribute('aria-checked',on?'true':'false');if(on)nm.textContent=b.dataset.n;});}
+  function apply(k){root.setAttribute('data-c',k);bs.forEach(function(b){var on=b.dataset.k===k;b.setAttribute('aria-checked',on?'true':'false');if(on)nm.textContent=b.dataset.n;});}
   apply(root.getAttribute('data-c')||'salbei');
   function open(o){pop.hidden=!o;btn.setAttribute('aria-expanded',o?'true':'false');}
   btn.addEventListener('click',function(e){e.stopPropagation();open(pop.hidden);});
