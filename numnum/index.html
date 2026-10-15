@@ -25,42 +25,68 @@ button:disabled{opacity:.5;cursor:wait}
 <form class="card" id="f" hidden>
   <h1>NumNum</h1>
   <p>Gib den Code ein, den du von Mark bekommen hast. Danach merkt sich dieses Gerät den Code.</p>
-  <input id="c" autocomplete="off" autocapitalize="none" spellcheck="false" aria-label="Code">
+  <input id="c" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Code">
   <button id="b">Los</button>
   <div class="err" id="e" role="alert"></div>
 </form>
 <div class="card" id="w"><h1>NumNum</h1><p id="wt">Lädt …</p></div>
 <script>
 (function(){
-  var DATA="numnum-9bdd1a2a24.bin",ITER=300000,STORE='numnum-code';
+  // Anmeldung mit Code wie bei Readster: der Cloudflare-Worker prüft den Code und hält den Spielstand pro Code.
+  var WORKER="https://numnum.mark-broyer.workers.dev",APP="app.html",STORE='numnum-code',SAVE='zahli-mathe-v1',TAKEN='numnum-alt-uebernommen';
   var f=document.getElementById('f'),c=document.getElementById('c'),b=document.getElementById('b'),e=document.getElementById('e'),w=document.getElementById('w');
-  var blob=null;
-  function load(){
-    if(blob)return Promise.resolve(blob);
-    return fetch(DATA).then(function(r){if(!r.ok)throw new Error('net');return r.arrayBuffer();}).then(function(x){blob=new Uint8Array(x);return blob;});
+  function norm(x){return String(x||'').toUpperCase().replace(/[^A-Z0-9-]/g,'');}
+  function ls(k,v){try{if(v===undefined)return localStorage.getItem(k);if(v===null)localStorage.removeItem(k);else localStorage.setItem(k,v);}catch(_){return null;}}
+  function ask(msg){w.hidden=true;f.hidden=false;e.textContent=msg||'';b.disabled=false;c.focus();}
+  function fail(err){var m={code:'Der Code stimmt nicht.',net:'Keine Verbindung. Bitte später nochmal versuchen.'};ask(m[err&&err.message]||'Das hat nicht geklappt. Bitte nochmal versuchen.');}
+  function remote(code){
+    return fetch(WORKER+'/stand/'+encodeURIComponent(code),{cache:'no-store'}).then(function(r){
+      if(r.status===403)throw new Error('code');
+      if(r.status===404)return null;
+      if(!r.ok)throw new Error('net');
+      return r.json();
+    },function(){throw new Error('net');});
   }
-  function unlock(code){
-    return load().then(function(d){
-      var salt=d.slice(0,16),iv=d.slice(16,28),ct=d.slice(28),s=crypto.subtle;
-      return s.importKey('raw',new TextEncoder().encode(code.trim().toLowerCase()),'PBKDF2',false,['deriveKey'])
-        .then(function(k){return s.deriveKey({name:'PBKDF2',salt:salt,iterations:ITER,hash:'SHA-256'},k,{name:'AES-GCM',length:256},false,['decrypt']);})
-        .then(function(key){return s.decrypt({name:'AES-GCM',iv:iv},key,ct);});
-    }).then(function(pt){
-      try{localStorage.setItem(STORE,code.trim().toLowerCase());}catch(_){}
-      var html=new TextDecoder().decode(pt);
+  function launch(code,rem){
+    var LK=SAVE+'@'+code,TK='numnum-ts@'+code,lts=+ls(TK)||0,rts=rem&&+rem.ts||0;
+    if(rem&&rem.state&&rts>lts){ls(LK,JSON.stringify(rem.state));ls(TK,String(rts));lts=rts;}
+    else if(!rem&&!ls(LK)&&ls(SAVE)&&!ls(TAKEN)){ls(LK,ls(SAVE));ls(TAKEN,code);lts=Date.now();ls(TK,String(lts));} // bisherigen Stand dieses Geräts einmal übernehmen
+    ls(STORE,code);
+    return fetch(APP).then(function(r){if(!r.ok)throw new Error('net');return r.text();},function(){throw new Error('net');}).then(function(html){
+      var cfg=JSON.stringify({w:WORKER,c:code,k:SAVE,lk:LK,tk:TK,push:lts>rts&&!!ls(LK)});
+      var shim='<script>(function(C){var S=Storage.prototype,g=S.getItem,st=S.setItem,rm=S.removeItem,t=null;'+
+        'function map(s,k){return s===window.localStorage&&k===C.k?C.lk:k;}'+
+        'function push(){t=null;var v=g.call(localStorage,C.lk);if(!v)return;try{fetch(C.w+"/stand/"+encodeURIComponent(C.c),{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({state:JSON.parse(v),ts:+g.call(localStorage,C.tk)||Date.now()}),keepalive:true}).catch(function(){});}catch(_){}}'+
+        'function later(){if(!t)t=setTimeout(push,4000);}'+
+        'S.getItem=function(k){return g.call(this,map(this,k));};'+
+        'S.removeItem=function(k){return rm.call(this,map(this,k));};'+
+        'S.setItem=function(k,v){var m=map(this,k);st.call(this,m,v);if(m===C.lk){st.call(this,C.tk,String(Date.now()));later();}};'+
+        'addEventListener("pagehide",function(){if(t){clearTimeout(t);push();}});'+
+        'document.addEventListener("visibilitychange",function(){if(document.hidden&&t){clearTimeout(t);push();}});'+
+        'if(C.push)push();})('+cfg+');<\/script>';
+      html=html.replace('<head>','<head>\n'+shim);
       document.open();document.write(html);document.close();
     });
   }
-  function ask(msg){w.hidden=true;f.hidden=false;e.textContent=msg||'';b.disabled=false;c.focus();}
+  function start(code,saved){
+    return remote(code).then(function(rem){return launch(code,rem);},function(err){
+      if(saved&&err.message==='net'&&ls(SAVE+'@'+code))return launch(code,null); // offline weiterspielen, Abgleich beim nächsten Speichern
+      if(saved&&err.message==='code'){ls(STORE,null);throw new Error('code');}
+      throw err;
+    });
+  }
   f.addEventListener('submit',function(ev){
     ev.preventDefault();
-    if(!c.value.trim()){ask('Bitte den Code eingeben.');return;}
+    var code=norm(c.value);
+    if(code.length<4){ask('Bitte den Code eingeben.');return;}
     b.disabled=true;e.textContent='';
-    unlock(c.value).catch(function(err){ask(err&&err.message==='net'?'Keine Verbindung. Bitte später nochmal versuchen.':'Der Code stimmt nicht.');});
+    start(code,false).catch(fail);
   });
-  if(!window.crypto||!crypto.subtle){document.getElementById('wt').textContent='Dieser Browser ist zu alt für NumNum.';return;}
-  var saved=null;try{saved=localStorage.getItem(STORE);}catch(_){}
-  if(saved)unlock(saved).catch(function(err){ask(err&&err.message==='net'?'Keine Verbindung. Bitte später nochmal versuchen.':'');});
+  var q=new URLSearchParams(location.search),fromUrl=norm(q.get('code'));
+  if(q.has('wechseln'))ls(STORE,null);
+  if(q.has('wechseln')||fromUrl)history.replaceState(null,'',location.pathname);
+  var saved=fromUrl||norm(ls(STORE));
+  if(saved)start(saved,!fromUrl).catch(function(err){c.value=saved;fail(err);});
   else ask();
 })();
 </script>
