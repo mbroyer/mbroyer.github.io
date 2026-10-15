@@ -24,44 +24,110 @@ button:disabled{opacity:.5;cursor:wait}
 <body>
 <form class="card" id="f" hidden>
   <h1>Vokamon</h1>
-  <p>Gib den Code ein, den du von Mark bekommen hast. Danach merkt sich dieses Gerät den Code.</p>
-  <input id="c" autocomplete="off" autocapitalize="none" spellcheck="false" aria-label="Code">
-  <button id="b">Los</button>
+  <p>Melde dich mit deinem Code an. Den Code bekommst du von der Person, die dich zu Vokamon eingeladen hat.</p>
+  <input id="c" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="24" placeholder="Dein Code" aria-label="Code">
+  <button id="b">Anmelden</button>
   <div class="err" id="e" role="alert"></div>
 </form>
 <div class="card" id="w"><h1>Vokamon</h1><p id="wt">Lädt …</p></div>
 <script>
 (function(){
-  var DATA="vokamon-e911e3f8b1.bin",ITER=300000,STORE='vokamon-code';
+  var DATA="vokamon-dd66593da5.bin",ITER=100000,URL_="https://vokamon.mark-broyer.workers.dev";
+  var CK='vokamon.code',SK='vokamon.schluessel',BASE='vokabel-arena-v1';
   var f=document.getElementById('f'),c=document.getElementById('c'),b=document.getElementById('b'),e=document.getElementById('e'),w=document.getElementById('w');
+  function get(k){try{return localStorage.getItem(k);}catch(_){return null;}}
+  function set(k,v){try{if(v===null)localStorage.removeItem(k);else localStorage.setItem(k,v);}catch(_){}}
+  function norm(x){return String(x||'').toUpperCase().replace(/[^A-Z0-9-]/g,'').slice(0,24);}
+  function err(code){var x=new Error(code);return x;}
+  function timeout(p,ms){return Promise.race([p,new Promise(function(_,rej){setTimeout(function(){rej(err('net'));},ms);})]);}
+  set('vokamon-code',null);
   var blob=null;
   function load(){
     if(blob)return Promise.resolve(blob);
-    return fetch(DATA).then(function(r){if(!r.ok)throw new Error('net');return r.arrayBuffer();}).then(function(x){blob=new Uint8Array(x);return blob;});
+    /* Die Datei heißt nach ihrem Inhalt, deshalb darf sie dauerhaft im Gerät bleiben (spart 7 MB pro Start) */
+    var cache=null;
+    var open=window.caches?caches.open('vokamon').catch(function(){return null;}):Promise.resolve(null);
+    return open.then(function(cc){cache=cc;return cc?cc.match(DATA).catch(function(){return null;}):null;}).then(function(hit){
+      if(hit)return hit.arrayBuffer();
+      return fetch(DATA).catch(function(){throw err('net');}).then(function(r){
+        if(!r.ok)throw err('net');
+        if(cache){var cp=r.clone();cache.keys().then(function(ks){ks.forEach(function(k){if(k.url.indexOf(DATA)<0)cache.delete(k);});return cache.put(DATA,cp);}).catch(function(){});}
+        return r.arrayBuffer();
+      });
+    }).then(function(x){blob=new Uint8Array(x);return blob;});
   }
-  function unlock(code){
+  function decrypt(key){
     return load().then(function(d){
       var salt=d.slice(0,16),iv=d.slice(16,28),ct=d.slice(28),s=crypto.subtle;
-      return s.importKey('raw',new TextEncoder().encode(code.trim().toLowerCase()),'PBKDF2',false,['deriveKey'])
+      return s.importKey('raw',new TextEncoder().encode(key),'PBKDF2',false,['deriveKey'])
         .then(function(k){return s.deriveKey({name:'PBKDF2',salt:salt,iterations:ITER,hash:'SHA-256'},k,{name:'AES-GCM',length:256},false,['decrypt']);})
-        .then(function(key){return s.decrypt({name:'AES-GCM',iv:iv},key,ct);});
-    }).then(function(pt){
-      try{localStorage.setItem(STORE,code.trim().toLowerCase());}catch(_){}
-      var html=new TextDecoder().decode(pt);
+        .then(function(k){return s.decrypt({name:'AES-GCM',iv:iv},k,ct);})
+        .catch(function(x){if(x&&x.message==='net')throw x;throw err('key');});
+    });
+  }
+  function api(path,code){
+    return fetch(URL_+'/'+path+'/'+encodeURIComponent(code),{cache:'no-store'}).catch(function(){throw err('net');}).then(function(r){
+      if(r.status===403)throw err('nein');
+      if(r.status===404)return null;
+      if(!r.ok)throw err('net');
+      return r.json();
+    });
+  }
+  /* Neueren Stand vom Dienst holen, bevor Vokamon startet (gleiche Regel wie in sync.js) */
+  function pull(code){
+    var K=BASE+'@'+code,BK='vokamon.basis@'+code;
+    return timeout(api('fortschritt',code),4000).then(function(j){
+      var rs=j&&j.state;if(!rs)return;
+      var st=null;try{st=JSON.parse(get(K)||'null');}catch(_){}
+      if(!st&&!get(K)&&get(BASE)&&!get('vokamon.uebernommen'))return; /* sync.js übernimmt den alten Stand */
+      var lt=(st&&st.ts)||0,rt=rs.ts||0,bs=parseInt(get(BK),10)||0;
+      if(st&&lt===rt){set(BK,String(rt));return;}
+      var lc=st&&lt>bs,rc=rt>bs;
+      var take=!st||(rc&&!lc?true:lc&&!rc?false:((rs.xp||0)>(st.xp||0)||(rs.xp||0)===(st.xp||0)&&rt>lt));
+      if(take){set(K,JSON.stringify(rs));set(BK,String(rt));}
+    },function(x){if(x&&x.message==='nein')throw x;});
+  }
+  function start(code,key){
+    return Promise.all([decrypt(key),pull(code)]).then(function(r){
+      var html=new TextDecoder().decode(r[0]);
       document.open();document.write(html);document.close();
     });
   }
-  function ask(msg){w.hidden=true;f.hidden=false;e.textContent=msg||'';b.disabled=false;c.focus();}
+  function login(code){
+    return api('schluessel',code).then(function(j){
+      if(!j||!j.schluessel)throw err('net');
+      set(CK,code);set(SK,j.schluessel);
+      return start(code,j.schluessel);
+    });
+  }
+  function ask(msg,pre){w.hidden=true;f.hidden=false;e.textContent=msg||'';b.disabled=false;if(pre)c.value=pre;c.focus();}
+  function fail(code){
+    return function(x){
+      var m=x&&x.message;
+      if(m==='nein'){set(CK,null);set(SK,null);ask('Den Code '+code+' gibt es nicht oder nicht mehr. Frag nach einem neuen Code.',code);}
+      else if(m==='key'){set(SK,null);ask('Bitte noch einmal anmelden.',code);}
+      else ask('Keine Verbindung. Bitte später nochmal versuchen.',code);
+    };
+  }
   f.addEventListener('submit',function(ev){
     ev.preventDefault();
-    if(!c.value.trim()){ask('Bitte den Code eingeben.');return;}
+    var code=norm(c.value);
+    if(code.length<4){ask('Bitte den Code eingeben.');return;}
     b.disabled=true;e.textContent='';
-    unlock(c.value).catch(function(err){ask(err&&err.message==='net'?'Keine Verbindung. Bitte später nochmal versuchen.':'Der Code stimmt nicht.');});
+    login(code).catch(fail(code));
   });
-  if(!window.crypto||!crypto.subtle){document.getElementById('wt').textContent='Dieser Browser ist zu alt für Vokamon.';return;}
-  var saved=null;try{saved=localStorage.getItem(STORE);}catch(_){}
-  if(saved)unlock(saved).catch(function(err){ask(err&&err.message==='net'?'Keine Verbindung. Bitte später nochmal versuchen.':'');});
-  else ask();
+  if(!window.crypto||!crypto.subtle||!window.fetch||!window.Promise){document.getElementById('wt').textContent='Dieser Browser ist zu alt für Vokamon.';return;}
+  var q=norm((/[?&]code=([^&#]*)/.exec(location.search)||[])[1]||'');
+  var code=norm(get(CK)),key=get(SK);
+  if(q&&q!==code){
+    try{history.replaceState(null,'',location.pathname);}catch(_){}
+    login(q).catch(fail(q));
+  }else if(code&&key){
+    start(code,key).catch(function(x){
+      if(x&&x.message==='key')login(code).catch(fail(code));
+      else fail(code)(x);
+    });
+  }else ask();
 })();
 </script>
 </body>
