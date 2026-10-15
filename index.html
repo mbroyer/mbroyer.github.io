@@ -70,6 +70,11 @@
     padding: 20px 22px; color: inherit; text-decoration: none;
     transition: transform .15s ease, border-color .15s ease;
   }
+  a.project:hover { transform: translateY(-2px); border-color: var(--ink); }
+  a.project:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+  a.project h2::after { content: " →"; font-weight: 500; color: var(--muted); transition: color .15s ease; }
+  a.project:hover h2::after { color: var(--ink); }
+  @media (prefers-reduced-motion: reduce) { a.project:hover { transform: none; } }
   .project .nr { font-size: 13px; color: var(--muted); }
   .project h2 { font-size: 22px; font-weight: 700; margin: 0 0 2px; letter-spacing: -0.01em; }
   .project p { margin: 0; color: var(--muted); font-size: 15px; }
@@ -116,30 +121,30 @@
   <main>
     <p class="label mono">Experimente</p>
     <div class="projects">
-      <div class="project">
+      <a class="project" href="vokamon/">
         <span class="nr mono">Nr. 001</span>
         <div>
           <h2>Vokamon</h2>
           <p>Fotografier Vokabelliste, Buchseite oder Hausaufgabe, und daraus wird dein eigenes Vokabeltraining.</p>
         </div>
         <span class="status mono">im Test</span>
-      </div>
-      <div class="project">
+      </a>
+      <a class="project" href="numnum/">
         <span class="nr mono">Nr. 002</span>
         <div>
           <h2>NumNum</h2>
           <p>Rechnen für Grundschulkinder mit kleinen Monstern. Häppchen für Häppchen.</p>
         </div>
         <span class="status mono">im Test</span>
-      </div>
-      <div class="project">
+      </a>
+      <a class="project" href="readster/">
         <span class="nr mono">Nr. 003</span>
         <div>
           <h2>Readster</h2>
           <p>Lesetraining für Kinder mit LRS. Vorlesen, aufnehmen, besser werden.</p>
         </div>
         <span class="status mono">im Test</span>
-      </div>
+      </a>
       <div class="project soon">
         <span class="nr mono">Nr. 004</span>
         <div>
