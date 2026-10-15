@@ -19,16 +19,49 @@ button{font:inherit;font-weight:700;font-size:1.2rem;padding:14px 22px;border-ra
 button:disabled{opacity:.5;cursor:wait}
 .err{color:var(--bad);font-weight:700;min-height:1.4em}
 [hidden]{display:none!important}
+body{flex-direction:column;justify-content:flex-start;gap:48px;padding:40px 16px 56px}
+.pv{width:100%;max-width:560px;text-align:center;display:flex;flex-direction:column;gap:36px}
+.pv h1{margin:0;line-height:0}.pv .logo{width:200px;height:auto}
+.pv .lead{color:var(--ink);font-size:1.1rem;max-width:26em;margin:0 auto}
+.shots{display:flex;gap:24px;justify-content:center;overflow-x:auto;scroll-snap-type:x mandatory;padding:4px 16px 10px;margin:0 -16px}
+.shots figure{margin:0;flex:0 0 auto;scroll-snap-align:center;display:flex;flex-direction:column;gap:8px}
+.shots img{width:220px;height:auto;display:block;border-radius:26px;border:6px solid rgba(0,0,0,.35);box-shadow:0 0 0 2px var(--line),0 18px 40px rgba(0,0,0,.35)}
+.shots figcaption{font-size:.9rem;color:var(--muted)}
+.steps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,1fr);gap:10px;text-align:left}
+.steps li{background:var(--surface);border:2px solid var(--line);border-radius:16px;padding:12px;font-size:.92rem;color:var(--muted)}
+.steps b{display:block;color:var(--accent);font-size:1.3rem;line-height:1;margin-bottom:6px}
+@media (max-width:520px){.steps{grid-template-columns:1fr}.shots{justify-content:flex-start}.shots img{width:200px}}
+.card h1{font-size:1.4rem}
+.madeby{display:flex;flex-direction:column;align-items:center;gap:8px;opacity:.75;text-decoration:none;margin-top:0}
+.madeby img{width:58px;height:auto;display:block;filter:brightness(0) invert(1)}
+.madeby span{font-size:8px;line-height:1;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:#fff}
+.ask{font-size:.95rem}.ask a{color:var(--accent);font-weight:700}
+
 </style>
 </head>
 <body>
+<section class="pv" id="pv" aria-label="Vorschau" hidden>
+  <h1><img class="logo" src="vorschau-logo.png" alt="NumNum" width="168" height="76"></h1>
+  <p class="lead">Rechnen für Grundschulkinder mit kleinen Monstern. Häppchen für Häppchen.</p>
+  <div class="shots">
+    <figure><img src="vorschau-1.jpg" alt="Startbildschirm von NumNum" width="390" height="620"><figcaption>Dein Drache wächst mit jeder Aufgabe</figcaption></figure>
+    <figure><img src="vorschau-2.jpg" alt="Eine Aufgabe in NumNum" width="390" height="620"><figcaption>Mit Bildern zählen und rechnen</figcaption></figure>
+  </div>
+  <ol class="steps">
+    <li><b>1</b>Zahlenraum und Thema wählen</li>
+    <li><b>2</b>Aufgaben lösen, mit Bildern und Vorlesen</li>
+    <li><b>3</b>Punkte sammeln, der Drache entwickelt sich</li>
+  </ol>
+</section>
 <form class="card" id="f" hidden>
-  <h1>NumNum</h1>
+  <h1>Schon dabei?</h1>
   <p>Gib den Code ein, den du von Mark bekommen hast. Danach merkt sich dieses Gerät den Code.</p>
   <input id="c" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Code">
   <button id="b">Los</button>
   <div class="err" id="e" role="alert"></div>
+  <p class="ask">Noch keinen Code? <a href="mailto:hello@asimplemanslab.com?subject=Code%20f%C3%BCr%20NumNum">Schreib Mark</a>, dann bekommst du einen.</p>
 </form>
+<a class="madeby" id="mb" href="/" hidden><span>Made with love by</span><img src="/logo.png" alt="A Simple Man’s Lab" width="320" height="354"></a>
 <div class="card" id="w"><h1>NumNum</h1><p id="wt">Lädt …</p></div>
 <script>
 (function(){
@@ -37,7 +70,7 @@ button:disabled{opacity:.5;cursor:wait}
   var f=document.getElementById('f'),c=document.getElementById('c'),b=document.getElementById('b'),e=document.getElementById('e'),w=document.getElementById('w');
   function norm(x){return String(x||'').toUpperCase().replace(/[^A-Z0-9-]/g,'');}
   function ls(k,v){try{if(v===undefined)return localStorage.getItem(k);if(v===null)localStorage.removeItem(k);else localStorage.setItem(k,v);}catch(_){return null;}}
-  function ask(msg){w.hidden=true;f.hidden=false;e.textContent=msg||'';b.disabled=false;c.focus();}
+  function ask(msg){w.hidden=true;f.hidden=false;document.getElementById('pv').hidden=false;document.getElementById('mb').hidden=false;e.textContent=msg||'';b.disabled=false;c.focus();}
   function fail(err){var m={code:'Der Code stimmt nicht.',net:'Keine Verbindung. Bitte später nochmal versuchen.'};ask(m[err&&err.message]||'Das hat nicht geklappt. Bitte nochmal versuchen.');}
   function remote(code){
     return fetch(WORKER+'/stand/'+encodeURIComponent(code),{cache:'no-store'}).then(function(r){
