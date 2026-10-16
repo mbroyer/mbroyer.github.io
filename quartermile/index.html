@@ -1864,8 +1864,8 @@ function renderSheet(){
       '<button type="button" class="shelp" id="serHelp">So geht die Karriere</button>';
     $('serHelp').onclick=function(){serIntro(false);};
   }
-  $('recap').innerHTML='<b>'+shortName(SPECS[pIdx])+'</b> · '+(sw?sw.n+' '+sw.sub:'Serienmotor')+(tuneSel.p?' · Stage '+Math.min(tuneSel.p,upStage(id)):'')+(ser?'':' · gegen '+shortName(SPECS[oIdx]));
-  $('oppBtn').textContent='Gegner: '+shortName(SPECS[oIdx])+' ›';
+  $('recap').innerHTML='<b>'+shortName(SPECS[pIdx])+'</b> · '+(sw?sw.n+' '+sw.sub:'Serienmotor')+(tuneSel.p?' · Stage '+Math.min(tuneSel.p,upStage(id)):'')+(ser?'':' · gegen '+shortName(SPECS[oIdx])+(oIdx===pIdx&&typeof TWIN!=='undefined'?' ('+(TWIN[SPECS[oIdx].id]||[0,'blau'])[1]+')':''));
+  $('oppBtn').textContent='Gegner: '+shortName(SPECS[oIdx])+(oIdx===pIdx&&typeof TWIN!=='undefined'?' ('+(TWIN[SPECS[oIdx].id]||[0,'blau'])[1]+')':'')+' ›';
   var wd=(WX.wet?'Nass: weniger Grip, Slick kaum fahrbar, Bremsen blockieren.':(WX.n==='Kalt'?'Kalt: weniger Grip, Slick leidet, dichte Luft gibt Leistung.':'Trocken: beste Bedingungen.')),
     th=(HM.first?'<div class="first">Dein erstes Rennen: Unterwegs zeigen wir dir jeden Schritt.</div>':'')+
     '<button type="button" class="wxb" id="wxBtn" aria-expanded="false"><span class="wi" aria-hidden="true">'+(WX.wet?'☂':(WX.n==='Kalt'?'❄':'☀'))+'</span>'+WX.n+' · '+WX.t+' °C<span class="wm">Mehr</span></button>'+
@@ -1897,7 +1897,7 @@ function menuClick(e){
   var t=e.target.closest('[data-act]');if(!t||state!=='ready')return;
   var a=t.getAttribute('data-act');
   if(a==='mode'){mode=t.getAttribute('data-v')==='free'?'free':'series';try{localStorage.setItem('s402mode',mode);}catch(x){}reset();}
-  else if(a==='pick'){var i=+t.getAttribute('data-i'),s=SPECS[i];if(mode==='series'&&!owned(s.id))return;if(mode!=='series'&&i===oIdx)oIdx=pIdx;if(i!==pIdx){pIdx=i;tuneSel.s=0;}reset();}
+  else if(a==='pick'){var i=+t.getAttribute('data-i'),s=SPECS[i];if(mode==='series'&&!owned(s.id))return;if(mode!=='series'&&i!==pIdx&&i===oIdx)oIdx=pIdx;if(i!==pIdx){pIdx=i;tuneSel.s=0;}reset();}
   else if(a==='tune'){tuneTap(+t.getAttribute('data-r'),+t.getAttribute('data-v'));}
   else if(a==='cancel'){pend=null;renderMenu();}
   else if(a==='buy'&&pend){
@@ -1915,15 +1915,18 @@ $('mNext').onclick=function(){if(mstep==='car')garagePick();else showStep('race'
 $('bkCar').onclick=function(){if(state==='ready')showStep('car');};
 $('bkSetup').onclick=function(){if(state==='ready')showStep('setup');};
 
+/* Version 74→75: gleiches Auto als Gegner erlaubt, der Gegner bekommt dann eine andere Farbe */
+var TWIN={'911':['#2a5fc4','blau'],'testarossa':['#2a5fc4','blau'],'countach':['#e4e7ea','weiß'],'skyline':['#c8161d','rot'],'challenger':['#2a5fc4','blau']};
+function twinColor(c){var t=TWIN[c.id]||['#2a5fc4','blau'],sh=CarLab.shade;c.lab=Object.assign({},c.lab,{body:t[0],roof:sh(t[0],0.12),dark:sh(t[0],-0.45)});c.body=t[0];c.twin=t[1];}
 function reset(){
   if(mode==='series'){oIdx=carIdx(CHARS[CAREER[carLvl()].ch].car);if(!owned(SPECS[pIdx].id))pIdx=carIdx(SAVE.garage[0]);}
-  if(oIdx===pIdx&&mode!=='series')oIdx=(pIdx+1)%SPECS.length;
   if(tuneSel.p>upStage(SPECS[pIdx].id))tuneSel.p=upStage(SPECS[pIdx].id);
   if(tuneSel.s>0&&!swOwned(SPECS[pIdx].id,tuneSel.s))tuneSel.s=0;
   if(!EMB&&KT){KT=null;kidCoach(null);}
   player=makeCar(SPECS[pIdx],-LANE,true);
   if(!EMB){player.easy=AID>=1;player.autoBrake=AID>=1;player.auto=AID>=2;}
   opp=makeCar(SPECS[oIdx],LANE,false);
+  if(oIdx===pIdx)twinColor(opp);
   pickWx();cars=[player,opp];parts.length=0;
   Snd.brake(false,0);state='ready';seq=null;endAt=0;camY=0;gasLvl=0;fbT=-9;brakeTouch=false;kSpace=false;shakeUntil=0;Snd.end();
   slipEl.hidden=true;hudEl.hidden=true;$('abortBtn').hidden=true;
@@ -3317,7 +3320,7 @@ $('go').onclick=start;
 function diffTxt(){$('diffBtn').textContent='Stärke: '+DIFFS[diff].n;}
 diffTxt();
 $('diffBtn').onclick=function(){if(state!=='ready')return;diff=(diff+1)%3;try{localStorage.setItem('s402diff',String(diff));}catch(e){}diffTxt();reset();};
-$('oppBtn').onclick=function(){if(state!=='ready')return;do{oIdx=(oIdx+1)%SPECS.length;}while(oIdx===pIdx);reset();};
+$('oppBtn').onclick=function(){if(state!=='ready')return;oIdx=(oIdx+1)%SPECS.length;reset();};
 stage.addEventListener('pointerdown',function(e){if(e.target.closest('button,#gasZone'))return;if(player.over&&state==='run')brakeTouch=true;else tap();});
 window.addEventListener('keydown',function(e){
   if(e.code==='Space'||e.code==='Enter'){if(state==='run'){e.preventDefault();if(player.over)kSpace=true;else if(!e.repeat)tap();}}
@@ -3436,7 +3439,7 @@ function garageFoot(){
 }
 function garagePick(){
   if(gLocked(gIdx))return;
-  if(mode!=='series'&&gIdx===oIdx)oIdx=pIdx;
+  if(mode!=='series'&&gIdx!==pIdx&&gIdx===oIdx)oIdx=pIdx;
   if(gIdx!==pIdx){pIdx=gIdx;tuneSel.s=0;}
   mstep='race';reset();
 }
@@ -3445,7 +3448,7 @@ function wsCan(id){var u=upStage(id);if(u<2&&SAVE.parts>=TCOST[u+1])return true;
   return (SWAPS[id]||[]).some(function(w,k){return !swOwned(id,k+1)&&SAVE.parts>=w.cost;});}
 function garageWs(){
   if(gLocked(gIdx))return;
-  if(mode!=='series'&&gIdx===oIdx)oIdx=pIdx;
+  if(mode!=='series'&&gIdx!==pIdx&&gIdx===oIdx)oIdx=pIdx;
   if(gIdx!==pIdx){pIdx=gIdx;tuneSel.s=0;}
   mstep='setup';reset();
 }
@@ -3502,6 +3505,7 @@ function hDone(){hHide();homeEl.classList.remove('fade');$('hHero').classList.re
 function startMode(m,btn){
   if(hBusy)return;hBusy=true;if(btn)btn.classList.add('hit');
   mode=m;try{localStorage.setItem('s402mode',m);}catch(e){}
+  if(m!=='series'&&oIdx===pIdx)oIdx=(pIdx+1)%SPECS.length;
   launchAnim(function(){mstep='car';reset();var sn=false;try{sn=!!localStorage.getItem('s402serIntro');}catch(e){}if(m==='series'&&!sn)serIntro(true);});
 }
 /* Version 67: geführte Erklärung der Rennserie, vor der Autowahl (beim ersten Mal) und über den Link auf der Rennkarte */
