@@ -604,6 +604,8 @@ body:not(.emb) .ktip{font:600 19px/1.2 var(--f-display);letter-spacing:.02em}
 .hrow .box .val{font-variant-numeric:tabular-nums;white-space:nowrap}
 .hrow .pdl{transform:translateY(calc(var(--g,0)*5px)) scaleY(calc(1 - var(--g,0)*.08));transform-origin:50% 100%}
 .hrow{touch-action:none}
+/* Version 80: kein Doppeltipp-Zoom auf dem iPhone */
+html,body{touch-action:manipulation}
 </style>
 
 <div id="stage">
@@ -3296,6 +3298,11 @@ gasZone.addEventListener('pointermove',function(e){if(gasZone._d)gasFrom(e);});
 /* Version 78: iPhone: tippt ein zweiter Finger auf Los, bricht Safari den Gas-Finger manchmal ab (pointercancel). Darum zählen hier auch die Touch-Ereignisse:
    solange ein Finger auf dem Pedal liegt, bleibt Gas aktiv, und das Pedal folgt dem Finger weiter. Außerdem keine Zoom-/Wischgesten in der Bedienleiste. */
 gasZone._t=0;
+/* Version 80: iPhone zoomt bei schnellem Doppeltipp (z. B. aufs Gas) hinein. Zweiter Tipp innerhalb 350 ms im Spiel wird darum nicht als Zoom-Geste durchgelassen, Pinch-Zoom im Spiel ist aus. */
+(function(){var lt=0,st=document.getElementById('stage');
+  st.addEventListener('touchend',function(e){var n=Date.now();if(n-lt<350&&e.cancelable&&e.touches.length===0){var t=e.target;if(!(t&&t.closest&&t.closest('input,textarea,select')))e.preventDefault();}lt=n;},{passive:false});
+  ['gesturestart','gesturechange'].forEach(function(ev){document.addEventListener(ev,function(e){e.preventDefault();});});
+  document.addEventListener('dblclick',function(e){e.preventDefault();});})();
 function gasTouch(e){var t=e.targetTouches;gasZone._t=t.length;if(t.length){var f=t[0];if(!gasZone._d){gasZone._d=true;gasZone._pk=0;}gasFrom(f);}else if(gasZone._d){gasZone._d=false;gasLvl=0;}}
 ['touchstart','touchmove','touchend','touchcancel'].forEach(function(ev){gasZone.addEventListener(ev,gasTouch,{passive:true});});
 (function(){var row=gasZone.parentNode;['touchstart','touchmove'].forEach(function(ev){row.addEventListener(ev,function(e){if(e.cancelable)e.preventDefault();},{passive:false});});
