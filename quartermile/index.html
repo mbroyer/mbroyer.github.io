@@ -603,6 +603,7 @@ body:not(.emb) .ktip{font:600 19px/1.2 var(--f-display);letter-spacing:.02em}
 .hrow .dash .box:not(.tbox){width:100px;box-sizing:border-box;flex:none}
 .hrow .box .val{font-variant-numeric:tabular-nums;white-space:nowrap}
 .hrow .pdl{transform:translateY(calc(var(--g,0)*5px)) scaleY(calc(1 - var(--g,0)*.08));transform-origin:50% 100%}
+.hrow{touch-action:none}
 </style>
 
 <div id="stage">
@@ -2263,6 +2264,12 @@ var Snd=(function(){
     setTimeout(function(){old.forEach(function(v){v.src.forEach(function(s){try{s.stop();}catch(e){}});if(v.v2){try{v.n.disconnect();v.out.disconnect();}catch(e){}}});},quick?80:1500);
   };
   /* Version 77: Ton beim ersten echten Tippen freischalten (iPhone/Safari zählt nur touchend/click, nicht pointerdown). true = war noch gesperrt */
+  /* Version 79: App im Hintergrund oder iPhone gesperrt = Ton sofort aus, beim Zurückkommen wieder an */
+  S.sleep=function(h){if(!ac)return;try{if(h)ac.suspend();else if(S.on)ac.resume();}catch(e){}};
+  function vis(){S.sleep(document.hidden);if(document.hidden){try{speechSynthesis.cancel();}catch(e){}}}
+  document.addEventListener('visibilitychange',vis);
+  window.addEventListener('pagehide',function(){S.sleep(true);});
+  window.addEventListener('pageshow',function(){if(!document.hidden)S.sleep(false);});
   S.unlock=function(){if(!init())return false;var was=ac.state==='running';if(!was){try{ac.resume();}catch(e){}}return !was;};
   S.setOn=function(o){S.on=o;if(master)master.gain.value=o?0.6:0;};
   S.update=function(){
@@ -3285,7 +3292,14 @@ function gasFrom(e){var r=gasZone.getBoundingClientRect(),v=1-(e.clientY-r.top-1
 function gasAuto(){if(state==='run'&&player.launched&&!player.over){var r=gasZone._raw;gasZone._pk=Math.max(gasZone._pk||0,r);gasLvl=(r<0.25&&gasZone._pk-r>0.3)?0:1;if(r>=0.25)gasZone._pk=Math.max(r,gasZone._pk-0.0);}}
 gasZone.addEventListener('pointerdown',function(e){e.preventDefault();gasZone._pk=0;gasFrom(e);try{gasZone.setPointerCapture(e.pointerId);}catch(x){}gasZone._d=true;});
 gasZone.addEventListener('pointermove',function(e){if(gasZone._d)gasFrom(e);});
-['pointerup','pointercancel','lostpointercapture'].forEach(function(ev){gasZone.addEventListener(ev,function(){gasZone._d=false;gasLvl=0;});});
+['pointerup','pointercancel','lostpointercapture'].forEach(function(ev){gasZone.addEventListener(ev,function(){if(ev!=='pointerup'&&gasZone._t>0)return;gasZone._d=false;gasLvl=0;});});
+/* Version 78: iPhone: tippt ein zweiter Finger auf Los, bricht Safari den Gas-Finger manchmal ab (pointercancel). Darum zählen hier auch die Touch-Ereignisse:
+   solange ein Finger auf dem Pedal liegt, bleibt Gas aktiv, und das Pedal folgt dem Finger weiter. Außerdem keine Zoom-/Wischgesten in der Bedienleiste. */
+gasZone._t=0;
+function gasTouch(e){var t=e.targetTouches;gasZone._t=t.length;if(t.length){var f=t[0];if(!gasZone._d){gasZone._d=true;gasZone._pk=0;}gasFrom(f);}else if(gasZone._d){gasZone._d=false;gasLvl=0;}}
+['touchstart','touchmove','touchend','touchcancel'].forEach(function(ev){gasZone.addEventListener(ev,gasTouch,{passive:true});});
+(function(){var row=gasZone.parentNode;['touchstart','touchmove'].forEach(function(ev){row.addEventListener(ev,function(e){if(e.cancelable)e.preventDefault();},{passive:false});});
+  document.addEventListener('gesturestart',function(e){if(state==='run')e.preventDefault();});})();
 shBtn.addEventListener('pointerdown',function(e){e.preventDefault();if(player.over&&state==='run')brakeTouch=true;else tap();});
 ['pointerup','pointercancel'].forEach(function(ev){window.addEventListener(ev,function(){brakeTouch=false;});});
 function frame(now){
