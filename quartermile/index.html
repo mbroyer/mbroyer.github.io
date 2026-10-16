@@ -3282,7 +3282,8 @@ function frame(now){
   slow+=(sl-slow)*Math.min(1,dt*10);acc+=dt*(slow-1);
   while(acc>=STEP){simStep(STEP);acc-=STEP;}
   if(state==='run'&&player.launched&&player.lim&&player.thrNow>0.35&&!player.braking&&now-(frame._lv||0)>95){frame._lv=now;vib(16);}
-  if(kUp)gasLvl=Math.min(1,gasLvl+dt*5);
+  /* Version 72: Desktop: W vor dem Start (nach dem Burnout) hält die Drehzahl von selbst in der Mitte vom grünen Bereich */
+  if(kUp){if(state==='run'&&seq&&!player.launched&&T>=seq.roll&&player.zone){var pe=player.e,tg=((player.zone[0]+player.zone[1])/2-pe.idle)/(pe.red-pe.idle);gasLvl+=Math.max(-dt*3,Math.min(dt*2.5,tg-gasLvl));}else gasLvl=Math.min(1,gasLvl+dt*5);}
   if(gasZone._d)gasAuto();
   updateParts(dt);bodyMotion(dt);Snd.update();Snd.brake(state==='run'&&player.braking&&!player.crashed&&player.v>1.5,player.v);
   var lead=Math.max(player.y,opp.y),lv=Math.max(player.v,opp.v);
