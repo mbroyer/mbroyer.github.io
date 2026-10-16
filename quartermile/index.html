@@ -2047,7 +2047,8 @@ function physics(c,dt){
   if(c.shiftT>0){c.shiftT-=dt;er=Math.max(c.e.idle,wr);}
   else if(!c.over){
     var sk=0;
-    if(c.gear===0&&c.t<TC){sk=1-c.t/TC;er=wr+Math.max(0,c.launchRpm-wr)*sk;}
+    /* Version 81: Kupplung schleift beim Start, bis die Räder die Drehzahl einholen: Motor sackt nur leicht ab statt auf Leerlauf (vorher wirkte das Anfahren wie Zeitlupe) */
+    if(c.gear===0&&!c.over)er=Math.max(wr,c.launchRpm*(1-0.2*Math.min(1,c.t/0.18)));
     er=Math.max(c.e.idle,er);
     if(er>=c.e.red){er=c.e.red;c.lim=true;}
     var Fw=torque(c,er)*c.eff*Rt/RW*(1+0.6*(WX.rho/1.2-1))*(1-(c.hl||0)*Math.pow(c.v/60,2));
