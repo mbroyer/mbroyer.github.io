@@ -2262,6 +2262,8 @@ var Snd=(function(){
     old.forEach(function(v){try{v.out.gain.setTargetAtTime(0,t,quick?0.01:0.25);}catch(e){}});
     setTimeout(function(){old.forEach(function(v){v.src.forEach(function(s){try{s.stop();}catch(e){}});if(v.v2){try{v.n.disconnect();v.out.disconnect();}catch(e){}}});},quick?80:1500);
   };
+  /* Version 77: Ton beim ersten echten Tippen freischalten (iPhone/Safari zählt nur touchend/click, nicht pointerdown). true = war noch gesperrt */
+  S.unlock=function(){if(!init())return false;var was=ac.state==='running';if(!was){try{ac.resume();}catch(e){}}return !was;};
   S.setOn=function(o){S.on=o;if(master)master.gain.value=o?0.6:0;};
   S.update=function(){
     if(!ac||!vs.length)return;
@@ -3474,6 +3476,7 @@ function hmIdle(){if(homeEl.hidden||!Snd.on)return;try{hmCar=makeCar(SPECS[pIdx]
 function hmRev(){if(!hmCar)return;var c=hmCar,e=c.e,t0=performance.now();
   (function st(){if(c!==hmCar)return;var k=Math.min(1,(performance.now()-t0)/520);c.thrNow=1;c.rpm=e.idle+(e.red*0.93-e.idle)*Math.pow(k,0.65);if(k<1)requestAnimationFrame(st);})();}
 homeEl.addEventListener('pointerdown',function(){if(!hmOk){hmOk=true;hmIdle();}},true);
+['touchend','click'].forEach(function(ev){homeEl.addEventListener(ev,function(){var lk=Snd.unlock();if(!hmOk||lk){hmOk=true;hmIdle();}},true);});
 function treeIdle(){document.querySelectorAll('#hTree .b').forEach(function(b){b.classList.toggle('on',b.getAttribute('data-t')==='0');});}
 function titleRender(){
   $('hTitle').classList.toggle('day',!night);
