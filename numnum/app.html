@@ -577,6 +577,17 @@ details.parents .pbody{display:flex;flex-direction:column;gap:14px;padding-top:8
 
 .rsin{width:92px;height:44px;border-radius:12px;border:2px solid var(--line);background:var(--bg);color:var(--ink);font:700 1.2rem var(--f-display);text-align:center;-moz-appearance:textfield}
 .rsin::-webkit-outer-spin-button,.rsin::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+/* Klassen 1–4 */
+.klrow{display:flex;align-items:center;justify-content:center;gap:8px}
+.kllab{font-weight:800;font-size:.85rem;color:var(--muted);margin-right:4px}
+.klbtn{width:46px;height:46px;border-radius:14px;border:3px solid var(--line);background:var(--surface);color:var(--ink);font-family:var(--f-display);font-weight:700;font-size:1.4rem;cursor:pointer;box-shadow:0 3px 0 var(--line)}
+.klbtn[aria-pressed="true"]{border-color:var(--accent);background:var(--warn-bg);box-shadow:0 3px 0 var(--accent-edge)}
+.card.pick .rbtn.wide b{font-size:clamp(1.5rem,7vw,2.2rem)}
+.qword.qeq.qmd{font-size:clamp(1.9rem,8.6vw,3rem)}
+.qword.qeq.qsm{font-size:clamp(1.35rem,6.2vw,2.3rem)}
+.nbrow.sm .nb{font-size:clamp(1.2rem,5.6vw,1.8rem);min-width:0;padding:6px 10px}
+.opts-n .opt.lg{font-size:clamp(1.3rem,6vw,1.8rem)}
+.rundto{font-weight:800;font-size:1.05rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
 
 </style>
 <div class="app">
@@ -621,6 +632,7 @@ details.parents .pbody{display:flex;flex-direction:column;gap:14px;padding-top:8
 
       <div class="card pick" id="pickCard">
         <div class="pickhead" id="pickHead"></div>
+        <div class="klrow" id="homeKl" role="group" aria-label="Klasse" hidden></div>
         <div class="rangegrid" id="homeRange" role="group" aria-label="Zahlenraum"></div>
         <div class="homestart" id="homeStart"></div>
         <div class="topics" id="homeTopics" role="group" aria-label="Thema wählen"></div>
@@ -1156,12 +1168,26 @@ function celebrate(big){
 var TOPICS=[
   {id:'plus',name:'Plus',ico:'➕'},
   {id:'minus',name:'Minus',ico:'➖'},
-  {id:'zehner',name:'Zehnerfeld',ico:'🟦'},
-  {id:'mengen',name:'Mengen zählen',ico:'🍎'},
+  {id:'zehner',name:'Zehnerfeld',ico:'🟦',kx:2},
+  {id:'mengen',name:'Mengen zählen',ico:'🍎',kx:2},
   {id:'strahl',name:'Zahlenstrahl',ico:'📏'},
   {id:'zerlegen',name:'Zerlegen',ico:'✂️'},
-  {id:'nachbar',name:'Nachbarn',ico:'↔️'}
+  {id:'nachbar',name:'Nachbarn',ico:'↔️'},
+  {id:'doppel',name:'Verdoppeln',ico:'👯'},
+  {id:'mal',name:'Mal',ico:'✖️',k:2},
+  {id:'geteilt',name:'Geteilt',ico:'➗',k:2},
+  {id:'rest',name:'Mit Rest',ico:'➗',k:3},
+  {id:'runden',name:'Runden',ico:'≈',k:3}
 ];
+/* Klassen 1–4 nach Grundschul-Lehrplan: Kl. 1 bis 20 (100 bleibt als Ausblick), Kl. 2 bis 100, Kl. 3 bis 1000, Kl. 4 bis 1 Mio.
+   Das kleine Einmaleins (bis 100) bleibt in Kl. 3/4 wählbar, weil es dort automatisiert wird. Themen mit k erst ab dieser Klasse. */
+var RANGES=[10,20,100,1000,1000000];
+var KLR={1:[10,20,100],2:[20,100],3:[100,1000],4:[100,1000,1000000]};
+var PLACE={10:'Zehner',100:'Hunderter',1000:'Tausender',10000:'Zehntausender',100000:'Hunderttausender'};
+function rlabel(R){return R===1000000?'1 Mio':String(R);}
+function fmt(n){return n>=10000?String(n).replace(/\B(?=(\d{3})+(?!\d))/g,'\u202f'):String(n);}
+function isCalc(tp){return ['plus','minus','zerlegen','doppel','mal','geteilt','rest','runden'].indexOf(tp)>=0;}
+function topicsFor(R,kl){return TOPICS.filter(function(t){return (t.k||1)<=kl&&(t.kx||4)>=kl&&tasksFor(t.id,R).length;});}
 /* ===== Eigene Icons (ein Stil: dicke, runde Formen in Pink, Hellgrün, Weiß) ===== */
 /* Lautstärke: alle Klänge laufen über Master-Gain + Limiter */
 var _oc=null,_og=null;
@@ -1174,6 +1200,11 @@ var ICONS={
   mengen:'<circle cx="24" cy="13" r="9" fill="'+IC_P+'"/><circle cx="13" cy="33" r="9" fill="'+IC_L+'"/><circle cx="35" cy="33" r="9" fill="'+IC_L+'"/>',
   strahl:'<path d="M4 32h40" stroke="'+IC_W+'" stroke-width="4" stroke-linecap="round"/><path d="M9 26v12M20 26v12M31 26v12M42 26v12" stroke="'+IC_W+'" stroke-width="3.5" stroke-linecap="round"/><path d="M31 25L22 11h18z" fill="'+IC_P+'" stroke="'+IC_P+'" stroke-width="3" stroke-linejoin="round"/>',
   zerlegen:'<path d="M24 17L12 31M24 17l12 14" stroke="'+IC_W+'" stroke-width="3.5" stroke-linecap="round"/><circle cx="24" cy="11" r="8.5" fill="'+IC_P+'"/><circle cx="12" cy="36" r="8" fill="'+IC_L+'"/><circle cx="36" cy="36" r="8" fill="'+IC_L+'"/>',
+  doppel:'<circle cx="14" cy="24" r="11" fill="'+IC_P+'"/><circle cx="34" cy="24" r="11" fill="'+IC_P+'"/><path d="M24 8v32" stroke="'+IC_W+'" stroke-width="3" stroke-linecap="round" stroke-dasharray="4 4"/>',
+  rest:'<circle cx="24" cy="24" r="21" fill="'+IC_P+'"/><circle cx="17" cy="15" r="3.6" fill="'+IC_D+'"/><circle cx="17" cy="33" r="3.6" fill="'+IC_D+'"/><circle cx="35" cy="33" r="4.5" fill="'+IC_L+'" stroke="'+IC_D+'" stroke-width="2"/>',
+  runden:'<circle cx="24" cy="24" r="21" fill="'+IC_L+'"/><path d="M13 20c4-4 7-4 11 0s7 4 11 0M13 30c4-4 7-4 11 0s7 4 11 0" stroke="'+IC_D+'" stroke-width="4.5" stroke-linecap="round" fill="none"/>',
+  mal:'<circle cx="24" cy="24" r="21" fill="'+IC_L+'"/><path d="M16 16l16 16M32 16L16 32" stroke="'+IC_D+'" stroke-width="5.5" stroke-linecap="round"/>',
+  geteilt:'<circle cx="24" cy="24" r="21" fill="'+IC_P+'"/><circle cx="24" cy="15" r="4" fill="'+IC_D+'"/><circle cx="24" cy="33" r="4" fill="'+IC_D+'"/>',
   nachbar:'<rect x="2.5" y="14" width="12.5" height="20" rx="4" fill="none" stroke="'+IC_L+'" stroke-width="3.5"/><rect x="17.5" y="14" width="13" height="20" rx="4" fill="'+IC_P+'"/><rect x="33" y="14" width="12.5" height="20" rx="4" fill="none" stroke="'+IC_L+'" stroke-width="3.5"/>',
   sound:'<circle cx="24" cy="24" r="21" fill="'+IC_P+'"/><path d="M20 31V15l12-3v16" stroke="'+IC_D+'" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none"/><circle cx="17" cy="32" r="4.5" fill="'+IC_D+'"/><circle cx="29" cy="29" r="4.5" fill="'+IC_D+'"/>',
   speak:'<circle cx="24" cy="24" r="21" fill="'+IC_L+'"/><path d="M11 20v8h6l8 6V14l-8 6z" fill="'+IC_D+'"/><path d="M30 18a8 8 0 0 1 0 12M35 13a15 15 0 0 1 0 22" stroke="'+IC_D+'" stroke-width="3.5" stroke-linecap="round" fill="none"/>',
@@ -1336,13 +1367,36 @@ var CACHE={};
 function mk(topic,R,id,o){o.id=topic+'|'+R+'|'+id;o.topic=topic;o.R=R;return o;}
 function tasksFor(topic,R){var k=topic+'|'+R;if(!CACHE[k])CACHE[k]=build(topic,R);return CACHE[k];}
 function poolOf(tp,R){var p=[];tp.forEach(function(t){p=p.concat(tasksFor(t,R));});return p;}
+/* Zufall mit festem Startwert: große Zahlenräume bekommen eine Auswahl, die bei jedem Laden gleich bleibt */
+function rng(seed){var h=2166136261,i;for(i=0;i<seed.length;i++){h^=seed.charCodeAt(i);h=Math.imul(h,16777619);}return function(){h=(h+0x6D2B79F5)|0;var x=h;x=Math.imul(x^x>>>15,x|1);x^=x+Math.imul(x^x>>>7,x|61);return((x^x>>>14)>>>0)/4294967296;};}
 function build(topic,R){
-  var L=[],seen={},a,b,k,e,m,t,p,n;
+  var L=[],seen={},a,b,k,e,m,t,p,n,rnd=rng(topic+'|'+R);
   function add(id,o){if(seen[id])return;seen[id]=1;L.push(mk(topic,R,id,o));}
+  function ri(x,y){return x+Math.floor(rnd()*(y-x+1));}
+  function rep(c,f){for(var i=0;i<c;i++)f();}
+  function pl(a,b){if(a+b<=R)add(a+'+'+b,{a:a,b:b,ans:a+b});}
+  function mi(a,b){if(b<a)add(a+'-'+b,{a:a,b:b,ans:a-b});}
+  function ml(a,b){if(a*b<=R)add(a+'x'+b,{a:a,b:b,ans:a*b});}
+  function dv(p,b){if(p<=R)add(p+':'+b,{a:p,b:b,ans:p/b});}
+  function zl(t,p,side){add(t+'='+p+side,{t:t,p:p,side:side,ans:t-p});}
   switch(topic){
     case 'plus':
       if(R===10){for(a=1;a<=9;a++)for(b=1;b<=9;b++)if(a+b<=10)add(a+'+'+b,{a:a,b:b,ans:a+b});}
       else if(R===20){for(a=1;a<=19;a++)for(b=1;b<=19;b++)if(a+b>10&&a+b<=20)add(a+'+'+b,{a:a,b:b,ans:a+b});}
+      else if(R===1000){
+        for(k=1;k<=9;k++)for(m=1;m<=9;m++)pl(100*k,100*m);
+        rep(40,function(){pl(ri(10,89)*10,ri(1,9)*10);});
+        rep(40,function(){pl(ri(101,989),ri(2,9));});
+        rep(40,function(){pl(ri(100,899),ri(11,99));});
+        rep(40,function(){var x=ri(100,600);pl(x,ri(100,1000-x));});
+      }
+      else if(R===1000000){
+        for(k=1;k<=9;k++)for(m=1;m<=9;m++)pl(1000*k,1000*m);
+        rep(40,function(){pl(ri(1,99)*1000,ri(1,99)*1000);});
+        rep(40,function(){pl(ri(1,8)*100000,ri(1,9)*10000);});
+        rep(40,function(){pl(ri(10,99)*100,ri(1,9)*100);});
+        rep(40,function(){pl(ri(100,899)*1000,ri(10,99)*1000);});
+      }
       else{
         for(k=1;k<=9;k++)for(m=1;m<=9;m++)if(k+m<=10)add((10*k)+'+'+(10*m),{a:10*k,b:10*m,ans:10*(k+m)});
         for(k=1;k<=9;k++)for(e=1;e<=8;e++)for(b=1;b<=9-e;b++)add((10*k+e)+'+'+b,{a:10*k+e,b:b,ans:10*k+e+b});
@@ -1352,6 +1406,20 @@ function build(topic,R){
     case 'minus':
       if(R===10){for(a=2;a<=10;a++)for(b=1;b<a;b++)add(a+'-'+b,{a:a,b:b,ans:a-b});}
       else if(R===20){for(a=11;a<=20;a++)for(b=1;b<a&&b<=12;b++)add(a+'-'+b,{a:a,b:b,ans:a-b});}
+      else if(R===1000){
+        for(k=2;k<=10;k++)for(m=1;m<k;m++)mi(100*k,100*m);
+        rep(40,function(){mi(ri(11,100)*10,ri(1,9)*10);});
+        rep(40,function(){mi(ri(101,999),ri(2,9));});
+        rep(40,function(){mi(ri(120,999),ri(11,99));});
+        rep(40,function(){var x=ri(300,999);mi(x,ri(100,x-1));});
+      }
+      else if(R===1000000){
+        for(k=2;k<=10;k++)for(m=1;m<k;m++)mi(1000*k,1000*m);
+        rep(40,function(){mi(ri(2,99)*1000,ri(1,99)*1000);});
+        rep(40,function(){mi(ri(2,10)*100000,ri(1,9)*10000);});
+        rep(40,function(){mi(ri(11,99)*100,ri(1,9)*100);});
+        rep(40,function(){var x=ri(200,999);mi(x*1000,ri(10,x-1)*1000);});
+      }
       else{
         for(k=2;k<=10;k++)for(m=1;m<k;m++)add((10*k)+'-'+(10*m),{a:10*k,b:10*m,ans:10*(k-m)});
         for(k=1;k<=9;k++)for(e=2;e<=9;e++)for(b=1;b<e;b++)add((10*k+e)+'-'+b,{a:10*k+e,b:b,ans:10*k+e-b});
@@ -1361,20 +1429,27 @@ function build(topic,R){
     case 'zehner':
       if(R===10){for(n=1;n<=10;n++)add(''+n,{n:n,ans:n});}
       else if(R===20){for(n=11;n<=20;n++)add(''+n,{n:n,ans:n});}
-      else{for(n=11;n<=99;n++)add(''+n,{n:n,ans:n});}
+      else if(R===100){for(n=11;n<=99;n++)add(''+n,{n:n,ans:n});}
       break;
     case 'mengen':
       if(R===10){for(n=1;n<=10;n++)add(''+n,{n:n,ans:n});}
-      else{for(n=11;n<=20;n++)add(''+n,{n:n,ans:n});}
+      else if(R<=100){for(n=11;n<=20;n++)add(''+n,{n:n,ans:n});}
       break;
     case 'strahl':
       if(R===10){for(n=1;n<=9;n++)add(''+n,{n:n,ans:n});}
       else if(R===20){for(n=1;n<=19;n++)if(n%5)add(''+n,{n:n,ans:n});}
-      else{for(n=10;n<=90;n+=10)if(n!==50)add(''+n,{n:n,ans:n});}
+      else if(R===100){for(n=10;n<=90;n+=10)if(n!==50)add(''+n,{n:n,ans:n});}
+      else{for(n=R/20;n<R;n+=R/20)if(n!==R/2)add(''+n,{n:n,ans:n});}
       break;
     case 'zerlegen':
       if(R===10){for(t=3;t<=10;t++)for(p=1;p<t;p++)add(t+'='+p,{t:t,p:p,side:'r',ans:t-p});}
       else if(R===20){for(t=11;t<=20;t++)for(p=1;p<=10;p++)add(t+'='+p,{t:t,p:p,side:'r',ans:t-p});}
+      else if(R>=1000){
+        for(k=1;k<=9;k++)zl(R,k*R/10,'r');
+        rep(30,function(){var z=ri(11,99);if(z%10)zl(R,z*R/100,'r');});
+        if(R===1000000)for(k=1;k<=9;k++)zl(10000,k*1000,'r');
+        rep(25,function(){var h=ri(1,9)*R/10,r=ri(1,R/10-1);zl(h+r,h,'r');zl(h+r,r,'l');});
+      }
       else{
         for(k=2;k<=10;k++)for(m=1;m<k;m++)add((10*k)+'='+(10*m),{t:10*k,p:10*m,side:'r',ans:10*(k-m)});
         for(k=1;k<=9;k++)for(e=1;e<=9;e++){
@@ -1386,7 +1461,55 @@ function build(topic,R){
     case 'nachbar':
       if(R===10){for(n=2;n<=10;n++)add('v'+n,{n:n,dir:'v',ans:n-1});for(n=1;n<=9;n++)add('n'+n,{n:n,dir:'n',ans:n+1});}
       else if(R===20){for(n=11;n<=20;n++)add('v'+n,{n:n,dir:'v',ans:n-1});for(n=10;n<=19;n++)add('n'+n,{n:n,dir:'n',ans:n+1});}
-      else{for(n=11;n<=99;n++)add('v'+n,{n:n,dir:'v',ans:n-1});for(n=10;n<=98;n++)add('n'+n,{n:n,dir:'n',ans:n+1});}
+      else if(R===100){for(n=11;n<=99;n++)add('v'+n,{n:n,dir:'v',ans:n-1});for(n=10;n<=98;n++)add('n'+n,{n:n,dir:'n',ans:n+1});}
+      else{
+        var lo=R/10,st=R===1000?100:10000;
+        for(n=st;n<R;n+=st){add('v'+n,{n:n,dir:'v',ans:n-1});add('n'+(n-1),{n:n-1,dir:'n',ans:n});}
+        rep(40,function(){var x=ri(lo+1,R-1);add('v'+x,{n:x,dir:'v',ans:x-1});});
+        rep(40,function(){var x=ri(lo,R-2);add('n'+x,{n:x,dir:'n',ans:x+1});});
+      }
+      break;
+    case 'doppel':
+      var dmax=R===10?5:R===20?10:0;
+      if(dmax){for(n=1;n<=dmax;n++){add('d'+n,{n:n,d:'d',ans:2*n});add('h'+(2*n),{n:2*n,d:'h',ans:n});}}
+      else{
+        var unit=R===100?1:R===1000?10:1000;
+        rep(45,function(){var x=ri(R===100?11:10,50)*unit;add('d'+x,{n:x,d:'d',ans:2*x});});
+        rep(45,function(){var x=ri(R===100?11:10,50)*unit;add('h'+(2*x),{n:2*x,d:'h',ans:x});});
+        if(R>=1000)rep(30,function(){var x=ri(11,499)*(R===1000?1:1000);if(2*x<=R){add('d'+x,{n:x,d:'d',ans:2*x});add('h'+(2*x),{n:2*x,d:'h',ans:x});}});
+      }
+      break;
+    case 'mal':
+      if(R===100){for(a=2;a<=10;a++)for(b=1;b<=10;b++)ml(a,b);}
+      else if(R===1000){
+        for(a=2;a<=9;a++)for(b=2;b<=9;b++){ml(a,10*b);ml(10*b,a);}
+        rep(40,function(){ml(ri(11,25),ri(2,9));});
+      }
+      else if(R===1000000){
+        for(a=2;a<=9;a++)for(b=1;b<=9;b++){ml(a,100*b);ml(a,1000*b);}
+        for(a=2;a<=9;a++)for(b=2;b<=9;b++)ml(10*a,10*b);
+        rep(40,function(){ml(ri(12,99),ri(3,9));});
+      }
+      break;
+    case 'geteilt':
+      if(R===100){for(a=1;a<=10;a++)for(b=2;b<=10;b++)dv(a*b,b);}
+      else if(R===1000){
+        for(a=2;a<=9;a++)for(b=2;b<=9;b++){dv(a*10*b,a);dv(a*10*b,10*b);}
+        rep(40,function(){var q=ri(11,25),d=ri(2,9);dv(q*d,d);});
+      }
+      else if(R===1000000){
+        for(a=2;a<=9;a++)for(b=1;b<=9;b++){dv(a*100*b,a);dv(a*1000*b,a);}
+        for(a=2;a<=9;a++)for(b=2;b<=9;b++)dv(100*a*b,10*b);
+        rep(40,function(){var q=ri(12,99),d=ri(3,9);dv(q*d,d);});
+      }
+      break;
+    case 'rest':
+      if(R===100){for(b=2;b<=9;b++)for(a=b+1;a<=Math.min(99,10*b+b-1);a++)if(a%b)add(a+':'+b+(a%3?'q':'r'),{a:a,b:b,q:Math.floor(a/b),r:a%b,ask:a%3?'q':'r',ans:a%3?Math.floor(a/b):a%b});}
+      else if(R===1000){rep(80,function(){var d=ri(2,9),x=ri(100,999);if(x%d){var w=rnd()<.5?'q':'r';add(x+':'+d+w,{a:x,b:d,q:Math.floor(x/d),r:x%d,ask:w,ans:w==='q'?Math.floor(x/d):x%d});}});}
+      break;
+    case 'runden':
+      if(R===1000){[10,100].forEach(function(to){rep(40,function(){var x=ri(101,994);if(x%to)add(x+'~'+to,{n:x,to:to,ans:Math.round(x/to)*to});});});}
+      else if(R===1000000){[1000,10000,100000].forEach(function(to){rep(30,function(){var x=ri(1001,899999);if(x%to)add(x+'~'+to,{n:x,to:to,ans:Math.round(x/to)*to});});});}
       break;
   }
   return L;
@@ -1420,35 +1543,41 @@ function rodsSvg(n){
   return '<svg viewBox="0 0 '+W+' '+rh+'" style="width:'+Math.round(W*1.3)+'px" role="img" aria-hidden="true">'+s+'</svg>';
 }
 function lineSvg(R,n){
-  var x0=16,x1=304,y=82,step=(x1-x0)/R,s='',i,every=(R===100)?10:1;
+  var x0=16,x1=304,y=82,step=(x1-x0)/R,s='',i,every=(R===100)?10:(R>=1000)?R/20:1,big=R>=1000;
   s+='<line x1="'+x0+'" y1="'+y+'" x2="'+x1+'" y2="'+y+'" stroke="var(--ink)" stroke-width="3" stroke-linecap="round"/>';
   for(i=0;i<=R;i+=every){
-    var x=x0+i*step,major=(R!==20)||i%5===0,h=major?10:6;
+    var x=x0+i*step,major=big?i%(R/10)===0:((R!==20)||i%5===0),h=major?10:6;
     s+='<line x1="'+x+'" x2="'+x+'" y1="'+(y-h)+'" y2="'+(y+h)+'" stroke="var(--ink)" stroke-width="2.5" stroke-linecap="round"/>';
-    var show=(R===10)||(R===20&&i%5===0)||(R===100);
-    if(show&&i!==n)s+='<text x="'+x+'" y="'+(y+32)+'" text-anchor="middle" font-size="'+(R===100?13:16)+'" font-weight="800" fill="var(--muted)" font-family="Fredoka,sans-serif">'+i+'</text>';
+    var show=(R===10)||(R===20&&i%5===0)||(R===100)||(big&&i%(R/2)===0);
+    if(show&&i!==n)s+='<text x="'+x+'" y="'+(y+32)+'" text-anchor="'+(big&&i===R?'end':big&&i===0?'start':'middle')+'" font-size="'+(R===100||big?13:16)+'" font-weight="800" fill="var(--muted)" font-family="Fredoka,sans-serif">'+fmt(i)+'</text>';
   }
   var ax=x0+n*step;
   s+='<rect x="'+(ax-17)+'" y="4" width="34" height="32" rx="10" fill="var(--accent)"/><text x="'+ax+'" y="29" text-anchor="middle" font-size="24" font-weight="700" fill="var(--accent-ink)" font-family="Fredoka,sans-serif">?</text>';
   s+='<line x1="'+ax+'" x2="'+ax+'" y1="36" y2="'+(y-18)+'" stroke="var(--accent)" stroke-width="4" stroke-linecap="round"/><path d="M'+(ax-8)+' '+(y-20)+'L'+(ax+8)+' '+(y-20)+'L'+ax+' '+(y-7)+'Z" fill="var(--accent)"/>';
   return '<svg viewBox="0 0 320 118" style="width:min(100%,380px)" role="img" aria-hidden="true">'+s+'</svg>';
 }
-function boxNode(txt,q,given,ghost){return el('div','nb'+(q?' q':'')+(given?' given':'')+(ghost?' ghost':''),txt);}
+function arraySvg(rows,cols){
+  var d=22,s='',r,c;
+  for(r=0;r<rows;r++)for(c=0;c<cols;c++)s+='<circle cx="'+(c*d+d/2+(c>=5?6:0))+'" cy="'+(r*d+d/2+(r>=5?6:0))+'" r="8" fill="'+(r%2?COL.b:COL.a)+'"/>';
+  var W=cols*d+(cols>5?6:0),H=rows*d+(rows>5?6:0);
+  return '<svg viewBox="0 0 '+W+' '+H+'" style="width:'+Math.min(300,W*1.2)+'px" role="img" aria-hidden="true">'+s+'</svg>';
+}
+function boxNode(txt,q,given,ghost){return el('div','nb'+(q?' q':'')+(given?' given':'')+(ghost?' ghost':''),typeof txt==='number'?fmt(txt):txt);}
 
 /* Darstellung einer Aufgabe */
 function present(t){
   var r={label:'',word:'',long:false,viz:null,say:'',sol:'',saySol:'',tip:null},R=t.R,n=t.n;
   switch(t.topic){
     case 'plus':
-      r.label='Plus';r.word=t.a+' + '+t.b+' = ?';
+      r.label='Plus';r.word=fmt(t.a)+' + '+fmt(t.b)+' = ?';
       r.say='Was ist '+t.a+' plus '+t.b+'?';
-      r.sol=t.a+' + '+t.b+' = '+t.ans;r.saySol=t.a+' plus '+t.b+' ist '+t.ans;
+      r.sol=fmt(t.a)+' + '+fmt(t.b)+' = '+fmt(t.ans);r.saySol=t.a+' plus '+t.b+' ist '+t.ans;
       if(R<=20)r.tip=function(){return frameSvg(fill(t.b,'b',fill(t.a,'a')),R<=10?1:2);};
       break;
     case 'minus':
-      r.label='Minus';r.word=t.a+' '+MINUS+' '+t.b+' = ?';
+      r.label='Minus';r.word=fmt(t.a)+' '+MINUS+' '+fmt(t.b)+' = ?';
       r.say='Was ist '+t.a+' minus '+t.b+'?';
-      r.sol=t.a+' '+MINUS+' '+t.b+' = '+t.ans;r.saySol=t.a+' minus '+t.b+' ist '+t.ans;
+      r.sol=fmt(t.a)+' '+MINUS+' '+fmt(t.b)+' = '+fmt(t.ans);r.saySol=t.a+' minus '+t.b+' ist '+t.ans;
       if(R<=20)r.tip=function(){return frameSvg(fill(t.b,'x',fill(t.a-t.b,'a')),R<=10?1:2);};
       break;
     case 'zehner':
@@ -1466,25 +1595,60 @@ function present(t){
       break;
     case 'strahl':
       r.label='Zahlenstrahl';r.long=true;r.viz=lineSvg(R,n);
-      r.word='Welche Zahl gehört zum Pfeil?';r.say='Welche Zahl zeigt der Pfeil?';r.sol=''+n;r.saySol='Der Pfeil zeigt auf die '+n+'.';
+      r.word='Welche Zahl gehört zum Pfeil?';r.say='Welche Zahl zeigt der Pfeil?';r.sol=fmt(n);r.saySol='Der Pfeil zeigt auf die '+n+'.';
       break;
     case 'zerlegen':
       r.label='Zerlegen';
       if(t.side==='r'){
-        r.word=t.t+' = '+t.p+' + ?';r.say='Du hast '+t.p+'. Wie viele fehlen bis '+t.t+'?';
-        r.sol=t.t+' = '+t.p+' + '+t.ans;r.saySol=t.p+' plus '+t.ans+' ist '+t.t+'.';
+        r.word=fmt(t.t)+' = '+fmt(t.p)+' + ?';r.say='Du hast '+t.p+'. Wie viele fehlen bis '+t.t+'?';
+        r.sol=fmt(t.t)+' = '+fmt(t.p)+' + '+fmt(t.ans);r.saySol=t.p+' plus '+t.ans+' ist '+t.t+'.';
       }else{
-        r.word=t.t+' = ? + '+t.p;r.say='Welche Zahl plus '+t.p+' ist '+t.t+'?';
-        r.sol=t.t+' = '+t.ans+' + '+t.p;r.saySol=t.ans+' plus '+t.p+' ist '+t.t+'.';
+        r.word=fmt(t.t)+' = ? + '+fmt(t.p);r.say='Welche Zahl plus '+t.p+' ist '+t.t+'?';
+        r.sol=fmt(t.t)+' = '+fmt(t.ans)+' + '+fmt(t.p);r.saySol=t.ans+' plus '+t.p+' ist '+t.t+'.';
       }
       if(R<=20)r.tip=function(){return frameSvg(fill(t.t-t.p,'b',fill(t.p,'a')),R<=10?1:2);};
       break;
     case 'nachbar':
       r.label='Nachbarzahlen';r.long=true;
-      var row=el('div','nbrow');
-      if(t.dir==='v'){row.appendChild(boxNode('?',true));row.appendChild(boxNode(n,false,true));row.appendChild(boxNode('',false,false,true));r.word='Welche Zahl kommt davor?';r.say='Welche Zahl steht direkt vor der '+n+'?';r.sol=t.ans+' → '+n;r.saySol='Vor der '+n+' kommt die '+t.ans+'.';}
-      else{row.appendChild(boxNode('',false,false,true));row.appendChild(boxNode(n,false,true));row.appendChild(boxNode('?',true));r.word='Welche Zahl kommt danach?';r.say='Welche Zahl steht direkt nach der '+n+'?';r.sol=n+' → '+t.ans;r.saySol='Nach der '+n+' kommt die '+t.ans+'.';}
+      var row=el('div','nbrow'+(n>=999?' sm':''));
+      if(t.dir==='v'){row.appendChild(boxNode('?',true));row.appendChild(boxNode(n,false,true));row.appendChild(boxNode('',false,false,true));r.word='Welche Zahl kommt davor?';r.say='Welche Zahl steht direkt vor der '+n+'?';r.sol=fmt(t.ans)+' → '+fmt(n);r.saySol='Vor der '+n+' kommt die '+t.ans+'.';}
+      else{row.appendChild(boxNode('',false,false,true));row.appendChild(boxNode(n,false,true));row.appendChild(boxNode('?',true));r.word='Welche Zahl kommt danach?';r.say='Welche Zahl steht direkt nach der '+n+'?';r.sol=fmt(n)+' → '+fmt(t.ans);r.saySol='Nach der '+n+' kommt die '+t.ans+'.';}
       r.viz=row;
+      break;
+    case 'doppel':
+      r.label='Verdoppeln';
+      if(t.d==='d'){
+        r.word=R<=100?fmt(n)+' + '+fmt(n)+' = ?':'2 · '+fmt(n)+' = ?';r.say='Verdopple '+n+'! Was ist '+n+' plus '+n+'?';
+        r.sol=R<=100?fmt(n)+' + '+fmt(n)+' = '+fmt(t.ans):'2 · '+fmt(n)+' = '+fmt(t.ans);r.saySol='Das Doppelte von '+n+' ist '+t.ans+'.';
+        if(R<=20)r.tip=function(){return frameSvg(fill(n,'b',fill(n,'a')),R<=10?1:2);};
+      }else{
+        r.word=R<=100?fmt(n)+' = ? + ?':fmt(n)+' : 2 = ?';r.say='Halbiere '+n+'! Welche Zahl plus die gleiche Zahl ist '+n+'?';
+        r.sol=R<=100?fmt(n)+' = '+fmt(t.ans)+' + '+fmt(t.ans):fmt(n)+' : 2 = '+fmt(t.ans);r.saySol='Die Hälfte von '+n+' ist '+t.ans+'.';
+        if(R<=20)r.tip=function(){return frameSvg(fill(t.ans,'b',fill(t.ans,'a')),R<=10?1:2);};
+      }
+      break;
+    case 'mal':
+      r.label='Mal';r.word=fmt(t.a)+' · '+fmt(t.b)+' = ?';
+      r.say='Was ist '+t.a+' mal '+t.b+'?';
+      r.sol=fmt(t.a)+' · '+fmt(t.b)+' = '+fmt(t.ans);r.saySol=t.a+' mal '+t.b+' ist '+t.ans;
+      if(R===100)r.tip=function(){return arraySvg(t.a,t.b);};
+      break;
+    case 'geteilt':
+      r.label='Geteilt';r.word=fmt(t.a)+' : '+fmt(t.b)+' = ?';
+      r.say='Was ist '+t.a+' geteilt durch '+t.b+'?';
+      r.sol=fmt(t.a)+' : '+fmt(t.b)+' = '+fmt(t.ans);r.saySol=t.a+' geteilt durch '+t.b+' ist '+t.ans;
+      if(R===100)r.tip=function(){return arraySvg(t.ans,t.b);};
+      break;
+    case 'rest':
+      r.label='Mit Rest';
+      r.word=fmt(t.a)+' : '+t.b+' = '+(t.ask==='q'?'? R '+t.r:t.q+' R ?');
+      r.say=t.ask==='q'?'Wie oft passt die '+t.b+' in '+t.a+'? Es bleibt '+t.r+' übrig.':t.a+' geteilt durch '+t.b+' ist '+t.q+'. Wie viel bleibt übrig?';
+      r.sol=fmt(t.a)+' : '+t.b+' = '+t.q+' R '+t.r;r.saySol=t.a+' geteilt durch '+t.b+' ist '+t.q+', Rest '+t.r+'.';
+      break;
+    case 'runden':
+      r.label='Runden';r.viz=el('div','rundto','auf '+PLACE[t.to]);
+      r.word=fmt(t.n)+' ≈ ?';r.say='Runde '+t.n+' auf '+PLACE[t.to]+'.';
+      r.sol=fmt(t.n)+' ≈ '+fmt(t.ans);r.saySol=t.n+' gerundet auf '+PLACE[t.to]+' ist '+t.ans+'.';
       break;
   }
   return r;
@@ -1492,6 +1656,7 @@ function present(t){
 function options(t){
   var a=t.ans,R=t.R,set=[a],c,i,g=0;
   var near=R>20?[a+10,a-10,a+1,a-1,a+20,a-20]:[a+1,a-1,a+2,a-2,a+3,a-3];
+  if(R>=1000){var u=1,x=a;while(x&&x%10===0&&u<R/100){x/=10;u*=10;}near=[a+u,a-u,a+10*u,a-10*u,a+2*u,a-2*u];}
   near=shuffle(near.slice(0,3)).concat(shuffle(near.slice(3)));
   for(i=0;i<near.length&&set.length<4;i++){c=near[i];if(c>=0&&c<=Math.max(R,a+3)&&set.indexOf(c)<0)set.push(c);}
   while(set.length<4&&g++<80){c=Math.floor(Math.random()*(Math.max(R,10)+1));if(set.indexOf(c)<0)set.push(c);}
@@ -1500,7 +1665,7 @@ function options(t){
 
 /* ===== Daten und Speicher ===== */
 function defaults(){
-  return {xp:0,streak:0,last:null,bestCombo:0,answered:0,correct:0,sessions:0,sound:true,speak:true,box:{},miss:{},hit:{},topics:['plus'],range:20,hw:[],theme:0,pat:null};
+  return {xp:0,streak:0,last:null,bestCombo:0,answered:0,correct:0,sessions:0,sound:true,speak:true,box:{},miss:{},hit:{},topics:['plus'],range:20,klasse:1,hw:[],theme:0,pat:null};
 }
 function load(){
   var o=null,d=defaults();
@@ -1509,9 +1674,10 @@ function load(){
   Object.keys(d).forEach(function(k){if(o[k]===undefined||(o[k]===null&&k!=='last'))o[k]=d[k];});
   ['box','miss','hit'].forEach(function(k){if(!o[k]||typeof o[k]!=='object')o[k]={};});
   if(!Array.isArray(o.topics)||!o.topics.length)o.topics=['plus'];
-  if([10,20,100].indexOf(o.range)<0)o.range=20;
+  if(RANGES.indexOf(o.range)<0)o.range=20;
+  if([1,2,3,4].indexOf(o.klasse)<0)o.klasse=1;
   if(!Array.isArray(o.hw))o.hw=[];
-  o.hw=o.hw.filter(function(h){return h&&Array.isArray(h.topics)&&h.topics.length&&[10,20,100].indexOf(h.range)>=0;});
+  o.hw=o.hw.filter(function(h){return h&&Array.isArray(h.topics)&&h.topics.length&&RANGES.indexOf(h.range)>=0;});
   return o;
 }
 var S=load();
@@ -1631,9 +1797,11 @@ function renderMonRow(){
   });
 }
 function renderPick(){
-  var h=$('#pickHead'),r=$('#homeRange'),g=$('#homeTopics'),st=$('#homeStart');
-  h.textContent='';r.textContent='';g.textContent='';st.textContent='';
-  r.hidden=pickStep!==1;g.hidden=pickStep!==2;st.hidden=pickStep!==0;h.hidden=pickStep===0;
+  var h=$('#pickHead'),r=$('#homeRange'),g=$('#homeTopics'),st=$('#homeStart'),kr=$('#homeKl');
+  h.textContent='';r.textContent='';g.textContent='';st.textContent='';kr.textContent='';
+  r.hidden=pickStep!==1;kr.hidden=pickStep!==1;g.hidden=pickStep!==2;st.hidden=pickStep!==0;h.hidden=pickStep===0;
+  var rs=KLR[S.klasse],tps=topicsFor(S.range,S.klasse);
+  function rsay(v){return v===1000000?'eine Million':String(v);}
   if(pickStep===0){
     var sb=el('button','btn startbig','▶');sb.type='button';sb.setAttribute('aria-label','Start');
     sb.addEventListener('click',function(){say('Bis wohin rechnen wir?',true);pickStep=1;renderPick();});
@@ -1645,27 +1813,33 @@ function renderPick(){
   var bk=el('button','qback','←');bk.type='button';bk.setAttribute('aria-label','Zurück');
   bk.addEventListener('click',function(){pickStep=pickStep-1;renderPick();});
   h.appendChild(bk);h.appendChild(dots);
-  if(pickStep===2){h.appendChild(el('span','chip lvl','bis '+S.range));}
+  if(pickStep===2){h.appendChild(el('span','chip lvl','bis '+rlabel(S.range)));}
   var sp=el('button','spk spk-s pickspk');sp.type='button';sp.setAttribute('aria-label','Vorlesen');
   sp.innerHTML='<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9.5v5h4l5 4v-13l-5 4z" fill="currentColor"/><path d="M16.5 9a4 4 0 0 1 0 6M19 6.5a8 8 0 0 1 0 11"/></svg>';
   sp.addEventListener('click',function(){
-    say(pickStep===1?'Bis wohin rechnen wir? Bis 10, bis 20 oder bis 100?':'Was üben wir? '+TOPICS.map(function(x){return x.name;}).join(', ')+' oder Gemischt?',true);
+    say(pickStep===1?'Bis wohin rechnen wir? Bis '+rs.slice(0,-1).map(rsay).join(', bis ')+' oder bis '+rsay(rs[rs.length-1])+'?':'Was üben wir? '+tps.map(function(x){return x.name;}).join(', ')+' oder Gemischt?',true);
   });
   h.appendChild(sp);
   if(pickStep===1){
-    [10,20,100].forEach(function(v){
-      var b=el('button','rbtn');b.type='button';b.dataset.r=v;b.setAttribute('aria-label','Zahlen bis '+v);
-      b.appendChild(el('small',null,'bis'));b.appendChild(el('b',null,String(v)));
+    kr.appendChild(el('span','kllab','Klasse'));
+    [1,2,3,4].forEach(function(k){
+      var b=el('button','klbtn',String(k));b.type='button';b.setAttribute('aria-label','Klasse '+k);b.setAttribute('aria-pressed',k===S.klasse?'true':'false');
+      b.addEventListener('click',function(){S.klasse=k;save();say('Klasse '+k,true);renderPick();});
+      kr.appendChild(b);
+    });
+    rs.forEach(function(v){
+      var b=el('button','rbtn'+(v>=1000?' wide':''));b.type='button';b.dataset.r=v;b.setAttribute('aria-label','Zahlen bis '+rlabel(v));
+      b.appendChild(el('small',null,'bis'));b.appendChild(el('b',null,rlabel(v)));
       b.addEventListener('click',function(){S.range=v;save();say('Was üben wir?',true);pickStep=2;renderPick();});
       r.appendChild(b);
     });
     return;
   }
-  TOPICS.concat([{id:'mix',name:'Gemischt'}]).forEach(function(t){
+  tps.concat([{id:'mix',name:'Gemischt'}]).forEach(function(t){
     var b=el('button','topic');b.type='button';b.dataset.id=t.id;b.setAttribute('aria-label',t.name);
     var ti=el('span','ti');ti.innerHTML=icoSvg(t.id);b.appendChild(ti);b.appendChild(el('span',null,t.name));
     b.addEventListener('click',function(){
-      var tp=t.id==='mix'?TORDER.slice():[t.id];
+      var tp=t.id==='mix'?tps.map(function(x){return x.id;}):[t.id];
       S.topics=tp;save();
       startQuiz(tp,S.range,false);
     });
@@ -1685,7 +1859,7 @@ function renderHw(){
   S.hw.forEach(function(h,idx){
     var p=poolOf(h.topics,h.range),sure=sureCount(p),wob=wobbly(p).length,G=Math.min(30,p.length),shown=Math.min(sure,G),done=shown>=G;
     var d=el('div','hw'+(done?' done':''));
-    var hwt=el('div','hwt');hwt.innerHTML=iconsOf(h.topics)+'<span class="hwr">bis '+h.range+'</span>';d.appendChild(hwt);
+    var hwt=el('div','hwt');hwt.innerHTML=iconsOf(h.topics)+'<span class="hwr">bis '+rlabel(h.range)+'</span>';d.appendChild(hwt);
     var hwn=el('div','hwn');hwn.innerHTML=icoSvg(done?'trophy':'star')+'<span>'+shown+' / '+G+'</span>';d.appendChild(hwn);
     var bar=el('div','bar'),f=el('i');f.style.width=Math.round(shown/G*100)+'%';bar.appendChild(f);d.appendChild(bar);
     var a=el('div','hwa');
@@ -1788,7 +1962,7 @@ function renderQ(keep){
   var vz=$('#qViz');vz.textContent='';
   if(p.viz){if(typeof p.viz==='string')vz.innerHTML=p.viz;else vz.appendChild(p.viz);}
   vz.hidden=!p.viz;
-  var w=$('#qWord');w.textContent=p.long?'':p.word;w.hidden=!!p.long;w.className='qword qeq';
+  var w=$('#qWord');w.textContent=p.long?'':p.word;w.hidden=!!p.long;w.className='qword qeq'+(p.word.length>14?' qsm':p.word.length>10?' qmd':'');
   var tip=$('#qTip');tip.textContent='';tip.hidden=true;
   $('#qFb').hidden=true;
   var form=$('#qType'),opts=$('#qOpts');
@@ -1798,19 +1972,19 @@ function renderQ(keep){
     var inp=$('#qInput');inp.value='';inp.className='field num';
     $('#qSpk').hidden=true;$('#qPad').hidden=false;$('#qCheck').hidden=false;
     $('#qTipBtn').hidden=!p.tip||!!cur.tip;
-    var calc=(t.topic==='plus'||t.topic==='minus'||t.topic==='zerlegen');
+    var calc=isCalc(t.topic);
     $('#qHelp').hidden=calc;
   }else{
     form.hidden=true;opts.hidden=false;opts.textContent='';
     options(t).forEach(function(v){
-      var b=el('button','opt',String(v));b.type='button';b.dataset.v=v;
+      var b=el('button','opt'+(fmt(v).length>5?' lg':''),fmt(v));b.type='button';b.dataset.v=v;
       b.addEventListener('click',function(){pickOpt(b,v);});
       opts.appendChild(b);
     });
   }
   if(!asleep)setMon('');hideBub();
   showProgress();comboPill();
-  var calc2=(t.topic==='plus'||t.topic==='minus'||t.topic==='zerlegen');
+  var calc2=isCalc(t.topic);
   $('#qRead').hidden=calc2;
   if(!keep&&!calc2){Q.spoke=Q.spoke||{};if(!Q.spoke[t.topic]){Q.spoke[t.topic]=1;say(p.say);}}
   idleReset();
@@ -1836,7 +2010,7 @@ function pressKey(k){
   var inp=$('#qInput');
   if(k==='del')inp.value=inp.value.slice(0,-1);
   else if(k==='ok')submitType();
-  else if(inp.value.length<3)inp.value=(inp.value==='0')?k:inp.value+k;
+  else if(inp.value.length<7)inp.value=(inp.value==='0')?k:inp.value+k;
 }
 function resolve(res){
   Q.locked=true;
@@ -1884,7 +2058,7 @@ function resolve(res){
     $('#qSpk').hidden=!(res==='ok');
   }
   $('#qOkSpk').hidden=!(res==='ok'&&!typing);
-  if(t.topic==='plus'||t.topic==='minus'||t.topic==='zerlegen'){$('#qSpk').hidden=true;$('#qOkSpk').hidden=true;$('#qDrSpk').hidden=true;}else{$('#qDrSpk').hidden=false;}
+  if(isCalc(t.topic)){$('#qSpk').hidden=true;$('#qOkSpk').hidden=true;$('#qDrSpk').hidden=true;}else{$('#qDrSpk').hidden=false;}
   setMon(mood);if(bub)showBub(bub,3000);else hideBub();
   var fb=$('#qFb');fb.className='fb '+cls;fb.hidden=false;
   $('#qFbText').innerHTML=title;
