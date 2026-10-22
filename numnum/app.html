@@ -1762,7 +1762,7 @@ var BEATS=[
   {n:'minimal',bpm:126,sw:.08,K:'x...x...x...x...x...x...x...x...',S:'................c.......c.......',H:'..O...O.o.O...O...O...O.o.O...Oo',hv:[.14,.08],fill:'tom'},
   {n:'hardtechno',bpm:148,sw:0,K:'x...x...x...x.x.x...x...x...x.xx',S:'....c.......c.......c.....c.c...',H:'x.x.O.x.x.x.O.x.x.x.O.x.x.x.O.xx',hv:[.17,.1],fill:'snare'}
 ];
-var lastBeat=-1,ownBeat=null,beatReward=null,openBeatbox=null,beatTeaser=null,beatNews=null;
+var lastBeat=-1,ownBeat=null,beatReward=null,openBeatbox=null,beatTeaser=null,beatNews=null,beatSound=null;
 function drumBeat(delay,only){
   if(only===undefined&&!S.sound)return;
   if(only===undefined&&ownBeat){try{var od=ownBeat(delay);if(od)return od;}catch(e){}}
@@ -1841,6 +1841,8 @@ var CRIT=[
     cv({f0:110,f1:60,d:.55,v:.32,lp:380,vib:40,vd:25,am:34,amd:.7});}
 ];
 var critOrder=[],lastCrit=-1;
+/* Antippen: jedes Monster macht seinen Beatbox-Laut, sonst ein Monstergeräusch */
+function tapSound(st){if(!S.sound)return;if(beatSound&&beatSound(st))return;critterSound();}
 function critterSound(){
   if(!S.sound)return;
   try{
@@ -2304,7 +2306,7 @@ function renderMonRow(){
     var d=el('div','mr '+(i<=cur?'got':'lock')+(i===cur?' now':''));
     var v=el('div','mrv');v.innerHTML=monsterSvg(i);d.appendChild(v);
     d.appendChild(el('small',null,i<=cur?st.name:'Lv '+st.from));
-    if(i<=cur){d.addEventListener('click',function(){critterSound();v.classList.add('hop');setTimeout(function(){v.classList.remove('hop');},600);});}
+    if(i<=cur){d.addEventListener('click',function(){tapSound(i);v.classList.add('hop');setTimeout(function(){v.classList.remove('hop');},600);});}
     else d.setAttribute('aria-label','Noch gesperrt');
     box.appendChild(d);
   });
@@ -2360,10 +2362,10 @@ function renderPick(){
   });
 }
 $('#qMon').addEventListener('click',function(){
-  var m=$('#qMon');critterSound();m.classList.add('hop');setTimeout(function(){m.classList.remove('hop');},600);
+  var m=$('#qMon');tapSound(stageOf(level(S.xp)));m.classList.add('hop');setTimeout(function(){m.classList.remove('hop');},600);
 });
 $('#monster').addEventListener('click',function(){
-  var m=$('#monster');critterSound();
+  var m=$('#monster');tapSound(stageOf(level(S.xp)));
   m.classList.add('hop');setTimeout(function(){m.classList.remove('hop');},600);
 });
 function renderHw(){
@@ -2878,7 +2880,7 @@ $('#tourBtn').addEventListener('click',tour);
   $('#spSpk').addEventListener('click',function(e){e.stopPropagation();stop();later(close,5000);say('Rechnen mit kleinen Monstern. Häppchen für Häppchen.',true);});
   go();
 })();
-window.__zahli={monsterSvg:monsterSvg,S:function(){return S;},Q:function(){return Q;},tasksFor:tasksFor,present:present};
+window.__zahli={beatSound:function(st){return !!(beatSound&&beatSound(st));},monsterSvg:monsterSvg,S:function(){return S;},Q:function(){return Q;},tasksFor:tasksFor,present:present};
 /* ===== Monster-Beatbox: der Beat-Baukasten. Jede Reihe ist ein Monster mit einem Mund-Geräusch. ===== */
 (function(){
   /* Reihen: id und Monsterstufe (Index in STAGES). Eine Reihe geht genau mit dem Level auf, auf dem man ihr Monster erreicht. */
@@ -3241,6 +3243,9 @@ window.__zahli={monsterSvg:monsterSvg,S:function(){return S;},Q:function(){retur
   beatReward=function(){if(earned>=REW.length)return null;var r=REW[earned];earned++;persist();return rewText(r);};
   /* Punkt am Beatbox-Knopf: noch nie geöffnet oder eine neue Belohnung wartet */
   function badge(){bb.classList.toggle('neu',!introSeen||seenRew<earned||lvNews(seenLv,level(S.xp)).length>0);}
+  /* Antippen eines Monsters außerhalb der Beatbox: sein Laut (eigene Reihe oder der Laut, den es mitbringt) */
+  beatSound=function(st){var m=MON.filter(function(x){return x.st===st;})[0];if(m){now(m.id,BLK[m.id][0][0]);return true;}
+    var x=LVS.filter(function(y){return y[2]===st;})[0];if(x){now(x[0],x[1]);return true;}return false;};
   /* Level-up: was dadurch in der Beatbox dazukommt (für die Ergebnisseite) */
   beatNews=function(a,b){var o=lvNews(a,b);badge();return o.length?o:null;};
   /* ---------- Einführung beim ersten Öffnen (später über das Fragezeichen) ---------- */
