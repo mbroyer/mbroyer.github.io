@@ -704,6 +704,18 @@ details.parents .pbody{display:flex;flex-direction:column;gap:14px;padding-top:8
 .tourskip{grid-column:1/-1;justify-self:center;border:0;background:none;color:var(--muted);font:700 .85rem var(--f-body);text-decoration:underline;cursor:pointer}
 .tourlink{align-self:center;border:2px solid var(--line);background:none;color:var(--ink);border-radius:999px;padding:8px 18px;font:700 .9rem var(--f-body);cursor:pointer}
 
+/* Beatbox offen: nur noch die Beatbox, dazu der Drop */
+body.beaton main{display:none}
+body.beaton .beatcard{max-height:none;overflow:visible}
+.dmdrop{height:54px;padding:0 12px;border-radius:16px;border:0;background:var(--xp);color:var(--xp-ink);box-shadow:0 4px 0 var(--xp-edge);font:800 .95rem var(--f-display);letter-spacing:.04em;cursor:pointer}
+.dmdrop.on{animation:dmdropp .3s ease-in-out infinite alternate}
+@keyframes dmdropp{to{transform:scale(1.08)}}
+.beatcard.building .dmmon{animation:dmshiver .12s linear infinite}
+@keyframes dmshiver{0%,100%{transform:translateX(0)}50%{transform:translateX(1.5px) translateY(-1px)}}
+.beatcard.dropped{animation:dmquake .45s cubic-bezier(.3,.7,.4,1)}
+@keyframes dmquake{0%{transform:scale(1.04)}20%{transform:translate(-6px,3px)}40%{transform:translate(5px,-3px)}60%{transform:translate(-3px,2px)}80%{transform:translate(2px,-1px)}100%{transform:none}}
+.dmtitle,.dmsec{white-space:nowrap}
+
 </style>
 <div class="app">
   <!-- Start: Num schnappt sich das Logo -->
@@ -728,7 +740,7 @@ details.parents .pbody{display:flex;flex-direction:column;gap:14px;padding-top:8
           </div>
   </header>
   <div class="themecard" id="restoreCard" hidden><div class="thead">Punktestand wiederherstellen</div><div class="rsrow"><span>Level</span><div class="rsst"><button type="button" id="rsLm">−</button><input id="rsL" class="rsin" type="number" inputmode="numeric" min="1" max="40" value="1"><button type="button" id="rsLp">+</button></div></div><div class="rsrow"><span>Aufgaben gelöst</span><div class="rsst"><button type="button" id="rsAm">−</button><input id="rsA" class="rsin" type="number" inputmode="numeric" min="0" max="9999" value="0"><button type="button" id="rsAp">+</button></div></div><button type="button" class="rsgo" id="rsGo">Setzen</button><div class="rsnote" id="rsNote"></div><div class="thead">Stimme</div><div class="rsrow"><select id="rsV" class="rssel" aria-label="Stimme"></select><button type="button" class="rsvt" id="rsVt" aria-label="Stimme anhören">▶</button></div><div class="rshint">Natürlicher klingt eine Premium-Stimme. iPad: Einstellungen › Bedienungshilfen › Gesprochene Inhalte › Stimmen › Deutsch, dort z. B. „Anna (Premium)“ laden. Danach die App neu laden.</div></div>
-  <div class="themecard beatcard" id="beatCard" hidden><div class="dmhead"><span class="dmtitle">Monster-Beatbox</span><span class="dmhr"><button type="button" class="dmsec" id="dmSec" aria-controls="dmSecList"></button><button type="button" class="dmsec dmhelp" id="dmHelp" aria-label="So geht die Beatbox">?</button></span></div><div class="dmseclist" id="dmSecList" hidden></div><div class="dmpre" id="dmPre"></div><div class="dmnext" id="dmNext"></div><div class="dmgrid" id="dmGrid"></div><div class="dmbar"><button type="button" class="dmplay" id="dmPlay" aria-label="Abspielen"></button><div class="dmtempo"><button type="button" id="dmSlow" aria-label="Langsamer"><svg viewBox="0 0 48 48" aria-hidden="true" style="color:#1d0a14"><circle cx="24" cy="24" r="22" fill="var(--xp)"/><g transform="translate(11 11) scale(1.1)" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="9.5" cy="10.5" r="6"/><path d="M9.5 10.5a2.2 2.2 0 112.2 2.2M2.5 20h16.5a3 3 0 003-3v-4M20 13V8.5"/></g></svg></button><b id="dmBpm">100</b><button type="button" id="dmFast" aria-label="Schneller"><svg viewBox="0 0 48 48" aria-hidden="true" style="color:#1d0a14"><circle cx="24" cy="24" r="22" fill="var(--accent)"/><g transform="translate(11 11) scale(1.1)" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="8.8" cy="6" rx="2.2" ry="4.6"/><ellipse cx="15.2" cy="6" rx="2.2" ry="4.6"/><circle cx="12" cy="15" r="6.3"/><circle cx="9.6" cy="14" r=".9" fill="currentColor"/><circle cx="14.4" cy="14" r=".9" fill="currentColor"/></g></svg></button></div><button type="button" class="dmclr" id="dmClr" aria-label="Leeren"><svg viewBox="0 0 48 48" aria-hidden="true" style="color:#1d0a14"><circle cx="24" cy="24" r="22" fill="var(--ink)"/><g transform="translate(11 11) scale(1.1)" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15.5l9-9a2 2 0 012.8 0l3.2 3.2a2 2 0 010 2.8L12 19H8z"/><path d="M9 11.5l5 5M12 19h8"/></g></svg></button></div></div>
+  <div class="themecard beatcard" id="beatCard" hidden><div class="dmhead"><span class="dmtitle">Monster-Beatbox</span><span class="dmhr"><button type="button" class="dmsec" id="dmSec" aria-controls="dmSecList"></button><button type="button" class="dmsec dmhelp" id="dmHelp" aria-label="So geht die Beatbox">?</button><button type="button" class="dmsec dmhelp" id="dmClose" aria-label="Beatbox schließen">✕</button></span></div><div class="dmseclist" id="dmSecList" hidden></div><div class="dmpre" id="dmPre"></div><div class="dmnext" id="dmNext"></div><div class="dmgrid" id="dmGrid"></div><div class="dmbar"><button type="button" class="dmplay" id="dmPlay" aria-label="Abspielen"></button><button type="button" class="dmdrop" id="dmDrop" aria-label="Drop">DROP</button><div class="dmtempo"><button type="button" id="dmSlow" aria-label="Langsamer"><svg viewBox="0 0 48 48" aria-hidden="true" style="color:#1d0a14"><circle cx="24" cy="24" r="22" fill="var(--xp)"/><g transform="translate(11 11) scale(1.1)" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="9.5" cy="10.5" r="6"/><path d="M9.5 10.5a2.2 2.2 0 112.2 2.2M2.5 20h16.5a3 3 0 003-3v-4M20 13V8.5"/></g></svg></button><b id="dmBpm">100</b><button type="button" id="dmFast" aria-label="Schneller"><svg viewBox="0 0 48 48" aria-hidden="true" style="color:#1d0a14"><circle cx="24" cy="24" r="22" fill="var(--accent)"/><g transform="translate(11 11) scale(1.1)" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="8.8" cy="6" rx="2.2" ry="4.6"/><ellipse cx="15.2" cy="6" rx="2.2" ry="4.6"/><circle cx="12" cy="15" r="6.3"/><circle cx="9.6" cy="14" r=".9" fill="currentColor"/><circle cx="14.4" cy="14" r=".9" fill="currentColor"/></g></svg></button></div><button type="button" class="dmclr" id="dmClr" aria-label="Leeren"><svg viewBox="0 0 48 48" aria-hidden="true" style="color:#1d0a14"><circle cx="24" cy="24" r="22" fill="var(--ink)"/><g transform="translate(11 11) scale(1.1)" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15.5l9-9a2 2 0 012.8 0l3.2 3.2a2 2 0 010 2.8L12 19H8z"/><path d="M9 11.5l5 5M12 19h8"/></g></svg></button></div></div>
   <div class="themecard" id="themeCard" hidden><div class="thead">Farbthema · <b id="themeName"></b></div><div class="swatches" id="swatches"></div></div>
 
   <main>
@@ -2866,7 +2878,7 @@ window.__zahli={monsterSvg:monsterSvg,S:function(){return S;},Q:function(){retur
   var bb=document.getElementById('beatBtn'),bc=document.getElementById('beatCard'),tb=document.getElementById('themeBtn'),tc=document.getElementById('themeCard');
   var grid=document.getElementById('dmGrid'),pre=document.getElementById('dmPre'),playB=document.getElementById('dmPlay'),bpmEl=document.getElementById('dmBpm'),secEl=document.getElementById('dmSec'),secList=document.getElementById('dmSecList');
   var N=16,R=MON.length,pat,bpm,sw=0,found={},own=false,pk=[],lastDice=[];
-  var cells=[],mons=[],playing=false,step=0,nextT=0,timer=0,queue=[],raf=0,shown=-1,dark=false,curPre=-1;
+  var drop=0,cells=[],mons=[],playing=false,step=0,nextT=0,timer=0,queue=[],raf=0,shown=-1,dark=false,curPre=-1;
   function mir(){return (S.klasse|0)<=2;}            /* Klasse 1–2: nur ein halber Takt mit 8 Feldern */
   function vis(){return mir()?8:N;}
   function openRow(r){return level(S.xp)>=MON[r].L;}
@@ -2974,6 +2986,11 @@ window.__zahli={monsterSvg:monsterSvg,S:function(){return S;},Q:function(){retur
     var th=peak*.12,a=0,b=d.length-1;while(a<d.length&&Math.abs(d[a])<th)a++;while(b>a&&Math.abs(d[b])<th*.5)b--;a=Math.max(0,a-sr*.01|0);b=Math.min(d.length,b+sr*.08|0,a+sr*.7|0);
     var out=ac.createBuffer(1,b-a,sr),o=out.getChannelData(0),g=.9/peak;for(i=a;i<b;i++)o[i-a]=d[i]*g;var f=sr*.01|0;for(i=0;i<f;i++){o[i]*=i/f;o[out.length-1-i]*=i/f;}return out;}
   function decodeRec(id){var r=REC[id];if(!r||r.buf||r.busy||!ac)return;r.busy=true;ac.decodeAudioData(b64buf(r.b64)).then(function(buf){r.buf=trimBuf(buf)||buf;r.busy=false;}).catch(function(){r.busy=false;delete REC[id];});}
+  function wavB64(buf){var d=buf.getChannelData(0),st=buf.sampleRate>=44100?2:1,sr=buf.sampleRate/st,n=Math.floor(d.length/st),ab=new ArrayBuffer(44+n*2),v=new DataView(ab),i;
+    function w(o,t){for(var j=0;j<t.length;j++)v.setUint8(o+j,t.charCodeAt(j));}
+    w(0,'RIFF');v.setUint32(4,36+n*2,true);w(8,'WAVE');w(12,'fmt ');v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,1,true);v.setUint32(24,sr,true);v.setUint32(28,sr*2,true);v.setUint16(32,2,true);v.setUint16(34,16,true);w(36,'data');v.setUint32(40,n*2,true);
+    for(i=0;i<n;i++){var x=Math.max(-1,Math.min(1,d[i*st]));v.setInt16(44+i*2,x*32767,true);}
+    var u=new Uint8Array(ab),bin='';for(i=0;i<u.length;i+=8192)bin+=String.fromCharCode.apply(null,u.subarray(i,i+8192));return btoa(bin);}
   function useOwn(id){return !!(REC[id]&&ownV[id]);}
   function playRec(id,t,n){var r=REC[id];if(!r.buf){decodeRec(id);return playSynth(id,t,n);}var s=ac.createBufferSource();s.buffer=r.buf;var k=Math.max(0,blkIx(id,n[1]));s.playbackRate.value=id==='click'?Math.pow(2,(PENT[+n[1]]-60)/12):RATE[k%5];
     var g=vca(t,.003,0,.06,.9*n[3],id==='beat'?B.SAT:B.DUCK);s.connect(g);s.start(t);if(id==='beat')duck(t);send(g,B.REV,.15);}
@@ -2993,15 +3010,24 @@ window.__zahli={monsterSvg:monsterSvg,S:function(){return S;},Q:function(){retur
     hear.onclick=function(){getAC();if(!ac)return;if(ac.state==='suspended')ac.resume();bus();if(REC[id]&&REC[id].buf)playRec(id,ac.currentTime+.02,[0,BLK[id][0][0],2,1]);else decodeRec(id);};
     tog.onclick=function(){ownV[id]=!ownV[id];try{localStorage.setItem('numnum-own-'+id,ownV[id]?'1':'0')}catch(e){}tt();};
     go.onclick=function(){getAC();if(!ac){sayS('Ton geht hier gerade nicht.');return;}if(ac.state==='suspended')ac.resume();bus();
-      if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia||!window.MediaRecorder){sayS('Hier geht das Mikrofon nicht.');return;}
+      if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){sayS('Hier geht das Mikrofon nicht.');return;}
       go.disabled=true;sayS('Mikrofon …');
-      navigator.mediaDevices.getUserMedia({audio:true}).then(function(stream){var mr=new MediaRecorder(stream),chunks=[];mr.ondataavailable=function(e){if(e.data.size)chunks.push(e.data)};
-        mr.onstop=function(){stream.getTracks().forEach(function(tr){tr.stop()});var blob=new Blob(chunks,{type:mr.mimeType||'audio/webm'});var fr=new FileReader();fr.onload=function(){var b64=fr.result.split(',')[1];
-            ac.decodeAudioData(b64buf(b64)).then(function(buf){var tb=trimBuf(buf);if(!tb){sayS('Das war zu leise. Noch mal?');go.disabled=false;return;}REC[id]={b64:b64,buf:tb};ownV[id]=true;
-              try{localStorage.setItem('numnum-rec-'+id,b64);localStorage.setItem('numnum-own-'+id,'1')}catch(e){}sayS('Super! So klingt es:');playRec(id,ac.currentTime+.1,[0,BLK[id][0][0],2,1]);hear.disabled=tog.disabled=false;tt();go.disabled=false;})
-            .catch(function(){sayS('Das hat nicht geklappt. Noch mal?');go.disabled=false;});};fr.readAsDataURL(blob);};
-        sayS('3');setTimeout(function(){sayS('2')},500);setTimeout(function(){sayS('1')},1000);setTimeout(function(){sayS('● Jetzt!',true);mr.start();setTimeout(function(){mr.stop();sayS('…')},1100);},1500);})
-      .catch(function(){sayS('Kein Mikrofon erlaubt.');go.disabled=false;});};
+      /* Aufnahme direkt als Samples über Web Audio statt MediaRecorder: Safari auf dem iPad liefert dort MP4, das sich oft nicht dekodieren lässt */
+      navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:true}}).then(function(stream){
+        if(ac.state!=='running')ac.resume();
+        var src=ac.createMediaStreamSource(stream),proc=ac.createScriptProcessor(2048,1,1),mute=ac.createGain(),parts=[],on=false;mute.gain.value=0;
+        proc.onaudioprocess=function(e){if(on)parts.push(new Float32Array(e.inputBuffer.getChannelData(0)));};
+        src.connect(proc);proc.connect(mute);mute.connect(ac.destination);
+        function fin(){on=false;try{src.disconnect();proc.disconnect();mute.disconnect();}catch(e){}stream.getTracks().forEach(function(tr){tr.stop()});
+          setTimeout(function(){if(ac.state!=='running')ac.resume();},300);
+          var n=0,k,o=0;parts.forEach(function(x){n+=x.length;});if(!n){sayS('Das hat nicht geklappt. Noch mal?');go.disabled=false;return;}
+          var raw=ac.createBuffer(1,n,ac.sampleRate),d=raw.getChannelData(0);for(k=0;k<parts.length;k++){d.set(parts[k],o);o+=parts[k].length;}
+          var tb=trimBuf(raw);if(!tb){sayS('Das war zu leise. Noch mal?');go.disabled=false;return;}
+          var b64=wavB64(tb);REC[id]={b64:b64,buf:tb};ownV[id]=true;
+          try{localStorage.setItem('numnum-rec-'+id,b64);localStorage.setItem('numnum-own-'+id,'1')}catch(e){}
+          sayS('Super! So klingt es:');setTimeout(function(){playRec(id,ac.currentTime+.05,[0,BLK[id][0][0],2,1]);},350);hear.disabled=tog.disabled=false;tt();go.disabled=false;}
+        sayS('3');setTimeout(function(){sayS('2')},500);setTimeout(function(){sayS('1')},1000);setTimeout(function(){sayS('● Jetzt!',true);on=true;setTimeout(function(){fin();sayS('…')},1100);},1500);})
+      .catch(function(){sayS('Kein Mikrofon erlaubt. Bitte in den Einstellungen erlauben.');go.disabled=false;});};
   }
   /* ---------- Geheimnisse ---------- */
   function half(r){var n=vis(),h=n/2,c=pat[r],i,k=0;var all=true;for(i=1;i<n;i++)if(c.charAt(i)!==c.charAt(0))all=false;if(all)return false;for(i=0;i<h;i++){if(c.charAt(i)!==c.charAt(i+h))return false;if(c.charAt(i)!=='0')k++;}return k>=2;}
@@ -3012,7 +3038,7 @@ window.__zahli={monsterSvg:monsterSvg,S:function(){return S;},Q:function(){retur
     {k:'treppe',t:'Treppe!',d:'Flatterling klickt 1 2 3 4 5 der Reihe nach',f:function(){if(!openRow(4))return false;return pat[4].slice(0,vis()).replace(/0/g,'').indexOf('12345')>=0;}},
     {k:'schatten',t:'Schattenmodus!',d:'Drei Reihen ganz voll mit demselben Geräusch',f:function(){var r,k=0;for(r=0;r<R;r++)if(openRow(r)&&full(r))k++;return k>=3;}}];
   function nFound(){return SEC.filter(function(s){return found[s.k]}).length;}
-  function secUI(){secEl.innerHTML=(nFound()?'🔓':'🔒')+' Geheimnisse '+nFound()+'/'+SEC.length;
+  function secUI(){secEl.innerHTML=(nFound()?'🔓':'🔒')+' '+nFound()+'/'+SEC.length;secEl.setAttribute('aria-label','Geheimnisse '+nFound()+' von '+SEC.length);
     secList.innerHTML='';SEC.forEach(function(s){var d=document.createElement('div');d.className='dmsecrow'+(found[s.k]?' on':'');d.innerHTML=found[s.k]?'<b>'+s.t+'</b><small>'+s.d+'</small>':'<b>???</b><small>Noch nicht gefunden</small>';secList.appendChild(d);});}
   function checkSecrets(){SEC.forEach(function(s){var on=s.f();if(on&&!s.now){s.now=true;at(nextT,function(){celebrateSec(s)});}else if(!on)s.now=false;});}
   function at(t,f){setTimeout(f,Math.max(0,(t-ac.currentTime)*1000));}
@@ -3099,12 +3125,30 @@ window.__zahli={monsterSvg:monsterSvg,S:function(){return S;},Q:function(){retur
     var six=st(),n=vis();
     while(nextT<ac.currentTime+.15){
       var s=step,t=nextT+((s%4===2)?six*sw:0),r,hits=[];
-      if(s===0)checkSecrets();
-      for(r=0;r<R;r++)if(openRow(r)){var w=pat[r].charAt(s);if(w!=='0'){play(MON[r].id,t,[s,w,2,1]);hits.push([r,w]);}}
+      if(s===0){checkSecrets();if(drop===1){drop=2;dropBuild(t,n*six);}else if(drop===2){drop=0;dropBoom(t);}}
+      /* Drop: ein Takt Anlauf nur mit Hi-Hat und immer lauterem Trommelwirbel, die letzten zwei Schläge Stille, dann der Knall */
+      if(drop===2){if(s<n-2){play('snare',t,[s,'p',2,.2+.8*s/n]);if(openRow(0)&&pat[0].charAt(s)!=='0')play('hats',t,[s,pat[0].charAt(s),2,1]);hits.push([3,'p']);}}
+      else for(r=0;r<R;r++)if(openRow(r)){var w=pat[r].charAt(s);if(w!=='0'){play(MON[r].id,t,[s,w,2,1]);hits.push([r,w]);}}
       queue.push({s:s,t:t,h:hits});
       step=(step+1)%n;nextT+=six;
     }
   }
+  function dropBuild(t,bar){
+    var f=B.FILT.frequency,top=dark?1100:20000;f.cancelScheduledValues(t);f.setValueAtTime(320,t);f.exponentialRampToValueAtTime(top,t+bar*.9);
+    var sr=ac.createBufferSource();sr.buffer=B.NZ;sr.loop=true;var bp=ac.createBiquadFilter();bp.type='bandpass';bp.Q.value=3;bp.frequency.setValueAtTime(400,t);bp.frequency.exponentialRampToValueAtTime(7000,t+bar*.85);
+    var g=ac.createGain();g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.35,t+bar*.85);g.gain.exponentialRampToValueAtTime(.0001,t+bar*.88);sr.connect(bp);bp.connect(g);g.connect(B.OUT);send(g,B.REV,.3);sr.start(t);sr.stop(t+bar);
+    at(t,function(){bc.classList.add('building');});
+  }
+  function dropBoom(t){
+    play('beat',t,[0,'b',2,1]);play('snare',t,[0,'s',2,1]);
+    var g=vca(t,.005,.15,.9,.9,B.SAT),o=osc('sine',80,t,t+1.1,g);o.frequency.exponentialRampToValueAtTime(30,t+.9);
+    at(t,function(){bc.classList.remove('building');dropB.classList.remove('on');bc.classList.remove('dropped');void bc.offsetWidth;bc.classList.add('dropped');
+      if(!dark){mood('joy');setTimeout(function(){mood(null)},1600);}
+      var cols=['#ff4f9a','#ffc21f','#6fe0d0','#b8f56a','#a98bff'],i;for(i=0;i<24;i++){var c=document.createElement('i');c.className='dmconf';c.style.left=(Math.random()*100)+'%';c.style.background=cols[i%5];c.style.setProperty('--dx',(Math.random()*120-60)+'px');c.style.setProperty('--r',(Math.random()*720)+'deg');bc.appendChild(c);setTimeout(function(c){c.remove()}.bind(null,c),2000);}});
+  }
+  function dropReset(){drop=0;bc.classList.remove('building');if(dropB)dropB.classList.remove('on');if(B){var f=B.FILT.frequency,t=ac.currentTime;f.cancelScheduledValues(t);f.setValueAtTime(dark?1100:20000,t);}}
+  var dropB=document.getElementById('dmDrop');
+  dropB.addEventListener('click',function(){if(drop)return;if(!playing)setPlay(true);if(!playing)return;drop=1;dropB.classList.add('on');});
   function setPlay(on){
     if(on===playing)return;
     if(on){
@@ -3112,7 +3156,7 @@ window.__zahli={monsterSvg:monsterSvg,S:function(){return S;},Q:function(){retur
       playing=true;step=0;nextT=ac.currentTime+.06;queue=[];sched();timer=setInterval(sched,25);raf=requestAnimationFrame(loop);
       bc.classList.add('live');bc.style.setProperty('--beat',(120/(dark?bpm*.8:bpm))+'s');
     }else{
-      playing=false;clearInterval(timer);cancelAnimationFrame(raf);queue=[];head(-1);bc.classList.remove('live');
+      playing=false;dropReset();clearInterval(timer);cancelAnimationFrame(raf);queue=[];head(-1);bc.classList.remove('live');
     }
     playB.innerHTML=icoSvg(on?'stop':'play');playB.classList.toggle('on',on);
   }
@@ -3197,8 +3241,9 @@ window.__zahli={monsterSvg:monsterSvg,S:function(){return S;},Q:function(){retur
   secEl.addEventListener('click',function(){secList.hidden=!secList.hidden;});
   document.getElementById('dmHelp').addEventListener('click',intro);
   build();paintPre();playB.innerHTML=icoSvg('play');badge();
-  function closeBeat(){bc.hidden=true;bb.setAttribute('aria-expanded','false');setPlay(false);}
-  bb.addEventListener('click',function(){var o=bc.hidden;if(o){build();paintPre();bc.hidden=false;bb.setAttribute('aria-expanded','true');tc.hidden=true;tb.setAttribute('aria-expanded','false');
+  function closeBeat(){bc.hidden=true;bb.setAttribute('aria-expanded','false');setPlay(false);document.body.classList.remove('beaton');}
+  document.getElementById('dmClose').addEventListener('click',closeBeat);
+  bb.addEventListener('click',function(){var o=bc.hidden;if(o){build();paintPre();bc.hidden=false;document.body.classList.add('beaton');window.scrollTo(0,0);bb.setAttribute('aria-expanded','true');tc.hidden=true;tb.setAttribute('aria-expanded','false');
     if(!introSeen)intro();else if(seenRew<earned){var t=rewText(REW[earned-1]);seenRew=earned;persist();hint('🎁 '+t);}}else closeBeat();});
   tb.addEventListener('click',function(){if(!bc.hidden)closeBeat();});
   var hb=document.getElementById('homeBtn');if(hb)hb.addEventListener('click',function(){if(!bc.hidden)closeBeat();});
