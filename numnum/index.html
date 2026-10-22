@@ -87,15 +87,22 @@ body{flex-direction:column;justify-content:flex-start;gap:48px;padding:40px 16px
     ls(STORE,code);
     return fetch(APP).then(function(r){if(!r.ok)throw new Error('net');return r.text();},function(){throw new Error('net');}).then(function(html){
       var cfg=JSON.stringify({w:WORKER,c:code,k:SAVE,lk:LK,tk:TK,push:lts>rts&&!!ls(LK)});
-      var shim='<script>(function(C){var S=Storage.prototype,g=S.getItem,st=S.setItem,rm=S.removeItem,t=null;'+
+      // Hochladen beim Verlassen der App und sonst höchstens alle 5 min. Lokal wird weiter nach jeder Antwort gespeichert.
+      // So bleibt NumNum weit unter dem täglichen Schreiblimit von Workers KV (früher: ein Schreibvorgang pro Antwort).
+      var shim='<script>(function(C){var S=Storage.prototype,g=S.getItem,st=S.setItem,rm=S.removeItem,t=null,mt=null,busy=false,again=false,last=C.push?null:g.call(localStorage,C.lk);'+
         'function map(s,k){return s===window.localStorage&&k===C.k?C.lk:k;}'+
-        'function push(){t=null;var v=g.call(localStorage,C.lk);if(!v)return;try{fetch(C.w+"/stand/"+encodeURIComponent(C.c),{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({state:JSON.parse(v),ts:+g.call(localStorage,C.tk)||Date.now()}),keepalive:true}).catch(function(){});}catch(_){}}'+
-        'function later(){if(!t)t=setTimeout(push,4000);}'+
+        'function stop(){clearTimeout(t);clearTimeout(mt);t=mt=null;}'+
+        'function push(leaving){stop();var v=g.call(localStorage,C.lk);if(!v||v===last)return;if(busy){again=true;return;}var b;try{b=JSON.stringify({state:JSON.parse(v),ts:+g.call(localStorage,C.tk)||Date.now()});}catch(_){return;}busy=true;'+
+          'fetch(C.w+"/stand/"+encodeURIComponent(C.c),{method:"PUT",headers:{"Content-Type":"application/json"},body:b,keepalive:!!leaving&&b.length<60000}).then(function(r){if(!r.ok&&r.status!==409)throw 0;last=v;},function(){throw 0;})'+
+          '.catch(function(){if(!t)t=setTimeout(push,60000);}).then(function(){busy=false;if(again){again=false;later();}});}'+
+        'function later(){if(!mt)mt=setTimeout(push,300000);}'+
         'S.getItem=function(k){return g.call(this,map(this,k));};'+
         'S.removeItem=function(k){return rm.call(this,map(this,k));};'+
         'S.setItem=function(k,v){var m=map(this,k);st.call(this,m,v);if(m===C.lk){st.call(this,C.tk,String(Date.now()));later();}};'+
-        'addEventListener("pagehide",function(){if(t){clearTimeout(t);push();}});'+
-        'document.addEventListener("visibilitychange",function(){if(document.hidden&&t){clearTimeout(t);push();}});'+
+        'function pending(){return t||mt||g.call(localStorage,C.lk)!==last;}'+
+        'addEventListener("pagehide",function(){if(pending())push(true);});'+
+        'document.addEventListener("visibilitychange",function(){if(document.hidden&&pending())push(true);});'+
+        'addEventListener("online",function(){if(pending())push();});'+
         'if(C.push)push();})('+cfg+');<\/script>';
       html=html.replace('<head>','<head>\n'+shim);
       document.open();document.write(html);document.close();
