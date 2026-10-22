@@ -716,6 +716,13 @@ body.beaton .beatcard{max-height:none;overflow:visible}
 @keyframes dmquake{0%{transform:scale(1.04)}20%{transform:translate(-6px,3px)}40%{transform:translate(5px,-3px)}60%{transform:translate(-3px,2px)}80%{transform:translate(2px,-1px)}100%{transform:none}}
 .dmtitle,.dmsec{white-space:nowrap}
 
+/* Richtig: Antwort fliegt in die Karte, Punkte poppen auf */
+.qhit{color:var(--xp);display:inline-block}
+.qhitline{font:800 2.2rem var(--f-display);text-align:center;margin-top:6px}
+.qfly{position:fixed;z-index:40;font:800 2.2rem var(--f-display);color:var(--xp);pointer-events:none}
+.ptpop{position:fixed;z-index:45;font:800 2.6rem var(--f-display);color:var(--xp);pointer-events:none;white-space:nowrap;text-shadow:0 3px 0 rgba(0,0,0,.25);display:flex;align-items:center;gap:6px}
+.ptpop .ico{width:1em;height:1em}.ptpop .ptc{font-size:.7em;color:var(--accent);display:inline-flex;align-items:center}
+
 </style>
 <div class="app">
   <!-- Start: Num schnappt sich das Logo -->
@@ -1755,7 +1762,7 @@ var BEATS=[
   {n:'minimal',bpm:126,sw:.08,K:'x...x...x...x...x...x...x...x...',S:'................c.......c.......',H:'..O...O.o.O...O...O...O.o.O...Oo',hv:[.14,.08],fill:'tom'},
   {n:'hardtechno',bpm:148,sw:0,K:'x...x...x...x.x.x...x...x...x.xx',S:'....c.......c.......c.....c.c...',H:'x.x.O.x.x.x.O.x.x.x.O.x.x.x.O.xx',hv:[.17,.1],fill:'snare'}
 ];
-var lastBeat=-1,ownBeat=null,beatReward=null,openBeatbox=null,beatTeaser=null;
+var lastBeat=-1,ownBeat=null,beatReward=null,openBeatbox=null,beatTeaser=null,beatNews=null;
 function drumBeat(delay,only){
   if(only===undefined&&!S.sound)return;
   if(only===undefined&&ownBeat){try{var od=ownBeat(delay);if(od)return od;}catch(e){}}
@@ -2458,14 +2465,33 @@ function biteClip(fr){var y=fr*100,pts=['0% 100%','0% '+y+'%'];for(var i=0;i<=8;
 function qCrumbs(x,y,n){for(var i=0;i<n;i++){var c=el('i','qcrumb');var s=8+Math.random()*12;c.style.width=c.style.height=s+'px';c.style.left=(x-s/2)+'px';c.style.top=(y-s/2)+'px';if(i%3===0)c.style.background='var(--accent)';if(i%3===1)c.style.background='#fff';document.body.appendChild(c);
   var ang=-Math.PI+Math.random()*Math.PI,d=40+Math.random()*80;
   c.animate([{transform:'translate(0,0)',opacity:1},{transform:'translate('+Math.cos(ang)*d+'px,'+(Math.sin(ang)*d+80)+'px) scale(.3)',opacity:0}],{duration:800+Math.random()*400,easing:'cubic-bezier(.2,.6,.5,1)'}).onfinish=(function(c){return function(){c.remove();};})(c);}}
-function eatCleanup(){eatT.forEach(clearTimeout);eatT=[];var m=$('#qMon'),c=$('.qcard');
+function eatCleanup(keep){eatT.forEach(clearTimeout);eatT=[];var m=$('#qMon'),c=$('.qcard');
   if(m){try{m.getAnimations().forEach(function(a){a.cancel();});}catch(e){}m.style.transform='';}
   if(c){c.classList.remove('qeaten');c.style.clipPath='';}
-  Array.prototype.forEach.call(document.querySelectorAll('.numtxt,.qcrumb,.qflash'),function(e){e.remove();});}
-function eatCard(after){
+  Array.prototype.forEach.call(document.querySelectorAll(keep?'.numtxt,.qcrumb,.qflash':'.numtxt,.qcrumb,.qflash,.qhitline,.qfly,.ptpop'),function(e){e.remove();});}
+function answerIntoCard(then){
+  var c=$('.qcard'),w=$('#qWord'),a=fmt(Q.ans),src=Q.mode==='type'?$('#qInput'):$('#qOpts .opt[data-v="'+Q.ans+'"]');
+  var r0=src&&src.offsetParent?src.getBoundingClientRect():null,hit='<b class="qhit">'+a+'</b>',tg;
+  if(!w.hidden&&w.textContent.indexOf('?')>=0){w.innerHTML=w.textContent.replace(/[&<>]/g,function(ch){return {'&':'&amp;','<':'&lt;','>':'&gt;'}[ch];}).split('?').join(hit);}
+  else{var ln=el('div','qhitline');ln.innerHTML=hit;c.appendChild(ln);}
+  $('#qType').hidden=true;$('#qOpts').hidden=true;
+  tg=c.querySelector('.qhit');
+  if(!r0||!tg||!tg.animate||matchMedia('(prefers-reduced-motion: reduce)').matches){then();return;}
+  var r1=tg.getBoundingClientRect(),fly=el('div','qfly',a);document.body.appendChild(fly);
+  fly.style.left=(r0.left+r0.width/2)+'px';fly.style.top=(r0.top+r0.height/2)+'px';tg.style.opacity='0';
+  fly.animate([{transform:'translate(-50%,-50%) scale(1)'},{transform:'translate(calc(-50% + '+(r1.left+r1.width/2-r0.left-r0.width/2)+'px),calc(-50% + '+(r1.top+r1.height/2-r0.top-r0.height/2)+'px)) scale(.9)'}],{duration:320,easing:'cubic-bezier(.4,0,.3,1)',fill:'forwards'}).onfinish=function(){fly.remove();tg.style.opacity='';tg.animate([{transform:'scale(1.4)'},{transform:'scale(1)'}],{duration:220,easing:'cubic-bezier(.3,1.4,.5,1)'});eatT.push(setTimeout(then,260));};
+}
+function pointsPop(gain,combo){
+  var c=$('.qcard'),r=c?c.getBoundingClientRect():{left:innerWidth/2,width:0,top:innerHeight/3,height:0};
+  var p=el('div','ptpop');p.innerHTML='+'+gain+' '+icoSvg('star')+(combo>=3?' <span class="ptc">'+icoSvg('flame')+combo+'</span>':'');
+  p.style.left=(r.left+r.width/2)+'px';p.style.top=(r.top+r.height/2)+'px';document.body.appendChild(p);
+  if(!p.animate){setTimeout(function(){p.remove();},900);return;}
+  p.animate([{transform:'translate(-50%,-50%) scale(.3)',opacity:0},{transform:'translate(-50%,-50%) scale(1.25)',opacity:1,offset:.25},{transform:'translate(-50%,-50%) scale(1)',opacity:1,offset:.6},{transform:'translate(-50%,-110%) scale(.9)',opacity:0}],{duration:1300,easing:"ease-out"}).onfinish=function(){p.remove();};
+}
+function eatCard(after,eaten){
   var c=$('.qcard'),m=$('#qMon');
   if(!c||!m||!m.animate||matchMedia('(prefers-reduced-motion: reduce)').matches){if(after)after();return;}
-  eatCleanup();
+  eatCleanup(true);
   var SC=1.3,DUR=350,ARC=110,CHEW=700,K=.06,AFTER=150;
   /* Abwechslung: mal ein Haps, mal zwei, mal vier; nie zweimal hintereinander gleich */
   var opts=[1,2,4].filter(function(n){return n!==eatCard.last;}),BITES=opts[Math.floor(Math.random()*opts.length)];eatCard.last=BITES;
@@ -2480,7 +2506,7 @@ function eatCard(after){
       if(k<BITES){c.style.clipPath=biteClip(fr);setMon(k%2?'chew':'chomp');crunch();qCrumbs(cr.left+cr.width*(.3+Math.random()*.4),cr.top+cr.height*fr,6);
         m.animate([{transform:at(0)},{transform:'translate('+dx+'px,'+(dy+cr.height*fr*.5)+'px) scale('+(SC*1.08)+','+(SC*.92)+')'},{transform:at(cr.height*fr*.4)}],{duration:GAP,easing:'ease',fill:'forwards'});
         eatT.push(setTimeout(bite,GAP));}
-      else{c.classList.add('qeaten');c.style.clipPath='';var bx=cr.left+cr.width/2,by=cr.top+cr.height*.7;
+      else{c.classList.add('qeaten');c.style.clipPath='';if(eaten)eaten();var bx=cr.left+cr.width/2,by=cr.top+cr.height*.7;
         setMon('chew');crunch();qCrumbs(bx,by,10);
         var nm=el('div','numtxt','NUM!');nm.style.left=(bx+10)+'px';nm.style.top=(by-40)+'px';document.body.appendChild(nm);
         nm.animate([{transform:'scale(.4) rotate(-10deg)',opacity:0},{transform:'scale(1.3) rotate(6deg)',opacity:1,offset:.3},{transform:'scale(1) translateY(-30px)',opacity:0}],{duration:900,easing:'ease-out'}).onfinish=function(){nm.remove();};
@@ -2511,7 +2537,7 @@ function startQuiz(tp,R,wobOnly){
   nextQ();
   if(S.last!==today())setTimeout(function(){if(Q&&!Q.locked&&Q.asked===0){setMon('wave');showBub('Hallo! Los geht\'s!',2600);}},500);
 }
-var AUTO_WEITER=1500;
+var AUTO_WEITER=250;
 function stopAuto(){if(Q&&Q.autoT){clearTimeout(Q.autoT);Q.autoT=0;$('#qNext').hidden=false;}}
 function nextQ(){
   if(Q.autoT){clearTimeout(Q.autoT);Q.autoT=0;}
@@ -2628,8 +2654,9 @@ function resolve(res){
   /* richtig: Punkte und Weiter erscheinen dort, wo eben die Antwort stand */
   /* richtig: es geht nach kurzer Pause von selbst weiter; Weiter-Knopf nur bei falsch oder wenn das Kind sich die Lösung vorlesen lässt */
   var q=Q;$('#qNext').hidden=res==='ok';
-  var reveal=function(){if(res==='ok'){$('#qType').hidden=true;$('#qOpts').hidden=true;q.autoT=setTimeout(function(){q.autoT=0;if(Q===q&&q.locked)nextQ();},AUTO_WEITER);}fb.hidden=false;try{$('#qNext').focus({preventScroll:true});}catch(e){}setTimeout(function(){try{fb.scrollIntoView({block:'nearest',behavior:'smooth'});}catch(e){}},60);};
-  if(res==='ok')eatCard(reveal);else reveal();
+  /* richtig: die Antwort wandert in die Karte, Num frisst beides, die Punkte poppen kurz auf, dann gleich die nächste Aufgabe */
+  var reveal=function(){if(res==='ok'){q.autoT=setTimeout(function(){q.autoT=0;if(Q===q&&q.locked)nextQ();},AUTO_WEITER);return;}fb.hidden=false;try{$('#qNext').focus({preventScroll:true});}catch(e){}setTimeout(function(){try{fb.scrollIntoView({block:'nearest',behavior:'smooth'});}catch(e){}},60);};
+  if(res==='ok')answerIntoCard(function(){eatCard(reveal,function(){pointsPop(gain,Q.combo);});});else reveal();
   $('#qFbText').innerHTML=title;
   $('#qFbSub').innerHTML=sub;$('#qFbSub').hidden=!sub;
   var df=$('#qDiff');
@@ -2681,6 +2708,7 @@ function finish(){
     }
     lu.appendChild(el('div',null,evo?'Num wird zum '+STAGES[stageOf(L)].name+'!':'Level-up! Du bist jetzt Level '+L+': '+titleFor(L)));
     if(evo)lu.appendChild(el('div','evs','Level '+L+': '+titleFor(L)));
+    var bn=beatNews?beatNews(Q.lvl0,L):null;if(bn)bn.forEach(function(t){lu.appendChild(el('div','evs evbeat','🎵 '+t));});
     beep([523,659,784,1047]);
     if(evo)setTimeout(function(){monsterSound(STAGES[stageOf(L)].snd);},3300);
   }else{lu.hidden=true;if(stars===3)beep([523,659,784]);}
@@ -2853,10 +2881,13 @@ $('#tourBtn').addEventListener('click',tour);
 window.__zahli={monsterSvg:monsterSvg,S:function(){return S;},Q:function(){return Q;},tasksFor:tasksFor,present:present};
 /* ===== Monster-Beatbox: der Beat-Baukasten. Jede Reihe ist ein Monster mit einem Mund-Geräusch. ===== */
 (function(){
-  /* Reihen: id, Monsterstufe (Index in STAGES), ab welchem Level. Die ersten beiden gibt es immer. */
+  /* Reihen: id und Monsterstufe (Index in STAGES). Eine Reihe geht genau mit dem Level auf, auf dem man ihr Monster erreicht. */
   var MON=[
-    {id:'hats',st:1,L:1},{id:'beat',st:2,L:1},{id:'clap',st:3,L:4},{id:'snare',st:4,L:5},
-    {id:'click',st:5,L:6},{id:'toms',st:8,L:11},{id:'fx',st:12,L:20}];
+    {id:'hats',st:1},{id:'beat',st:0},{id:'clap',st:3},{id:'snare',st:4},
+    {id:'click',st:5},{id:'toms',st:8},{id:'fx',st:12}];
+  MON.forEach(function(m){m.L=STAGES[m.st].from;});
+  /* Monster ohne eigene Reihe bringen einem Mitspieler einen neuen Laut bei, sobald man sie erreicht: [Reihe, Laut, Monsterstufe] */
+  var LVS=[['hats','o',2],['snare','k',6],['snare','s',7],['toms','p',9],['toms','t',10],['toms','c',11]];
   var BLK={hats:[['x','ts'],['o','tsss'],['k','tk']],beat:[['b','B']],clap:[['c','tschak']],snare:[['p','Pf'],['k','K'],['s','Pssh']],
     click:[['1','1'],['2','2'],['3','3'],['4','4'],['5','5']],toms:[['b','Bumm'],['p','Zack'],['t','Dum'],['c','Tsching']],fx:[['m','dum'],['n','dun'],['s','Pssh'],['l','brrr'],['z','zipp']]};
   var SYL={hats:{x:'ts',o:'tsss',k:'tk'},beat:{b:'B'},clap:{c:'tschak'},snare:{p:'Pf!',k:'K!',s:'Pssh'},click:{1:'tok',2:'tok',3:'tok',4:'tok',5:'tok'},toms:{b:'Bumm',p:'Zack',t:'Dum',c:'Tsching'},fx:{s:'Pssh',m:'dum',n:'dun',l:'brrr',z:'zipp'}};
@@ -2864,11 +2895,17 @@ window.__zahli={monsterSvg:monsterSvg,S:function(){return S;},Q:function(){retur
   var COMMON={click:['1..3..5...4.3...','1.3.5.3.1.3.5.4.','5..4..3.1..3..5.'],toms:['b...p...b...p...','b.......t.t.c...','b..b....p...tt..'],fx:['s.......m.m.n.n.','s...m...s.n.lll.','z.......s...m.n.']};
   var NM={boombap:'Boom Bap',house:'House',funk:'Funk',rock:'Rock',techno:'Techno',trap:'Trap',disco:'Disco',bossa:'Bossa',dnb:"Drum'n'Bass",shuffle:'Shuffle',afro:'Afro',minimal:'Minimal',hardtechno:'Hardtechno'};
   /* Belohnungen: jede Runde mit 3 Sternen schaltet die nächste frei (Vorlage oder neuer Laut) */
-  var REW=[['pre',3],['snd','hats','o'],['pre',4],['snd','snare','k'],['pre',5],['snd','hats','k'],['pre',6],['snd','snare','s'],['pre',7],['snd','toms','p'],['pre',8],['snd','toms','t'],['pre',9],['snd','toms','c'],['pre',10],['snd','fx','n'],['pre',11],['snd','fx','l'],['pre',12],['snd','fx','z']];
-  var earned=0,introSeen=false,seenRew=0;
+  var REW=[['pre',3],['pre',4],['snd','hats','k'],['pre',5],['pre',6],['pre',7],['snd','fx','n'],['pre',8],['pre',9],['snd','fx','l'],['pre',10],['pre',11],['snd','fx','z'],['pre',12]];
+  var earned=0,introSeen=false,seenRew=0,seenLv=0;
   function preOk(i){var k;if(i<3)return true;for(k=0;k<earned&&k<REW.length;k++)if(REW[k][0]==='pre'&&REW[k][1]===i)return true;return false;}
-  function sndOk(id,w){var k;for(k=0;k<REW.length;k++)if(REW[k][0]==='snd'&&REW[k][1]===id&&REW[k][2]===w)return k<earned;return true;}
+  function sndOk(id,w){var k;for(k=0;k<LVS.length;k++)if(LVS[k][0]===id&&LVS[k][1]===w)return level(S.xp)>=STAGES[LVS[k][2]].from;
+    for(k=0;k<REW.length;k++)if(REW[k][0]==='snd'&&REW[k][1]===id&&REW[k][2]===w)return k<earned;return true;}
   function rewText(r){if(!r)return '';if(r[0]==='pre')return 'Neue Vorlage: '+(NM[BEATS[r[1]].n]||BEATS[r[1]].n);var m=MON.filter(function(x){return x.id===r[1]})[0];return STAGES[m.st].name+' kann jetzt „'+lbl(r[1],r[2])+'“';}
+  /* Was zwischen zwei Levels in der Beatbox dazukommt: neue Reihen und neue Laute */
+  function lvNews(a,b){var o=[];
+    MON.forEach(function(m){if(m.L>a&&m.L<=b)o.push(STAGES[m.st].name+' spielt jetzt in der Beatbox mit: „'+BLK[m.id][0][1]+'“');});
+    LVS.forEach(function(x){var L=STAGES[x[2]].from;if(L>a&&L<=b){var m=MON.filter(function(y){return y.id===x[0]})[0];o.push(STAGES[x[2]].name+' bringt '+STAGES[m.st].name+' „'+lbl(x[0],x[1])+'“ bei');}});
+    return o;}
   function sndFix(id,str){return str.split('').map(function(ch){return ch==='0'||sndOk(id,ch)?ch:BLK[id][0][0];}).join('');}
   var PENT=[0,57,60,62,64,67],RATE=[1,.84,1.19,1.33,1.5];
   function hz(m){return 440*Math.pow(2,(m-69)/12);}
@@ -2924,7 +2961,8 @@ window.__zahli={monsterSvg:monsterSvg,S:function(){return S;},Q:function(){retur
   if(S.pat&&S.pat.v===2&&clean(S.pat.g)){pat=clean(S.pat.g);bpm=Math.max(60,Math.min(180,S.pat.bpm|0||100));sw=+S.pat.sw||0;found=(S.pat.f&&typeof S.pat.f==='object')?S.pat.f:{};own=!!S.pat.own;earned=Math.max(0,Math.min(REW.length,S.pat.e|0));introSeen=!!S.pat.i;seenRew=Math.min(earned,S.pat.n==null?earned:S.pat.n|0);}
   else if(migrate()){S.pat={v:2,g:pat,bpm:bpm,sw:sw,f:found,own:own,e:0};save();}
   else{pat=empty();fromBeat(0);}
-  function persist(){S.pat={v:2,g:pat,bpm:bpm,sw:sw,f:found,own:own,e:earned,i:introSeen,n:seenRew};save();badge();}
+  seenLv=S.pat&&S.pat.l?S.pat.l|0:level(S.xp);
+  function persist(){S.pat={v:2,g:pat,bpm:bpm,sw:sw,f:found,own:own,e:earned,i:introSeen,n:seenRew,l:seenLv};save();badge();}
   function anyOn(){var r,s;for(r=0;r<R;r++)if(openRow(r))for(s=0;s<vis();s++)if(pat[r].charAt(s)!=='0')return true;return false;}
 
   /* ---------- Klang: Mund-Geräusche (Luft, Lippen, Zunge) über einen eigenen Bus in den App-Ausgang ---------- */
@@ -3033,7 +3071,7 @@ window.__zahli={monsterSvg:monsterSvg,S:function(){return S;},Q:function(){retur
   function half(r){var n=vis(),h=n/2,c=pat[r],i,k=0;var all=true;for(i=1;i<n;i++)if(c.charAt(i)!==c.charAt(0))all=false;if(all)return false;for(i=0;i<h;i++){if(c.charAt(i)!==c.charAt(i+h))return false;if(c.charAt(i)!=='0')k++;}return k>=2;}
   function full(r){var n=vis(),c=pat[r],i;if(c.charAt(0)==='0')return false;for(i=1;i<n;i++)if(c.charAt(i)!==c.charAt(0))return false;return true;}
   var SEC=[
-    {k:'groove',t:'Boots and Cats!',d:'Schlüpfling auf 1 und 3, Stachling auf 2 und 4',f:function(){if(!openRow(3))return false;var q=vis()/4,b=pat[1],s=pat[3];return b.charAt(0)!=='0'&&b.charAt(2*q)!=='0'&&s.charAt(q)!=='0'&&s.charAt(3*q)!=='0';}},
+    {k:'groove',t:'Boots and Cats!',d:'Ei auf 1 und 3, Stachling auf 2 und 4',f:function(){if(!openRow(3))return false;var q=vis()/4,b=pat[1],s=pat[3];return b.charAt(0)!=='0'&&b.charAt(2*q)!=='0'&&s.charAt(q)!=='0'&&s.charAt(3*q)!=='0';}},
     {k:'echo',t:'Echo!',d:'Zwei Reihen, deren zweite Hälfte die erste wiederholt',f:function(){var r,k=0;for(r=0;r<R;r++)if(openRow(r)&&half(r))k++;return k>=2;}},
     {k:'treppe',t:'Treppe!',d:'Flatterling klickt 1 2 3 4 5 der Reihe nach',f:function(){if(!openRow(4))return false;return pat[4].slice(0,vis()).replace(/0/g,'').indexOf('12345')>=0;}},
     {k:'schatten',t:'Schattenmodus!',d:'Drei Reihen ganz voll mit demselben Geräusch',f:function(){var r,k=0;for(r=0;r<R;r++)if(openRow(r)&&full(r))k++;return k>=3;}}];
@@ -3197,12 +3235,14 @@ window.__zahli={monsterSvg:monsterSvg,S:function(){return S;},Q:function(){retur
     pre.appendChild(b);
   });
   function nextText(){if(earned>=REW.length)return 'Alles freigeschaltet!';var k=0,i;for(i=earned;i<REW.length;i++){k++;if(REW[i][0]==='pre')break;}return 'Noch '+k+(k===1?' Runde':' Runden')+' mit 3 Sternen';}
-  function hint(t){var h=document.createElement('div');h.className='dmbanner small';h.textContent=t;bc.insertBefore(h,pre);setTimeout(function(){h.remove()},1600);}
+  function hint(t){var h=document.createElement('div');h.className='dmbanner small';h.textContent=t;bc.insertBefore(h,pre);setTimeout(function(){h.remove()},Math.min(6000,1600+t.length*40));}
   function paintPre(){var k=pre.children,j;for(j=0;j<k.length;j++)k[j].classList.toggle('lock',!preOk(j));var nx=document.getElementById('dmNext');nx.textContent=earned>=REW.length?'🎁 Alles freigeschaltet':'🎁 Nächste Belohnung nach einer Runde mit 3 Sternen: '+rewText(REW[earned]);}
   /* Nach einer Runde mit 3 Sternen: die nächste Belohnung */
   beatReward=function(){if(earned>=REW.length)return null;var r=REW[earned];earned++;persist();return rewText(r);};
   /* Punkt am Beatbox-Knopf: noch nie geöffnet oder eine neue Belohnung wartet */
-  function badge(){bb.classList.toggle('neu',!introSeen||seenRew<earned);}
+  function badge(){bb.classList.toggle('neu',!introSeen||seenRew<earned||lvNews(seenLv,level(S.xp)).length>0);}
+  /* Level-up: was dadurch in der Beatbox dazukommt (für die Ergebnisseite) */
+  beatNews=function(a,b){var o=lvNews(a,b);badge();return o.length?o:null;};
   /* ---------- Einführung beim ersten Öffnen (später über das Fragezeichen) ---------- */
   var INTRO=[
     {t:'Deine Monster machen Musik!',s:'Jedes Monster macht ein Geräusch mit dem Mund. Tipp auf ein Monster, dann hörst du es.',v:'mons'},
@@ -3216,7 +3256,7 @@ window.__zahli={monsterSvg:monsterSvg,S:function(){return S;},Q:function(){retur
   function intro(){
     var old=bc.querySelector('.dmintro');if(old)old.remove();setPlay(false);
     var ov=document.createElement('div');ov.className='dmintro';ov.setAttribute('role','dialog');ov.setAttribute('aria-label','So geht die Monster-Beatbox');bc.appendChild(ov);var i=0;
-    function done(){ov.remove();introSeen=true;seenRew=earned;if(!anyOn()){fromBeat(0);curPre=0;}persist();paint();setPlay(true);}
+    function done(){ov.remove();introSeen=true;seenRew=earned;seenLv=level(S.xp);if(!anyOn()){fromBeat(0);curPre=0;}persist();paint();setPlay(true);}
     function step(){var I=INTRO[i],last=i===INTRO.length-1;
       ov.innerHTML='<div class="dmi-viz">'+introViz(I.v)+'</div><b class="dmi-t">'+I.t+'</b><p class="dmi-s">'+I.s+'</p>'+
         '<div class="dmi-dots">'+INTRO.map(function(x,k){return '<i'+(k===i?' class="on"':'')+'></i>';}).join('')+'</div>'+
@@ -3244,7 +3284,7 @@ window.__zahli={monsterSvg:monsterSvg,S:function(){return S;},Q:function(){retur
   function closeBeat(){bc.hidden=true;bb.setAttribute('aria-expanded','false');setPlay(false);document.body.classList.remove('beaton');}
   document.getElementById('dmClose').addEventListener('click',closeBeat);
   bb.addEventListener('click',function(){var o=bc.hidden;if(o){build();paintPre();bc.hidden=false;document.body.classList.add('beaton');window.scrollTo(0,0);bb.setAttribute('aria-expanded','true');tc.hidden=true;tb.setAttribute('aria-expanded','false');
-    if(!introSeen)intro();else if(seenRew<earned){var t=rewText(REW[earned-1]);seenRew=earned;persist();hint('🎁 '+t);}}else closeBeat();});
+    if(!introSeen)intro();else{var nw=lvNews(seenLv,level(S.xp));if(seenRew<earned)nw.push(rewText(REW[earned-1]));if(nw.length){seenRew=earned;seenLv=level(S.xp);persist();hint('🎁 '+nw.join(' · '));}}}else closeBeat();});
   tb.addEventListener('click',function(){if(!bc.hidden)closeBeat();});
   var hb=document.getElementById('homeBtn');if(hb)hb.addEventListener('click',function(){if(!bc.hidden)closeBeat();});
 })();
