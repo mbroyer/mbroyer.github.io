@@ -83,8 +83,9 @@
   .tile .chip::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: #3ee08a; }
   .phone { position: absolute; width: 210px; aspect-ratio: 390 / 620; border-radius: 26px; border: 6px solid #111; background: #111; overflow: hidden; box-shadow: 0 30px 60px rgba(0,0,0,.35); z-index: 0; pointer-events: none; }
   .phone img { width: 100%; height: 100%; object-fit: cover; object-position: top; display: block; }
+  .t2 .phone img { transform: translateY(-36%); }
+  .t3 .phone img { transform: translateY(-34%); }
   .t1 .phone { right: 60px; bottom: -60px; transform: rotate(6deg); }
-  .t1 .phone.b { right: 230px; bottom: -110px; transform: rotate(-5deg); }
   .t2 .phone { right: -30px; bottom: -130px; transform: rotate(10deg); width: 180px; }
   .t3 .phone { right: -30px; bottom: -130px; transform: rotate(-8deg); width: 180px; }
   .t4 .phone { right: 70px; bottom: -50px; transform: rotate(-4deg); }
@@ -106,7 +107,6 @@
     header { grid-template-columns: 1fr; gap: 18px; padding: 28px 0 36px; }
     .grid { grid-template-columns: 1fr; }
     .tile { grid-column: auto !important; min-height: 390px; }
-    .t1 .phone.b { display: none; }
     .phone { width: 170px !important; }
     .t1 .phone, .t4 .phone { right: -16px; }
     .soon { flex-direction: column; align-items: flex-start; gap: 6px; grid-column: auto; }
@@ -139,7 +139,7 @@
   <header>
     <h1>Kleine Werkzeuge für <span class="mark">echte</span> Probleme.</h1>
     <div>
-      <p>Hier sammle ich Dinge, die ich baue, weil ich oder Menschen um mich herum sie brauchen. Vokabeln, Rechnen, Lesen. Und manchmal einfach ein Rennen.</p>
+      <p>Hier sammle ich Dinge, die ich baue, weil ich oder Menschen um mich herum sie brauchen. Einfach gedacht, mit Liebe gemacht.</p>
       <div class="stats mono"><div><b>4</b><span>Experimente</span></div><div><b>4</b><span>Demos</span></div><div><b>0</b><span>Logins nötig</span></div></div>
     </div>
   </header>
@@ -151,28 +151,28 @@
         <a class="more" href="vokamon/"><h2>Vokamon</h2></a>
         <p>Fotografier Vokabelliste, Buchseite oder Hausaufgabe, und daraus wird dein eigenes Vokabeltraining.</p>
         <a class="go" href="vokamon/demo.html">Demo ausprobieren →</a>
-        <span class="chip mono">im Test</span><div class="phone b"><img src="vokamon/vorschau-2.jpg" alt="" loading="lazy" width="390" height="620"></div><div class="phone"><img src="vokamon/vorschau-1.jpg" alt="" loading="lazy" width="390" height="620"></div>
+        <span class="chip mono">im Test</span><div class="phone"><img src="vokamon/vorschau-2.jpg" alt="" loading="lazy" width="390" height="620"></div>
       </div>
       <div class="tile t2">
         <span class="nr mono">Nr. 002 · Rechnen</span>
         <a class="more" href="numnum/"><h2>NumNum</h2></a>
         <p>Rechnen für Grundschulkinder mit kleinen Monstern. Häppchen für Häppchen.</p>
         <a class="go" href="numnum/?demo">Demo →</a>
-        <div class="phone"><img src="numnum/vorschau-1.jpg" alt="" loading="lazy" width="390" height="620"></div>
+        <div class="phone"><img src="numnum/vorschau-2.jpg" alt="" loading="lazy" width="390" height="620"></div>
       </div>
       <div class="tile t3">
         <span class="nr mono">Nr. 003 · Lesen</span>
         <a class="more" href="readster/"><h2>Readster</h2></a>
         <p>Lesetraining für Kinder mit LRS. Vorlesen, aufnehmen, besser werden.</p>
         <a class="go" href="readster/?demo">Demo →</a>
-        <div class="phone"><img src="readster/vorschau-1.jpg" alt="" loading="lazy" width="390" height="620"></div>
+        <div class="phone"><img src="readster/vorschau-2.jpg" alt="" loading="lazy" width="390" height="620"></div>
       </div>
       <div class="tile t4">
         <span class="nr mono">Nr. 004 · Spiel</span>
         <a class="more" href="quartermile/"><h2>Quarter Mile</h2></a>
         <p>Dragrace auf dem Handy. Richtig schalten, Vollgas geben, eine Viertelmeile lang.</p>
         <a class="go" href="quartermile/spiel/">Jetzt fahren →</a>
-        <span class="chip mono">öffentlich</span><div class="phone"><img src="quartermile/vorschau-1.jpg" alt="" loading="lazy" width="390" height="620"></div>
+        <span class="chip mono">öffentlich</span><div class="phone"><img src="quartermile/vorschau-2.jpg" alt="" loading="lazy" width="390" height="620"></div>
       </div>
       <div class="soon">
         <span class="nr mono">Nr. 005</span>
