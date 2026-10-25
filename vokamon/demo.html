@@ -357,6 +357,11 @@ details.wgroup[open]>summary .gt{color:var(--accent)}
 .bmbeats{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:8px}
 .bmbeat{font:inherit;font-weight:700;font-size:.82rem;cursor:pointer;color:var(--ink);background:var(--bg);border:2px solid var(--line);border-radius:12px;padding:9px 8px;text-align:center;line-height:1.2;position:relative;-webkit-tap-highlight-color:transparent}
 .bmbeat.on{background:color-mix(in srgb,var(--accent) 24%,var(--surface));border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.bmbeat.lock,.bmchip.lock{opacity:.55;border-style:dashed;color:var(--muted)}
+.bmbeat small{display:block;font-size:.68rem;font-weight:700;margin-top:2px}
+.bmnewsbar{background:var(--xp);color:var(--xp-ink);border-radius:14px;padding:10px 12px;font-weight:700;font-size:.9rem}
+.bmnews{margin-top:10px;font-size:1rem;display:flex;flex-direction:column;align-items:center;gap:6px}.bmnews .btn{margin-top:4px}
+.themebtn.neu{position:relative}.themebtn.neu::after{content:'';position:absolute;top:-4px;right:-4px;width:11px;height:11px;border-radius:50%;background:var(--accent2);border:2px solid var(--bg)}
 .bmbeat i{position:absolute;top:5px;right:6px;width:7px;height:7px;border-radius:50%;background:var(--accent2)}
 .bmchips{display:flex;gap:8px;flex-wrap:wrap}
 .bmchip{flex:none;font:inherit;font-weight:700;font-size:.82rem;cursor:pointer;color:var(--ink);background:none;border:2px solid var(--line);border-radius:999px;padding:6px 12px}
@@ -523,9 +528,11 @@ body{font-size:20px;padding-inline:32px;padding-block:22px 48px}
       <div class="qtop"><button class="qback" id="bmBack" type="button">Zurück</button><div class="qcount">Mini-Sampler</div></div>
       <div class="card bmcard">
         <h2 class="bmtitle">Melodymaker</h2>
+        <div class="bmnewsbar" id="bmNews" role="status" hidden></div>
         <div class="bmsec">
           <div class="bmstep"><b>1</b>Beat wählen</div>
           <div class="bmbeats" id="bmBeats" role="tablist" aria-label="Beat wählen"></div>
+          <div class="bmhint" id="bmNext"></div>
         </div>
         <div class="bmsec bmwell">
           <div class="bmstep"><b>2</b>Melodie spielen</div>
@@ -1207,6 +1214,7 @@ function load(){
   if(!o.miss||typeof o.miss!=='object')o.miss={};
   if(!o.hit||typeof o.hit!=='object')o.hit={};
   if(!o.beatEdits||typeof o.beatEdits!=='object'||Array.isArray(o.beatEdits))o.beatEdits={};
+  if(typeof o.bmSeen!=='number')o.bmSeen=level(o.xp);
   if(!AREA_LABEL[o.until])o.until=null;
   o.cloze='mix';
   o.len=10;
@@ -1603,6 +1611,27 @@ var BEATS=(function(){
   return api;
 })();
 
+/* Melodymaker und Level (wie die Beatbox in NumNum): jedes Monster ab dem Schlüpfling bringt einen neuen Beat oder Klang mit.
+   Eintrag: [Monsterstufe (Index in STAGES), 'b' = Beat oder 't' = Klang, id]. Was nicht in der Liste steht, ist von Anfang an offen. */
+var BM_TYPES=[['','Original'],['square','Retro'],['sawtooth','Fett'],['sine','Glocke'],['triangle','Flöte'],['organ','Orgel'],['pluck','Zupf'],['laser','Laser'],['brass','Bläser']];
+var BM_UNLOCK=[[1,'t','square'],[2,'b','trap'],[3,'t','pluck'],[4,'b','house'],[5,'t','triangle'],[6,'b','synthwave'],[7,'t','sine'],[8,'b','dembow'],
+  [9,'t','brass'],[10,'b','amapiano'],[11,'t','organ'],[12,'b','ska'],[14,'t','sawtooth'],[16,'b','dnb'],[18,'t','laser'],[20,'b','acid'],[22,'b','hardstyle'],[23,'b','trance']];
+function bmEntry(kind,id){for(var i=0;i<BM_UNLOCK.length;i++)if(BM_UNLOCK[i][1]===kind&&BM_UNLOCK[i][2]===id)return BM_UNLOCK[i];return null;}
+function bmLv(kind,id){var u=bmEntry(kind,id);return u?STAGES[u[0]].from:1;}
+function bmName(kind,id){
+  var i;if(kind==='t'){for(i=0;i<BM_TYPES.length;i++)if(BM_TYPES[i][0]===id)return BM_TYPES[i][1];return id;}
+  for(i=0;i<BEATS.list.length;i++)if(BEATS.list[i].id===id)return BEATS.list[i].name;return id;
+}
+/* Ein Beat mit eigenen Änderungen bleibt offen, damit nichts Selbstgebautes verschwindet */
+function bmBeatOk(i){var id=BEATS.list[i].id,o=(S.beatEdits||{})[id];return level(S.xp)>=bmLv('b',id)||!!(o&&Object.keys(o).length);}
+function bmTypeOk(t){return level(S.xp)>=bmLv('t',t);}
+function bmText(u){return STAGES[u[0]].name+' bringt '+(u[1]==='b'?'den Beat':'den Klang')+' „'+bmName(u[1],u[2])+'“ mit';}
+/* Was zwischen zwei Levels im Melodymaker dazukommt */
+function bmNews(a,b){var o=[];BM_UNLOCK.forEach(function(u){var L=STAGES[u[0]].from;if(L>a&&L<=b)o.push(bmText(u));});return o;}
+function bmNextU(){var L=level(S.xp),i;for(i=0;i<BM_UNLOCK.length;i++)if(STAGES[BM_UNLOCK[i][0]].from>L)return BM_UNLOCK[i];return null;}
+/* Punkt am Melodymaker-Knopf: seit dem letzten Öffnen ist etwas Neues dazugekommen */
+function bmBadge(){var b=$('#beatBtn');if(b)b.classList.toggle('neu',bmNews(S.bmSeen|0,level(S.xp)).length>0);}
+var openMelody=null;
 
 /* Zufällige Monstergeräusche beim Antippen: jedes Mal ein anderes, größere Stufen klingen tiefer */
 var lastVoice=-1;
@@ -1636,7 +1665,9 @@ function playBeat(){
   if(!S.sound)return false;
   try{
     getAC();
-    var i;do{i=Math.floor(Math.random()*BEATS.list.length);}while(i===lastBeat&&BEATS.list.length>1);
+    var ok=[],i;for(i=0;i<BEATS.list.length;i++)if(bmBeatOk(i))ok.push(i);
+    if(ok.length>1)ok=ok.filter(function(x){return x!==lastBeat;});
+    i=ok[Math.floor(Math.random()*ok.length)];
     lastBeat=i;BEATS.play(ac,i,undefined,(S.beatEdits||{})[BEATS.list[i].id]);return true;
   }catch(e){return false;}
 }
@@ -1720,7 +1751,7 @@ function ICO_SPEAK(on){return ICO_A+'<path d="M4 5.5h16a1.5 1.5 0 011.5 1.5v8a1.
 function renderHeader(){
   var sb=$('#speakBtn');sb.innerHTML=ICO_SPEAK(S.speak);sb.title=S.speak?'Sprache an':'Sprache aus';sb.setAttribute('aria-label',sb.title);sb.setAttribute('aria-pressed',S.speak?'true':'false');
   $('#hStreak').textContent=S.streak;$('#hStreakU').textContent=S.streak===1?'Tag':'Tage';
-  $('#hLvl').textContent=level(S.xp);
+  $('#hLvl').textContent=level(S.xp);bmBadge();
   var b=$('#soundBtn');b.innerHTML=ICO_SOUND(S.sound);b.title=S.sound?'Ton an':'Ton aus';b.setAttribute('aria-label',b.title);b.setAttribute('aria-pressed',S.sound?'true':'false');
 }
 
@@ -2467,7 +2498,10 @@ function finish(){
       }
     lu.appendChild(el('div',null,evo?'Vokki entwickelt sich zum '+STAGES[stageOf(L)].name+'!':'Level-up! Du bist jetzt Level '+L+': '+titleFor(L)));
     if(evo)lu.appendChild(el('div','evs','Level '+L+': '+titleFor(L)));
-    if(evo)setTimeout(function(){monsterSound(stageOf(L));},3300);}
+    if(evo)setTimeout(function(){monsterSound(stageOf(L));},3300);
+    var nw=bmNews(Q.lvl0,L);
+    if(nw.length){var bx=el('div','bmnews');nw.forEach(function(t){bx.appendChild(el('div',null,'🎵 '+t+'!'));});
+      var go=el('button','btn small','Ausprobieren');go.type='button';go.addEventListener('click',function(){Q=null;if(openMelody)openMelody();});bx.appendChild(go);lu.appendChild(bx);}}
   else{lu.hidden=true;}
   if(playBeat()){
     var bb=BEATS.list[lastBeat];
@@ -2614,7 +2648,7 @@ $('#rHome').addEventListener('click',function(){renderHome();show('vHome');});
   var view=$('#vBeats'),openBtn=$('#beatBtn');if(!view||!openBtn)return;
   var NAMES=['C','C♯','D','D♯','E','F','F♯','G','G♯','A','A♯','B'];
   var WHITE=[0,2,4,5,7,9,11,12],BLACK=[[1,1],[3,2],[6,4],[8,5],[10,6]];
-  var TYPES=[['','Original'],['square','Retro'],['sawtooth','Fett'],['sine','Glocke'],['triangle','Flöte'],['organ','Orgel'],['pluck','Zupf'],['laser','Laser'],['brass','Bläser']];
+  var TYPES=BM_TYPES;
     var cur=0,oct=72,sel=0,loop=true,playing=false,hs=[],timer=null,raf=0,base=0,plen=0;
   function ovOf(i){return (S.beatEdits||{})[BEATS.list[i].id];}
   function ovMake(i){var id=BEATS.list[i].id;if(!S.beatEdits)S.beatEdits={};if(!S.beatEdits[id])S.beatEdits[id]={};return S.beatEdits[id];}
@@ -2632,9 +2666,10 @@ $('#rHome').addEventListener('click',function(){renderHome();show('vHome');});
   function renderChips(){
     var box=clr($('#bmBeats'));
     BEATS.list.forEach(function(b,i){
-      var c=el('button','bmbeat'+(i===cur?' on':''),b.name);c.type='button';c.setAttribute('role','tab');c.setAttribute('aria-selected',i===cur?'true':'false');
+      var ok=bmBeatOk(i)||i===cur,c=el('button','bmbeat'+(i===cur?' on':'')+(ok?'':' lock'),ok?b.name:'🔒 '+b.name);c.type='button';c.setAttribute('role','tab');c.setAttribute('aria-selected',i===cur?'true':'false');
+      if(!ok)c.appendChild(el('small',null,'Level '+bmLv('b',b.id)));
       if(ovOf(i)&&Object.keys(ovOf(i)).length)c.appendChild(el('i'));
-      c.addEventListener('click',function(){if(i===cur)return;stop();cur=i;sel=0;renderAll();});
+      c.addEventListener('click',function(){if(!ok){lockHint('b',b.id);return;}if(i===cur)return;stop();cur=i;sel=0;renderAll();});
       box.appendChild(c);
     });
   }
@@ -2665,13 +2700,26 @@ $('#rHome').addEventListener('click',function(){renderHome();show('vHome');});
   }
   function renderCtl(){
     var t=clr($('#bmType')),tn=typeNow();
-    TYPES.forEach(function(x){var c=el('button','bmchip'+(x[0]===tn?' on':''),x[1]);c.type='button';c.addEventListener('click',function(){var ov=ovMake(cur);if(x[0])ov.type=x[0];else delete ov.type;save();renderChips();renderCtl();noteSound(oct);});t.appendChild(c);});
+    TYPES.forEach(function(x){var ok=bmTypeOk(x[0])||x[0]===tn,c=el('button','bmchip'+(x[0]===tn?' on':'')+(ok?'':' lock'),ok?x[1]:'🔒 '+x[1]);c.type='button';c.addEventListener('click',function(){if(!ok){lockHint('t',x[0]);return;}var ov=ovMake(cur);if(x[0])ov.type=x[0];else delete ov.type;save();renderChips();renderCtl();noteSound(oct);});t.appendChild(c);});
     var o=BEATS.list[cur].bpm,r=$('#bmTempo');r.min=Math.round(o*.6);r.max=Math.round(o*1.5);r.value=bpmNow();
     $('#bmBpmV').textContent=bpmNow();
     $('#bmLoop').setAttribute('aria-pressed',loop?'true':'false');
     $('#bmPlay').textContent=playing?'■ Stopp':'▶ Abspielen';$('#bmPlay').classList.toggle('go',playing);
   }
-  function renderAll(){renderChips();renderGrid();renderPiano();renderCtl();}
+  function renderNext(){var u=bmNextU(),n=$('#bmNext');if(!n)return;
+    if(!u){n.textContent='🎁 Alle Beats und Klänge sind freigeschaltet.';return;}
+    var left=STAGES[u[0]].from-level(S.xp);n.textContent='🎁 Als Nächstes: '+bmText(u)+' (Level '+STAGES[u[0]].from+', noch '+left+(left===1?' Level':' Level')+').';}
+  function renderAll(){renderChips();renderGrid();renderPiano();renderCtl();renderNext();}
+  /* Banner oben im Melodymaker: Neues seit dem letzten Öffnen oder warum etwas noch zu ist */
+  function banner(t){var b=$('#bmNews');if(!b)return;b.textContent=t;b.hidden=!t;}
+  function lockHint(kind,id){var u=bmEntry(kind,id);if(u)banner('🔒 „'+bmName(kind,id)+'“ kommt mit '+STAGES[u[0]].name+' (Level '+STAGES[u[0]].from+'). Lern weiter Vokabeln, dann bist du bald da!');}
+  function openView(){
+    show('vBeats');var L=level(S.xp),nw=bmNews(S.bmSeen|0,L);
+    banner(nw.length?'🎉 Neu: '+nw.join(' · ')+'!':'');
+    if(S.bmSeen!==L){S.bmSeen=L;save();}bmBadge();
+    renderAll();
+  }
+  openMelody=openView;
   function phClear(){var x=view.querySelectorAll('.bmcell.ph');for(var i=0;i<x.length;i++)x[i].classList.remove('ph');}
   function curStep(){var s=Math.floor((ac.currentTime-base)/plen*32);return s<0?-1:(loop?s%32:s);}
   function tick(){
@@ -2716,7 +2764,7 @@ $('#rHome').addEventListener('click',function(){renderHome();show('vHome');});
     renderGrid();
   }
   var BM=null;
-  openBtn.addEventListener('click',function(e){e.stopPropagation();show('vBeats');renderAll();});
+  openBtn.addEventListener('click',function(e){e.stopPropagation();openView();});
   bmLeave=function(){stop();};
   $('#bmBack').addEventListener('click',function(){stop();renderHome();show('vHome');});
   $('#bmPlay').addEventListener('click',function(){if(playing)stop();else start();renderCtl();});
