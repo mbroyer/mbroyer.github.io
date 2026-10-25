@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>A Simple Man's Lab</title>
-<meta name="description" content="Kleine Dinge, mit Liebe gebaut. Von Mark Broyer.">
+<meta name="description" content="Einfach gedacht, mit Liebe gemacht. Kleine Apps und Spiele von Mark Broyer.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23141414'/%3E%3Cpath d='M25 14h14M28 14v14L17 48a4 4 0 0 0 3.5 6h23a4 4 0 0 0 3.5-6L36 28V14' fill='none' stroke='%23f4f1ea' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -53,11 +53,12 @@
   .sw button { width: 30px; height: 30px; border-radius: 50%; border: 0; cursor: pointer; box-shadow: inset 0 0 0 1px rgba(0,0,0,.15); }
   .sw button[aria-checked="true"] { outline: 2px solid var(--ink); outline-offset: 3px; }
 
-  header { padding: 48px 0 56px; display: grid; grid-template-columns: 1.25fr 1fr; gap: 40px; align-items: end; }
+  header { padding: 48px 0 56px; display: grid; gap: 28px; }
+  header > div { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px 40px; flex-wrap: wrap; }
   header h1 { font-size: clamp(40px, 6.6vw, 84px); line-height: .92; font-weight: 800; letter-spacing: -.045em; margin: 0; }
-  header .mark { background: linear-gradient(transparent var(--hl-top), var(--hl) var(--hl-top)); }
+  header .mark { white-space: nowrap; background: linear-gradient(transparent var(--hl-top), var(--hl) var(--hl-top)); }
   header p { margin: 0; font-size: 19px; color: var(--muted); max-width: 24em; }
-  .stats { display: flex; gap: 32px; margin: 24px 0 0; }
+  .stats { display: flex; gap: 32px; margin: 0; }
   .stats b { display: block; font-size: 34px; font-weight: 800; letter-spacing: -.02em; line-height: 1.1; }
   .stats span { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .1em; }
 
@@ -139,9 +140,9 @@
     <div class="cpop" id="cpop" hidden><p>Farbe · <b id="cname"></b></p><div class="sw" role="radiogroup" aria-label="Farbe"><button type="button" role="radio" data-k="salbei" data-n="Salbei" aria-label="Salbei" title="Salbei" style="background:linear-gradient(135deg,#f4f1ea 50%,#a9c4a1 50%)"></button><button type="button" role="radio" data-k="pink" data-n="Pink" aria-label="Pink" title="Pink" style="background:linear-gradient(135deg,#eaf3ee 50%,#f6b3cf 50%)"></button><button type="button" role="radio" data-k="gelb" data-n="Sonnengelb" aria-label="Sonnengelb" title="Sonnengelb" style="background:linear-gradient(135deg,#eeedf7 50%,#ffd23f 50%)"></button><button type="button" role="radio" data-k="koralle" data-n="Koralle" aria-label="Koralle" title="Koralle" style="background:linear-gradient(135deg,#e8f2f2 50%,#ff8a6a 50%)"></button><button type="button" role="radio" data-k="petrol" data-n="Petrol" aria-label="Petrol" title="Petrol" style="background:linear-gradient(135deg,#f8ece4 50%,#0f5560 50%)"></button><button type="button" role="radio" data-k="nachtblau" data-n="Nachtblau" aria-label="Nachtblau" title="Nachtblau" style="background:linear-gradient(135deg,#f7eedd 50%,#1f3a5f 50%)"></button></div></div>
   </div>
   <header>
-    <h1>Kleine Dinge, <span class="mark">mit Liebe</span> gebaut.</h1>
+    <h1>Einfach gedacht,<br><span class="mark">mit Liebe</span> gemacht.</h1>
     <div>
-      <p>Hier sammle ich Dinge, die ich baue, weil ich oder Menschen um mich herum sie brauchen. Einfach gedacht, mit Liebe gemacht.</p>
+      <p>Hier sammle ich Dinge, die ich baue, weil ich oder Menschen um mich herum sie brauchen.</p>
       <div class="stats mono"><div><b>4</b><span>Experimente</span></div><div><b>4</b><span>Demos</span></div><div><b>0</b><span>Logins nötig</span></div></div>
     </div>
   </header>
