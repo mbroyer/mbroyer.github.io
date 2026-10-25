@@ -20,23 +20,28 @@ button:disabled{opacity:.5;cursor:wait}
 .err{color:var(--bad);font-weight:700;min-height:1.4em}
 [hidden]{display:none!important}
 body{flex-direction:column;justify-content:flex-start;gap:48px;padding:40px 16px 56px}
-.pv{width:100%;max-width:560px;text-align:center;display:flex;flex-direction:column;gap:36px}
+.pv{width:100%;max-width:740px;text-align:center;display:flex;flex-direction:column;gap:36px}
 .pv h1{margin:0;line-height:0}.pv .logo{width:200px;height:auto}
 .pv .lead{color:var(--ink);font-size:1.1rem;max-width:26em;margin:0 auto}
 .shots{display:flex;gap:24px;justify-content:center;overflow-x:auto;scroll-snap-type:x mandatory;padding:4px 16px 10px;margin:0 -16px}
-.shots figure{margin:0;flex:0 0 auto;scroll-snap-align:center;display:flex;flex-direction:column;gap:8px}
+.shots figure{margin:0;flex:0 0 auto;width:220px;scroll-snap-align:center;display:flex;flex-direction:column;gap:8px}
 .shots img{width:220px;height:auto;display:block;border-radius:26px;border:6px solid rgba(0,0,0,.35);box-shadow:0 0 0 2px var(--line),0 18px 40px rgba(0,0,0,.35)}
 .shots figcaption{font-size:.9rem;color:var(--muted)}
-.steps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,1fr);gap:10px;text-align:left}
+.steps{list-style:none;margin:0 auto;padding:0;max-width:560px;width:100%;display:grid;grid-template-columns:repeat(3,1fr);gap:10px;text-align:left}
 .steps li{background:var(--surface);border:2px solid var(--line);border-radius:16px;padding:12px;font-size:.92rem;color:var(--muted)}
 .steps b{display:block;color:var(--accent);font-size:1.3rem;line-height:1;margin-bottom:6px}
-@media (max-width:520px){.steps{grid-template-columns:1fr}.shots{justify-content:flex-start}.shots img{width:200px}}
+@media (max-width:520px){.steps{grid-template-columns:1fr}.shots{justify-content:flex-start}.shots img,.shots figure{width:200px}}
 .card h1{font-size:1.4rem}
 .madeby{display:flex;flex-direction:column;align-items:center;gap:8px;opacity:.75;text-decoration:none;margin-top:0}
 .madeby img{width:58px;height:auto;display:block;filter:brightness(0) invert(1)}
 .madeby span{font-size:8px;line-height:1;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:#fff}
 .ask{font-size:.95rem}.ask a{color:var(--accent);font-weight:700}
-
+.who{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.who button{background:var(--bg);color:var(--ink);border:3px solid var(--line);box-shadow:0 5px 0 var(--line);letter-spacing:.06em}
+.demo{display:flex;flex-direction:column;align-items:center;gap:8px}
+.demo a{display:inline-block;font-weight:700;font-size:1.15rem;padding:13px 26px;border-radius:18px;border:3px solid var(--accent);color:var(--ink);text-decoration:none;box-shadow:0 5px 0 var(--accent-edge)}
+.demo a:active{transform:translateY(3px);box-shadow:0 2px 0 var(--accent-edge)}
+.demo small{color:var(--muted);font-size:.85rem}
 </style>
 </head>
 <body>
@@ -44,18 +49,21 @@ body{flex-direction:column;justify-content:flex-start;gap:48px;padding:40px 16px
   <h1><img class="logo" src="vorschau-logo.png" alt="NumNum" width="168" height="76"></h1>
   <p class="lead">Rechnen für Grundschulkinder mit kleinen Monstern. Häppchen für Häppchen.</p>
   <div class="shots">
-    <figure><img src="vorschau-1.jpg" alt="Startbildschirm von NumNum" width="390" height="620"><figcaption>Dein Drache wächst mit jeder Aufgabe</figcaption></figure>
-    <figure><img src="vorschau-2.jpg" alt="Eine Aufgabe in NumNum" width="390" height="620"><figcaption>Mit Bildern zählen und rechnen</figcaption></figure>
+    <figure><img src="vorschau-1.jpg" alt="Startbildschirm von NumNum mit Drache auf Level 9" width="390" height="620"><figcaption>Dein Drache wächst mit jeder Aufgabe</figcaption></figure>
+    <figure><img src="vorschau-2.jpg" alt="Eine Aufgabe mit dem Zehnerfeld" width="390" height="620" loading="lazy"><figcaption>Mit Bildern zählen und rechnen</figcaption></figure>
+    <figure><img src="vorschau-3.jpg" alt="Die Monster-Beatbox" width="390" height="620" loading="lazy"><figcaption>Deine Monster machen Musik</figcaption></figure>
   </div>
   <ol class="steps">
     <li><b>1</b>Zahlenraum und Thema wählen</li>
     <li><b>2</b>Aufgaben lösen, mit Bildern und Vorlesen</li>
-    <li><b>3</b>Punkte sammeln, der Drache entwickelt sich</li>
+    <li><b>3</b>Punkte sammeln, der Drache entwickelt sich, Monster machen Musik</li>
   </ol>
+  <div class="demo"><a href="?demo">Demo ausprobieren</a><small>Ohne Code. Nichts wird gespeichert.</small></div>
 </section>
 <form class="card" id="f" hidden>
-  <h1>Schon dabei?</h1>
-  <p>Gib den Code ein, den du von Mark bekommen hast. Danach merkt sich dieses Gerät den Code.</p>
+  <h1 id="fh">Schon dabei?</h1>
+  <p id="fp">Gib den Code ein, den du von Mark bekommen hast. Danach merkt sich dieses Gerät den Code.</p>
+  <div class="who" id="k" hidden></div>
   <input id="c" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Code">
   <button id="b">Los</button>
   <div class="err" id="e" role="alert"></div>
@@ -66,11 +74,25 @@ body{flex-direction:column;justify-content:flex-start;gap:48px;padding:40px 16px
 <script>
 (function(){
   // Anmeldung mit Code wie bei Readster: der Cloudflare-Worker prüft den Code und hält den Spielstand pro Code.
-  var WORKER="https://numnum.mark-broyer.workers.dev",APP="app.html",STORE='numnum-code',SAVE='zahli-mathe-v1',TAKEN='numnum-alt-uebernommen';
-  var f=document.getElementById('f'),c=document.getElementById('c'),b=document.getElementById('b'),e=document.getElementById('e'),w=document.getElementById('w');
+  var WORKER="https://numnum.mark-broyer.workers.dev",APP="app.html",STORE='numnum-code',SAVE='zahli-mathe-v1',TAKEN='numnum-alt-uebernommen',LIST='numnum-codes';
+  var f=document.getElementById('f'),c=document.getElementById('c'),b=document.getElementById('b'),e=document.getElementById('e'),w=document.getElementById('w'),k=document.getElementById('k');
   function norm(x){return String(x||'').toUpperCase().replace(/[^A-Z0-9-]/g,'');}
   function ls(k,v){try{if(v===undefined)return localStorage.getItem(k);if(v===null)localStorage.removeItem(k);else localStorage.setItem(k,v);}catch(_){return null;}}
-  function ask(msg){w.hidden=true;f.hidden=false;document.getElementById('pv').hidden=false;document.getElementById('mb').hidden=false;e.textContent=msg||'';b.disabled=false;c.focus();}
+  // Alle Codes, die auf diesem Gerät schon gespielt haben (z. B. zwei Kinder auf einem iPad), zuletzt genutzter zuerst.
+  function known(){var a;try{a=JSON.parse(ls(LIST)||'[]');}catch(_){a=[];}if(!Array.isArray(a))a=[];a=a.map(norm).filter(function(x){return x.length>=4;});var s=norm(ls(STORE));if(s&&a.indexOf(s)<0)a.unshift(s);return a;}
+  function remember(code){ls(LIST,JSON.stringify([code].concat(known().filter(function(x){return x!==code;})).slice(0,6)));}
+  function forget(code){ls(LIST,JSON.stringify(known().filter(function(x){return x!==code;})));}
+  function pick(){
+    var a=known();k.textContent='';k.hidden=!a.length;
+    document.getElementById('fh').textContent=a.length?'Wer spielt?':'Schon dabei?';
+    document.getElementById('fp').textContent=a.length?'Tippe auf deinen Code oder gib unten einen neuen ein.':'Gib den Code ein, den du von Mark bekommen hast. Danach merkt sich dieses Gerät den Code.';
+    a.forEach(function(code){var x=document.createElement('button');x.type='button';x.textContent=code;
+      x.addEventListener('click',function(){k.querySelectorAll('button').forEach(function(y){y.disabled=true;});b.disabled=true;e.textContent='';start(code,true).catch(fail);});
+      k.appendChild(x);});
+    return a.length;
+  }
+  function ask(msg){var n=pick();w.hidden=true;f.hidden=false;document.getElementById('pv').hidden=!!n; // wer schon gespielt hat, braucht die Vorschau nicht
+    document.getElementById('mb').hidden=false;e.textContent=msg||'';b.disabled=false;if(!k.childNodes.length)c.focus();}
   function fail(err){var m={code:'Der Code stimmt nicht.',net:'Keine Verbindung. Bitte später nochmal versuchen.'};ask(m[err&&err.message]||'Das hat nicht geklappt. Bitte nochmal versuchen.');}
   function remote(code){
     return fetch(WORKER+'/stand/'+encodeURIComponent(code),{cache:'no-store'}).then(function(r){
@@ -84,7 +106,7 @@ body{flex-direction:column;justify-content:flex-start;gap:48px;padding:40px 16px
     var LK=SAVE+'@'+code,TK='numnum-ts@'+code,lts=+ls(TK)||0,rts=rem&&+rem.ts||0;
     if(rem&&rem.state&&rts>lts){ls(LK,JSON.stringify(rem.state));ls(TK,String(rts));lts=rts;}
     else if(!rem&&!ls(LK)&&ls(SAVE)&&!ls(TAKEN)){ls(LK,ls(SAVE));ls(TAKEN,code);lts=Date.now();ls(TK,String(lts));} // bisherigen Stand dieses Geräts einmal übernehmen
-    ls(STORE,code);
+    ls(STORE,code);remember(code);
     return fetch(APP).then(function(r){if(!r.ok)throw new Error('net');return r.text();},function(){throw new Error('net');}).then(function(html){
       var cfg=JSON.stringify({w:WORKER,c:code,k:SAVE,lk:LK,tk:TK,push:lts>rts&&!!ls(LK)});
       // Hochladen beim Verlassen der App und sonst höchstens alle 5 min. Lokal wird weiter nach jeder Antwort gespeichert.
@@ -111,7 +133,7 @@ body{flex-direction:column;justify-content:flex-start;gap:48px;padding:40px 16px
   function start(code,saved){
     return remote(code).then(function(rem){return launch(code,rem);},function(err){
       if(saved&&err.message==='net'&&ls(SAVE+'@'+code))return launch(code,null); // offline weiterspielen, Abgleich beim nächsten Speichern
-      if(saved&&err.message==='code'){ls(STORE,null);throw new Error('code');}
+      if(saved&&err.message==='code'){ls(STORE,null);forget(code);throw new Error('code');}
       throw err;
     });
   }
@@ -122,11 +144,30 @@ body{flex-direction:column;justify-content:flex-start;gap:48px;padding:40px 16px
     b.disabled=true;e.textContent='';
     start(code,false).catch(fail);
   });
+  // Demo: die App ohne Code. Speicher nur im Arbeitsspeicher, kein Abgleich mit dem Worker, also auch kein KV-Schreibvorgang.
+  function demo(){
+    var shim='<script>(function(){var m=Object.create(null),S=Storage.prototype,g=S.getItem,st=S.setItem,rm=S.removeItem,cl=S.clear,L;try{L=window.localStorage;}catch(_){}'+
+      'function d(s){return s===L;}'+
+      'S.getItem=function(k){return d(this)?(k in m?m[k]:null):g.call(this,k);};'+
+      'S.setItem=function(k,v){if(d(this))m[k]=String(v);else st.call(this,k,v);};'+
+      'S.removeItem=function(k){if(d(this))delete m[k];else rm.call(this,k);};'+
+      'S.clear=function(){if(d(this))m=Object.create(null);else cl.call(this);};'+
+      'var F=window.fetch;window.fetch=function(u){var x=String(u&&u.url||u);if(/^https?:/i.test(x)&&new URL(x).origin!==location.origin)return Promise.reject(new TypeError("Demo"));return F.apply(this,arguments);};'+
+      'if(navigator.sendBeacon)navigator.sendBeacon=function(){return false;};'+
+      'document.addEventListener("DOMContentLoaded",function(){var a=document.createElement("div");a.textContent="Demo: Nichts wird gespeichert";'+
+      'a.style.cssText="position:fixed;z-index:2147483647;left:50%;transform:translateX(-50%);bottom:calc(16px + env(safe-area-inset-bottom));padding:9px 16px;border-radius:999px;background:rgba(0,0,0,.78);color:#fff;font:600 14px/1 system-ui,sans-serif;white-space:nowrap;pointer-events:none;transition:opacity .6s";'+
+      'document.body.appendChild(a);setTimeout(function(){a.style.opacity="0";setTimeout(function(){a.remove();},700);},4000);});})();<\/script>';
+    return fetch(APP).then(function(r){if(!r.ok)throw new Error('net');return r.text();}).then(function(html){
+      html=html.replace('<head>','<head>\n'+shim);
+      document.open();document.write(html);document.close();
+    });
+  }
   var q=new URLSearchParams(location.search),fromUrl=norm(q.get('code'));
+  if(q.has('demo')){demo().catch(function(){ask('Die Demo konnte nicht geladen werden.');});return;}
   if(q.has('wechseln'))ls(STORE,null);
   if(q.has('wechseln')||fromUrl)history.replaceState(null,'',location.pathname);
   var saved=fromUrl||norm(ls(STORE));
-  if(saved)start(saved,!fromUrl).catch(function(err){c.value=saved;fail(err);});
+  if(saved&&(fromUrl||known().length<2))start(saved,!fromUrl).catch(function(err){c.value=saved;fail(err);});
   else ask();
 })();
 </script>
