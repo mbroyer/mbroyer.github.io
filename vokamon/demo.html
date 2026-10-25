@@ -25,6 +25,26 @@
   });
 })();
 </script>
+<script>
+/* Demo-Ende: nach einer Runde kommt eine Karte mit „Code anfragen“. Die Runde erkennt das Skript am gespeicherten Stand. */
+(function(){
+  var shown=false,S=Storage.prototype,st=S.setItem;
+  S.setItem=function(k,v){st.call(this,k,v);if(!shown&&k==='vokabel-arena-v1'){try{var s=JSON.parse(v);if(s&&s.sessions>=1){shown=true;setTimeout(card,6000);}}catch(_){}}};
+  function card(){
+    var o=document.createElement('div');
+    o.setAttribute('role','dialog');o.setAttribute('aria-modal','true');o.setAttribute('aria-label','Ende der Demo');
+    o.style.cssText='position:fixed;inset:0;z-index:2147483647;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(0,0,0,.72);font:16px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif';
+    o.innerHTML='<div style="width:100%;max-width:360px;background:#fff;color:#16181d;border-radius:22px;padding:26px 22px;text-align:center;display:flex;flex-direction:column;gap:12px;box-shadow:0 20px 50px rgba(0,0,0,.4)">'+
+      '<div style="font-size:2.2rem;line-height:1">🎉</div>'+
+      '<h2 style="margin:0;font-size:1.35rem">Das war die Demo!</h2>'+
+      '<p style="margin:0;color:#555b66">Gefällt dir Vokamon? Mit einem eigenen Code geht es weiter, und dein Fortschritt bleibt gespeichert.</p>'+
+      '<a href="mailto:hello@asimplemanslab.com?subject=Code%20f%C3%BCr%20Vokamon" style="display:block;margin-top:6px;padding:14px;border-radius:14px;background:#16181d;color:#fff;font-weight:700;text-decoration:none">Code anfragen</a>'+
+      '<a href="./" style="display:block;padding:10px;color:#16181d;font-weight:600">Zurück zur Übersicht</a></div>';
+    document.body.appendChild(o);
+  }
+})();
+</script>
+<style>#bkBox{display:none!important} /* Eltern-Bereich gibt es in der Demo nicht */</style>
 <title>Vokamon · Demo</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
