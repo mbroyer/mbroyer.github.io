@@ -20,23 +20,27 @@ button:disabled{opacity:.5;cursor:wait}
 .err{color:var(--bad);font-weight:700;min-height:1.4em}
 [hidden]{display:none!important}
 body{flex-direction:column;justify-content:flex-start;gap:48px;padding:40px 16px 56px}
-.pv{width:100%;max-width:560px;text-align:center;display:flex;flex-direction:column;gap:36px}
+.pv{width:100%;max-width:740px;text-align:center;display:flex;flex-direction:column;gap:36px}
 .pv h1{margin:0;line-height:0}.pv .logo{width:200px;height:auto}
 .pv .lead{color:var(--ink);font-size:1.1rem;max-width:26em;margin:0 auto}
 .shots{display:flex;gap:24px;justify-content:center;overflow-x:auto;scroll-snap-type:x mandatory;padding:4px 16px 10px;margin:0 -16px}
-.shots figure{margin:0;flex:0 0 auto;scroll-snap-align:center;display:flex;flex-direction:column;gap:8px}
+.shots figure{margin:0;flex:0 0 auto;width:220px;scroll-snap-align:center;display:flex;flex-direction:column;gap:8px}
 .shots img{width:220px;height:auto;display:block;border-radius:26px;border:6px solid rgba(0,0,0,.35);box-shadow:0 0 0 2px var(--line),0 18px 40px rgba(0,0,0,.35)}
 .shots figcaption{font-size:.9rem;color:var(--muted)}
-.steps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,1fr);gap:10px;text-align:left}
+.steps{list-style:none;margin:0 auto;padding:0;max-width:560px;width:100%;display:grid;grid-template-columns:repeat(3,1fr);gap:10px;text-align:left}
 .steps li{background:var(--surface);border:2px solid var(--line);border-radius:16px;padding:12px;font-size:.92rem;color:var(--muted)}
 .steps b{display:block;color:var(--accent);font-size:1.3rem;line-height:1;margin-bottom:6px}
-@media (max-width:520px){.steps{grid-template-columns:1fr}.shots{justify-content:flex-start}.shots img{width:200px}}
+@media (max-width:520px){.steps{grid-template-columns:1fr}.shots{justify-content:flex-start}.shots img,.shots figure{width:200px}}
 .card h1{font-size:1.4rem}
 .madeby{display:flex;flex-direction:column;align-items:center;gap:8px;opacity:.75;text-decoration:none;margin-top:0}
 .madeby img{width:58px;height:auto;display:block;filter:brightness(0) invert(1)}
 .madeby span{font-size:8px;line-height:1;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:#fff}
 .ask{font-size:.95rem}.ask a{color:var(--accent);font-weight:700}
 
+.demo{display:flex;flex-direction:column;align-items:center;gap:8px}
+.demo a{display:inline-block;font-weight:700;font-size:1.15rem;padding:13px 26px;border-radius:18px;border:3px solid var(--accent);color:var(--ink);text-decoration:none;box-shadow:0 5px 0 var(--accent-edge)}
+.demo a:active{transform:translateY(3px);box-shadow:0 2px 0 var(--accent-edge)}
+.demo small{color:var(--muted);font-size:.85rem}
 </style>
 </head>
 <body>
@@ -44,14 +48,16 @@ body{flex-direction:column;justify-content:flex-start;gap:48px;padding:40px 16px
   <h1><img class="logo" src="vorschau-logo.png" alt="Vokamon" width="186" height="84"></h1>
   <p class="lead">Fotografier Vokabelliste, Buchseite oder Hausaufgabe, und daraus wird dein eigenes Vokabeltraining. Mit Monstern, die mitwachsen.</p>
   <div class="shots">
-    <figure><img src="vorschau-1.jpg" alt="Startbildschirm von Vokamon" width="390" height="620"><figcaption>Dein Monster wächst mit jedem Wort</figcaption></figure>
-    <figure><img src="vorschau-2.jpg" alt="Eine Aufgabe in Vokamon" width="390" height="620"><figcaption>Kurze Runden mit zehn Aufgaben</figcaption></figure>
+    <figure><img src="vorschau-1.jpg" alt="Startbildschirm von Vokamon mit Monster auf Level 10" width="390" height="620"><figcaption>Dein Monster wächst mit jedem Wort</figcaption></figure>
+    <figure><img src="vorschau-2.jpg" alt="Eine richtig gelöste Aufgabe mit Beispielsatz" width="390" height="620" loading="lazy"><figcaption>Kurze Runden mit Beispielsätzen</figcaption></figure>
+    <figure><img src="vorschau-3.jpg" alt="Der Melodymaker" width="390" height="620" loading="lazy"><figcaption>Eigene Melodien im Melodymaker</figcaption></figure>
   </div>
   <ol class="steps">
     <li><b>1</b>Hausaufgabe abfotografieren oder Seiten wählen</li>
     <li><b>2</b>In kurzen Runden üben, mit Vorlesen</li>
     <li><b>3</b>Punkte sammeln, das Monster entwickelt sich</li>
   </ol>
+  <div class="demo"><a href="demo.html">Demo ausprobieren</a><small>Ohne Code. Nichts wird gespeichert.</small></div>
 </section>
 <form class="card" id="f" hidden>
   <h1>Schon dabei?</h1>
