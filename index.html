@@ -77,6 +77,10 @@
   .tile h2 { font-size: clamp(36px, 4.4vw, 58px); font-weight: 800; letter-spacing: -.035em; line-height: .95; margin: 10px 0; }
   .tile p { margin: 0; max-width: 17em; font-size: 16px; opacity: .92; }
   .t4 h2 { color: #f5c242; }
+  .t5 { grid-column: span 4; background: #e9a23b; color: #1d2b3a; }
+  .t5 .chip { background: rgba(29,43,58,.12); }
+  .t5 .phone { right: 70px; bottom: -110px; transform: rotate(-5deg); width: 280px; }
+  .t5 .phone.b { right: 300px; bottom: -150px; transform: rotate(6deg); width: 250px; }
   .tile .go { position: relative; z-index: 2; margin-top: auto; align-self: flex-start; display: inline-flex; gap: 8px; background: #fff; color: #141414; font-weight: 700; font-size: 15px; padding: 11px 18px; border-radius: 999px; text-decoration: none; transition: transform .15s ease; }
   .tile .go:hover { transform: scale(1.04); }
   .tile .go:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
@@ -91,7 +95,7 @@
   .t1 .phone.b { right: 300px; bottom: -170px; transform: rotate(-6deg); width: 250px; }
   .t4 .phone.b { right: 330px; bottom: -90px; transform: rotate(5deg); width: 250px; }
   .t4 .phone { right: 80px; bottom: -110px; transform: rotate(-4deg); width: 280px; }
-  .soon { grid-column: span 6; border: 2px dashed var(--line); border-radius: 28px; padding: 24px 28px; display: flex; align-items: center; gap: 22px; }
+  .soon { grid-column: span 2; border: 2px dashed var(--line); border-radius: 28px; padding: 28px; display: flex; flex-direction: column; justify-content: center; gap: 8px; }
   .soon .nr { font-size: 12px; color: var(--muted); }
   .soon h2 { font-size: 28px; font-weight: 800; letter-spacing: -.02em; margin: 0; }
   .soon p { margin: 0; color: var(--muted); font-size: 15px; }
@@ -109,10 +113,10 @@
     header { grid-template-columns: 1fr; gap: 18px; padding: 28px 0 36px; }
     .grid { grid-template-columns: 1fr; }
     .tile { grid-column: auto !important; min-height: 450px; }
-    .t1 .phone, .t4 .phone { width: 220px; right: -20px; bottom: -120px; }
-    .t1 .phone.b, .t4 .phone.b { display: none; }
+    .t1 .phone, .t4 .phone, .t5 .phone { width: 220px; right: -20px; bottom: -120px; }
+    .t1 .phone.b, .t4 .phone.b, .t5 .phone.b { display: none; }
     .t2 .phone, .t3 .phone { width: 180px; right: -18px; bottom: -40px; }
-    .soon { flex-direction: column; align-items: flex-start; gap: 6px; grid-column: auto; }
+    .soon { gap: 6px; grid-column: auto; }
     .top nav .hide-s { display: none; }
   }
   :root[data-c="salbei"] { --band: #a9c4a1; --band-ink: #141414; --hl: rgba(110, 160, 100, .42); --hl-top: 62%; --paper: #f4f1ea; --card: #fbf9f4; }
@@ -143,7 +147,7 @@
     <h1>Einfach gedacht,<br><span class="mark">mit Liebe</span> gemacht.</h1>
     <div>
       <p>Hier sammle ich Dinge, die ich baue, weil ich oder Menschen um mich herum sie brauchen.</p>
-      <div class="stats mono"><div><b>4</b><span>Experimente</span></div><div><b>4</b><span>Demos</span></div><div><b>0</b><span>Logins nötig</span></div></div>
+      <div class="stats mono"><div><b>5</b><span>Experimente</span></div><div><b>5</b><span>Demos</span></div><div><b>0</b><span>Logins nötig</span></div></div>
     </div>
   </header>
 
@@ -177,8 +181,15 @@
         <a class="go" href="quartermile/spiel/">Jetzt fahren →</a>
         <span class="chip mono">öffentlich</span><div class="phone b"><img src="quartermile/vorschau-garage.jpg" alt="" loading="lazy" width="390" height="620"></div><div class="phone"><img src="quartermile/vorschau-2.jpg" alt="" loading="lazy" width="390" height="620"></div>
       </div>
+      <div class="tile t5">
+        <span class="nr mono">Nr. 005 · Erdkunde</span>
+        <a class="more" href="orbista/"><h2>Orbista</h2></a>
+        <p>Länder-Quiz mit 197 Flaggen und Hauptstädten. Weiterreisen, Sterne sammeln, Stempel in den Reisepass.</p>
+        <a class="go" href="orbista/">Jetzt spielen →</a>
+        <span class="chip mono">öffentlich</span><div class="phone b"><img src="orbista/vorschau-1.jpg" alt="" loading="lazy" width="390" height="620"></div><div class="phone"><img src="orbista/vorschau-2.jpg" alt="" loading="lazy" width="390" height="620"></div>
+      </div>
       <div class="soon">
-        <span class="nr mono">Nr. 005</span>
+        <span class="nr mono">Nr. 006</span>
         <h2>Kommt bald</h2>
         <p>Das nächste Experiment ist schon auf dem Labortisch.</p>
       </div>
