@@ -71,6 +71,25 @@ body{flex-direction:column;justify-content:flex-start;gap:48px;padding:40px 16px
 </form>
 <a class="madeby" id="mb" href="/" hidden><span>Made with love by</span><img src="/logo.png" alt="A Simple Man’s Lab" width="320" height="354"></a>
 <div class="card" id="w"><h1>NumNum</h1><p id="wt">Lädt …</p></div>
+<script type="text/plain" id="demoEnde">
+/* Demo-Ende: nach einer Runde kommt eine Karte mit „Code anfragen“. Die Runde erkennt das Skript am gespeicherten Stand. */
+(function(){
+  var shown=false,S=Storage.prototype,st=S.setItem;
+  S.setItem=function(k,v){st.call(this,k,v);if(!shown&&k==='zahli-mathe-v1'){try{var s=JSON.parse(v);if(s&&s.sessions>=1){shown=true;setTimeout(card,6000);}}catch(_){}}};
+  function card(){
+    var o=document.createElement('div');
+    o.setAttribute('role','dialog');o.setAttribute('aria-modal','true');o.setAttribute('aria-label','Ende der Demo');
+    o.style.cssText='position:fixed;inset:0;z-index:2147483647;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(0,0,0,.72);font:16px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif';
+    o.innerHTML='<div style="width:100%;max-width:360px;background:#fff;color:#16181d;border-radius:22px;padding:26px 22px;text-align:center;display:flex;flex-direction:column;gap:12px;box-shadow:0 20px 50px rgba(0,0,0,.4)">'+
+      '<div style="font-size:2.2rem;line-height:1">🎉</div>'+
+      '<h2 style="margin:0;font-size:1.35rem">Das war die Demo!</h2>'+
+      '<p style="margin:0;color:#555b66">Gefällt dir NumNum? Mit einem eigenen Code geht es weiter, und dein Fortschritt bleibt gespeichert.</p>'+
+      '<a href="mailto:hello@asimplemanslab.com?subject=Code%20f%C3%BCr%20NumNum" style="display:block;margin-top:6px;padding:14px;border-radius:14px;background:#16181d;color:#fff;font-weight:700;text-decoration:none">Code anfragen</a>'+
+      '<a href="./" style="display:block;padding:10px;color:#16181d;font-weight:600">Zurück zur Übersicht</a></div>';
+    document.body.appendChild(o);
+  }
+})();
+</script>
 <script>
 (function(){
   // Anmeldung mit Code wie bei Readster: der Cloudflare-Worker prüft den Code und hält den Spielstand pro Code.
@@ -157,6 +176,8 @@ body{flex-direction:column;justify-content:flex-start;gap:48px;padding:40px 16px
       'document.addEventListener("DOMContentLoaded",function(){var a=document.createElement("div");a.textContent="Demo: Nichts wird gespeichert";'+
       'a.style.cssText="position:fixed;z-index:2147483647;left:50%;transform:translateX(-50%);bottom:calc(16px + env(safe-area-inset-bottom));padding:9px 16px;border-radius:999px;background:rgba(0,0,0,.78);color:#fff;font:600 14px/1 system-ui,sans-serif;white-space:nowrap;pointer-events:none;transition:opacity .6s";'+
       'document.body.appendChild(a);setTimeout(function(){a.style.opacity="0";setTimeout(function(){a.remove();},700);},4000);});})();<\/script>';
+    // Nach einer Runde ist Schluss (Karte „Code anfragen“), die versteckte Wiederherstellung gibt es in der Demo nicht
+    shim+='<script>'+document.getElementById('demoEnde').textContent+'<\/script><style>#restoreCard{display:none!important}</style>';
     return fetch(APP).then(function(r){if(!r.ok)throw new Error('net');return r.text();}).then(function(html){
       html=html.replace('<head>','<head>\n'+shim);
       document.open();document.write(html);document.close();
