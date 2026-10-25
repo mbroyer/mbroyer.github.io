@@ -21,7 +21,7 @@
   --sea:#d3e2e6; --sea-line:#b9cfd6; --grid:#c3d4da; --land:#efe5cf; --land-off:#e2dccf; --border:#8a7556;
   --logo-filter:none; --cta:#e58a33; --cta-ink:#1d2b3a; color-scheme:light; --f-display:"Young Serif",Georgia,serif; --f-body:"IBM Plex Sans",system-ui,sans-serif;
 }
-/* Standard ist hell (auch bei System-Dunkelmodus); Dunkel nur über den Umschalter (data-theme, gemerkt in orbista.theme) */
+/* Standard ist dunkel (unabhängig vom System, gesetzt per data-theme in body.html); Hell über den Umschalter (data-theme, gemerkt in orbista.theme) */
 :root[data-theme="dark"]{
   --bg:#111a24; --card:#18232f; --ink:#ede6d6; --muted:#a2a9b0; --line:#2c3a48; --line2:#3b4b5b;
   --accent:#7fb7d6; --accent-ink:#0e1a24; --gold:#e0a458; --track:#2c3a48; --sel:#22303e;
@@ -384,7 +384,7 @@ svg path,svg circle,svg ellipse,svg rect{vector-effect:non-scaling-stroke}
 
 
 </style>
-<script>try{document.documentElement.dataset.theme=localStorage.getItem("orbista.theme")==="dark"?"dark":"light"}catch(e){document.documentElement.dataset.theme="light"}</script>
+<script>try{document.documentElement.dataset.theme=localStorage.getItem("orbista.theme")==="light"?"light":"dark"}catch(e){document.documentElement.dataset.theme="dark"}</script>
 <main>
   <section id="welcome" class="screen" hidden>
     <div class="sndrow"><span></span><button class="iconbtn themebtn"></button></div>
@@ -703,7 +703,7 @@ const sndBtn=()=>`<button class="iconbtn sndbtn"></button>`;
 function renderSound(){const on=soundOn();document.querySelectorAll(".sndbtn").forEach(b=>{b.setAttribute("aria-pressed",String(on));b.setAttribute("aria-label",on?"Klänge ausschalten":"Klänge einschalten");
   b.innerHTML=svg(SPK+(on?'<path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/>':'<path d="M16 9l5 6M21 9l-5 6"/>'),"")})}
 document.addEventListener("click",e=>{if(e.target.closest(".sndbtn")){P.sound=!soundOn();saveProfile();renderSound();play("tap")}});
-// Hell/Dunkel-Umschalter auf jeder Seite neben dem Lautsprecher (im Erststart allein): Standard hell, nur auf diesem Gerät gemerkt (orbista.theme, nicht im Reise-Code)
+// Hell/Dunkel-Umschalter auf jeder Seite neben dem Lautsprecher (im Erststart allein): Standard dunkel, nur auf diesem Gerät gemerkt (orbista.theme, nicht im Reise-Code)
 const themeBtn=()=>`<button class="iconbtn themebtn"></button>`;
 const isDark=()=>document.documentElement.dataset.theme==="dark";
 function renderTheme(){const d=isDark();document.querySelectorAll(".themebtn").forEach(b=>{b.setAttribute("aria-pressed",String(d));b.setAttribute("aria-label",d?"Hellen Modus einschalten":"Dunklen Modus einschalten");
