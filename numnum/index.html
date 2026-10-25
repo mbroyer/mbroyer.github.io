@@ -111,7 +111,7 @@ body{flex-direction:column;justify-content:flex-start;gap:48px;padding:40px 16px
     return a.length;
   }
   function ask(msg){var n=pick();w.hidden=true;f.hidden=false;document.getElementById('pv').hidden=!!n; // wer schon gespielt hat, braucht die Vorschau nicht
-    document.getElementById('mb').hidden=false;e.textContent=msg||'';b.disabled=false;if(!k.childNodes.length)c.focus();}
+    document.getElementById('mb').hidden=false;e.textContent=msg||'';b.disabled=false;if(msg&&!k.childNodes.length)c.focus();} // nicht beim Laden fokussieren, sonst springt die Seite zum Eingabefeld
   function fail(err){var m={code:'Der Code stimmt nicht.',net:'Keine Verbindung. Bitte später nochmal versuchen.'};ask(m[err&&err.message]||'Das hat nicht geklappt. Bitte nochmal versuchen.');}
   function remote(code){
     return fetch(WORKER+'/stand/'+encodeURIComponent(code),{cache:'no-store'}).then(function(r){

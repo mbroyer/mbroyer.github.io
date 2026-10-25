@@ -139,7 +139,7 @@ body{flex-direction:column;justify-content:flex-start;gap:48px;padding:40px 16px
       return start(code,j.schluessel);
     });
   }
-  function ask(msg,pre){w.hidden=true;f.hidden=false;document.getElementById('pv').hidden=false;document.getElementById('mb').hidden=false;e.textContent=msg||'';b.disabled=false;if(pre)c.value=pre;c.focus();}
+  function ask(msg,pre){w.hidden=true;f.hidden=false;document.getElementById('pv').hidden=false;document.getElementById('mb').hidden=false;e.textContent=msg||'';b.disabled=false;if(pre)c.value=pre;if(msg)c.focus();} // nicht beim Laden fokussieren, sonst springt die Seite zum Eingabefeld
   function fail(code){
     return function(x){
       var m=x&&x.message;
