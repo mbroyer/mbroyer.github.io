@@ -570,6 +570,8 @@ body{padding-bottom:calc(104px + env(safe-area-inset-bottom,0px))}
 .hrow .ic{width:44px;height:44px;border-radius:50%;background:var(--btn);color:var(--btn-ink);display:grid;place-items:center;flex:none}
 .hrow .ic svg{width:20px;height:20px}
 .hrt{display:flex;flex-direction:column;min-width:0;flex:1}.hrt b{font-family:var(--f-display);font-weight:800;font-size:1.1rem}.hrt small{font-size:.85rem;color:var(--muted);font-weight:600}
+.lcard{display:flex;flex-direction:column;gap:14px}.tlist{display:flex;flex-direction:column;gap:8px}.tpick{display:flex;align-items:center;gap:12px;width:100%;text-align:left;font:inherit;color:var(--ink);background:var(--bg);border:2px solid var(--line);border-radius:14px;padding:10px 12px;cursor:pointer}.tpick[aria-pressed="true"]{border-color:var(--ink)}.tbox{width:24px;height:24px;flex:none;border-radius:7px;border:2px solid var(--line);display:grid;place-items:center;font-weight:800;font-size:.85rem}.tpick[aria-pressed="true"] .tbox{background:var(--ink);border-color:var(--ink);color:var(--bg)}.ttx{display:flex;flex-direction:column;min-width:0}.ttx small{color:var(--muted,inherit);opacity:.75}
+.lfoto{display:flex;flex-direction:column;gap:8px}.lfoto .btn{text-align:center;cursor:pointer}.lfoto .btn.busy{opacity:.6;pointer-events:none}.lcard .note{margin:0}.lcard div.lbl{font-weight:800;font-size:.9rem;margin-bottom:-6px}
 .hrow .ar{font-weight:800;font-size:1.5rem;line-height:1}
 .hrow:active{transform:scale(.99)}
 .moncard{background:var(--c4);border-radius:26px;padding:18px;display:flex;flex-direction:column;gap:10px}
@@ -673,6 +675,13 @@ body{padding-bottom:calc(104px + env(safe-area-inset-bottom,0px))}
       </div>
 
       <button class="hrow" id="newHw" type="button"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h6a2 2 0 0 1 2 2v13a2 2 0 0 0-2-2H4zM20 5h-6a2 2 0 0 0-2 2v13a2 2 0 0 1 2-2h6z"/></svg></span><span class="hrt"><b id="newHwT">Hausaufgabe eingeben</b><small>Seiten aus dem Vokabelteil wählen</small></span><span class="ar" aria-hidden="true">›</span></button>
+
+      <button class="hrow" id="newList" type="button"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></span><span class="hrt"><b id="newListT">Eigene Vokabeln</b><small id="newListS">Foto machen oder eintippen</small></span><span class="ar" aria-hidden="true">›</span></button>
+
+      <div class="card" id="testCard" hidden>
+        <div class="eyebrow">Für den Test</div>
+        <div id="testBox" class="hwlist"></div>
+      </div>
 
       <div class="moncard">
         <div class="mchead"><div class="eyebrow">Deine Monster</div><div class="mcnums"><b id="stWords">0</b> Wörter · <b id="stAcc">–</b> Treffer</div></div>
@@ -792,6 +801,46 @@ body{padding-bottom:calc(104px + env(safe-area-inset-bottom,0px))}
         <button class="btn wide" id="startBtn" type="button">Los geht's</button>
         <button class="btn ghost wide" id="startAll" type="button" hidden>Nur unsichere üben</button>
         <p class="note" id="startHint" hidden></p>
+      </div>
+    </section>
+
+    <!-- Eigene Liste anlegen oder bearbeiten -->
+    <section id="vList" class="app" hidden>
+      <div class="qtop"><button class="qback" id="lBack" type="button">Zurück</button><div class="qcount" id="lHead">Neue Hausaufgabe</div></div>
+      <div class="card lcard">
+        <label class="lbl" for="lName">Name der Hausaufgabe
+          <input class="input" id="lName" type="text" maxlength="40" autocomplete="off" placeholder="zum Beispiel Unit 3 Teil B">
+        </label>
+        <div class="lbl" id="lLangQ">Sprache</div>
+        <div class="units" id="lLang" role="group" aria-labelledby="lLangQ"></div>
+        <div class="lfoto" id="lFoto" hidden>
+          <label class="btn ghost wide" id="lFotoBtn" for="lFile">Foto von Zettel oder Buchseite</label>
+          <input id="lFile" type="file" accept="image/*" hidden>
+          <p class="note" id="lFotoMsg" role="status"></p>
+        </div>
+        <label class="lbl" for="lWords">Vokabeln, eine pro Zeile
+          <textarea class="input" id="lWords" rows="10" spellcheck="false" autocapitalize="none" autocorrect="off"></textarea>
+        </label>
+        <p class="note">Links die Fremdsprache, rechts Deutsch, dazwischen ein =. Aus Excel, Word oder Quizlet kopierte Listen gehen auch. Gibt es mehrere richtige Antworten, trenn sie mit /.</p>
+        <p class="note" id="lInfo" aria-live="polite"></p>
+        <div class="bkrow"><button class="bmchip" id="lSwap" type="button">Seiten tauschen</button></div>
+        <button class="btn wide" id="lSave" type="button">Speichern</button>
+        <button class="btn ghost wide" id="lDel" type="button" hidden>Hausaufgabe löschen</button>
+      </div>
+    </section>
+
+    <!-- Test vorbereiten: Hausaufgaben ankreuzen, Datum optional -->
+    <section id="vTest" class="app" hidden>
+      <div class="qtop"><button class="qback" id="tBack" type="button">Zurück</button><div class="qcount">Test vorbereiten</div></div>
+      <div class="card lcard">
+        <div class="lbl" id="tListQ">Was kommt im Test dran?</div>
+        <div class="tlist" id="tList" role="group" aria-labelledby="tListQ"></div>
+        <p class="note" id="tInfo" aria-live="polite"></p>
+        <label class="lbl" for="tDate">Wann ist der Test? (freiwillig)
+          <input class="input" id="tDate" type="date">
+        </label>
+        <button class="btn wide" id="tSave" type="button">Speichern</button>
+        <button class="btn ghost wide" id="tDel" type="button" hidden>Test entfernen</button>
       </div>
     </section>
 
@@ -1323,8 +1372,21 @@ function titleFor(L){return TITLES[Math.min(L-1,TITLES.length-1)];}
 
 /* Daten und Speicher */
 var BOOK=buildBook(BOOK_TXT);
+/* Ohne Buchvokabeln (Seite für Kinder mit anderem Buch): nur eigene Listen */
+var NOBOOK=!BOOK.length;
+/* Eigene Listen: jede Liste bekommt eine eigene Seitennummer ab LB, so funktionieren Auswahl, Runden und Fortschritt wie bei Buchseiten */
+var LB=1000;
+var LANGS=[{id:'en',n:'Englisch',adj:'englische',v:'en-GB'},{id:'fr',n:'Französisch',adj:'französische',v:'fr-FR'},{id:'es',n:'Spanisch',adj:'spanische',v:'es-ES'},{id:'la',n:'Latein',adj:'lateinische',v:''}];
+function langOf(id){for(var i=0;i<LANGS.length;i++)if(LANGS[i].id===id)return LANGS[i];return LANGS[0];}
+function listOf(vp){for(var i=0;i<S.lists.length;i++)if(LB+S.lists[i].n===vp)return S.lists[i];return null;}
+function isListSel(sel){return Array.isArray(sel)&&sel.length>0&&sel.every(function(n){return n>=LB;});}
+function listWords(l){return S.custom.filter(function(w){return w.vp===LB+l.n;});}
+function selName(sel){
+  if(isListSel(sel))return sel.map(function(n){var l=listOf(n);return l?l.name:'Gelöschte Liste';}).join(' + ');
+  return 'Seite '+formatPages(sel);
+}
 function defaults(){
-  return {xp:0,streak:0,last:null,bestCombo:0,answered:0,correct:0,sessions:0,sound:true,sel:'all',until:null,len:10,cloze:'mix',speak:true,voiceName:'',box:{},miss:{},hit:{},custom:[],off:{},hw:[],flags:{},theme:'auto',pal:'stein',beatEdits:{}};
+  return {xp:0,streak:0,last:null,bestCombo:0,answered:0,correct:0,sessions:0,sound:true,sel:'all',until:null,len:10,cloze:'mix',speak:true,voiceName:'',box:{},miss:{},hit:{},custom:[],lists:[],test:null,off:{},hw:[],flags:{},theme:'auto',pal:'stein',beatEdits:{}};
 }
 function load(){
   var o=null;
@@ -1335,7 +1397,7 @@ function load(){
   /* alte Farbthemen: Hellblau wird Hell, alle dunklen Themen werden Dunkel */
   if(o.theme!=='auto'&&o.theme!=='hell'&&o.theme!=='dunkel')o.theme='dunkel';
   if(typeof o.pal!=='string')o.pal='stein';
-  if(o.sel!=='all'&&!Array.isArray(o.sel))o.sel='all';
+  if(o.sel!=='all'&&o.sel!=='test'&&!Array.isArray(o.sel))o.sel='all';
   if(!o.off||typeof o.off!=='object')o.off={};
   if(!o.miss||typeof o.miss!=='object')o.miss={};
   if(!o.hit||typeof o.hit!=='object')o.hit={};
@@ -1353,6 +1415,11 @@ function load(){
     delete o.words;delete o.unit;
   }
   o.custom.forEach(function(w){if(w.vp===undefined)w.vp=null;});
+  if(!Array.isArray(o.lists))o.lists=[];
+  /* jede eigene Liste ist eine Hausaufgabe */
+  o.lists.forEach(function(l){var vp=1000+l.n;if(!o.hw.some(function(h){return h.sel.length===1&&h.sel[0]===vp;}))o.hw.push({sel:[vp],until:null,at:l.at||Date.now()});});
+  if(o.test&&(typeof o.test!=='object'||!Array.isArray(o.test.keys)))o.test=null;
+  if(o.sel==='test'&&!o.test)o.sel='all';
   return o;
 }
 var S=load();
@@ -1425,7 +1492,7 @@ function save(){
   S.box=box;
   var miss={};BOOK.forEach(function(w){if(w.miss)miss[w.id]=w.miss;});S.miss=miss;
   var hit={};BOOK.forEach(function(w){if(w.hit)hit[w.id]=w.hit;});S.hit=hit;
-  var o={xp:S.xp,streak:S.streak,last:S.last,bestCombo:S.bestCombo,answered:S.answered,correct:S.correct,sessions:S.sessions,sound:S.sound,speak:S.speak,voiceName:S.voiceName,cloze:S.cloze,sel:S.sel,until:S.until,len:S.len,box:box,miss:miss,hit:hit,custom:S.custom,off:S.off,hw:S.hw,flags:S.flags,theme:S.theme,pal:S.pal,beatEdits:S.beatEdits,ts:Date.now()};
+  var o={xp:S.xp,streak:S.streak,last:S.last,bestCombo:S.bestCombo,answered:S.answered,correct:S.correct,sessions:S.sessions,sound:S.sound,speak:S.speak,voiceName:S.voiceName,cloze:S.cloze,sel:S.sel,until:S.until,len:S.len,box:box,miss:miss,hit:hit,custom:S.custom,lists:S.lists,test:S.test,off:S.off,hw:S.hw,flags:S.flags,theme:S.theme,pal:S.pal,beatEdits:S.beatEdits,ts:Date.now()};
   try{localStorage.setItem(KEY,JSON.stringify(o));}catch(e){}
   if(window.VK&&window.VK.saved)window.VK.saved();
 }
@@ -1841,15 +1908,16 @@ function monsterSound(stg){
 }
 
 /* Ansichten */
-var VIEWS=['vHome','vSetup','vQuiz','vResult','vBeats'],bmLeave=null;
+var VIEWS=['vHome','vSetup','vQuiz','vResult','vBeats','vList','vTest'],bmLeave=null;
 function show(id){
   if(id!=='vBeats'&&bmLeave)bmLeave();
+  if(id!=='vQuiz'&&id!=='vResult')spLang='en';
   VIEWS.forEach(function(v){$('#'+v).hidden=(v!==id);});
   navSync(id);
   window.scrollTo(0,0);
 }
 /* Navileiste unten: Start, Üben, Melodymaker, Ansicht. Im Quiz und im Ergebnis ausgeblendet. */
-var NAV={vHome:'home',vSetup:'ueben',vBeats:'beats'};
+var NAV={vHome:'home',vSetup:'ueben',vBeats:'beats',vList:'ueben',vTest:'ueben'};
 function navSync(id){
   var t=$('#tabs');if(!t)return;
   t.hidden=(id==='vQuiz'||id==='vResult');
@@ -1859,7 +1927,7 @@ function navSync(id){
 (function(){
   var t=$('#tabs');if(!t)return;
   var map={home:'#homeBtn',ueben:'#newHw',beats:'#beatBtn',ansicht:'#themeBtn'};
-  t.querySelectorAll('button').forEach(function(b){b.addEventListener('click',function(e){e.stopPropagation();var x=$(map[b.dataset.go]);if(x)x.click();});});
+  t.querySelectorAll('button').forEach(function(b){b.addEventListener('click',function(e){e.stopPropagation();if(b.dataset.go==='ueben'&&NOBOOK){renderHome();if(heroGo)heroGo();return;}var x=$(map[b.dataset.go]);if(x)x.click();});});
   var cur=VIEWS.filter(function(v){var e=$('#'+v);return e&&!e.hidden;})[0];navSync(cur||'vHome');
 })();
 function vpages(){
@@ -1868,7 +1936,7 @@ function vpages(){
   return m.sort(function(a,b){return a-b;});
 }
 /* Wörter der gewählten Seiten, ohne die abgewählten */
-function lastPage(){return S.sel==='all'?null:Math.max.apply(null,S.sel);}
+function lastPage(){return S.sel==='all'||S.sel==='test'?null:Math.max.apply(null,S.sel);}
 function lastPageAreas(){
   var lp=lastPage(),out=[];
   if(lp==null)return out;
@@ -1883,7 +1951,7 @@ function poolFor(sel,until){
     return true;
   });
 }
-function pagePool(){return poolFor(S.sel,S.until);}
+function pagePool(){return S.sel==='test'?testPool():poolFor(S.sel,S.until);}
 function pool(){
   return pagePool().filter(function(w){return !S.off[w.id];});
 }
@@ -1902,12 +1970,23 @@ function renderHeader(){
 /* Seitenwahl: Eingabefeld, Seiten-Chips, Rundenlänge, Startknopf */
 function renderSelection(skipInput){
   var sel=S.sel;
+  if(sel==='test'){
+    var tpp=testPool(),tp=pool(),tsure=tpp.filter(function(w){return w.box>=SURE;}).length,twn=wobbly(tp).length;
+    curStep='st3';['st1','st2','st3'].forEach(function(x){$('#'+x).hidden=(x!=='st3');});
+    $('#sCount').textContent='';$('#sDots').textContent='';
+    $('#sumTitle').textContent=testWhen();
+    $('#sumInfo').textContent=testHws().map(hwName).join(', ')+' · '+tpp.length+' Wörter · '+(tsure===tpp.length?'alle sicher ✓':tsure+' sicher');
+    $('#pgProg').hidden=true;$('#roundInfo').textContent='';
+    $('#startBtn').disabled=!tp.length;$('#startBtn').textContent=tp.length?'Los geht\'s':'Keine Wörter ausgewählt';
+    $('#startAll').hidden=!twn;$('#startAll').textContent='Nur unsichere üben ('+twn+')';
+    return;
+  }
   if(sel!=='all'){
     sel=sel.filter(function(n){return n>0;});
     if(!sel.length)sel='all';
     S.sel=sel;
   }
-  if(!skipInput)$('#pgInput').value=sel==='all'?'':formatPages(sel);
+  if(!skipInput)$('#pgInput').value=sel==='all'||isListSel(sel)?'':formatPages(sel);
 
   var ac=$('#areaChips'),aw=$('#untilWrap');ac.textContent='';
   var la=lastPageAreas();
@@ -1925,7 +2004,8 @@ function renderSelection(skipInput){
 
   var pp=pagePool(),p=pool(),n=roundSize(p);
   var parts=[];
-  if(sel==='all')parts.push('Alle Seiten: '+pp.length+' Wörter.');
+  if(sel==='all')parts.push((NOBOOK?'Alle Listen: ':'Alle Seiten: ')+pp.length+' Wörter.');
+  else if(isListSel(sel))parts.push(selName(sel)+': '+pp.length+(pp.length===1?' Wort.':' Wörter.'));
   else{
     parts.push('Seite '+formatPages(sel)+': '+pp.length+(pp.length===1?' Wort.':' Wörter.'));
     var have=vpages();
@@ -1933,7 +2013,7 @@ function renderSelection(skipInput){
     if(missing.length)parts.push('Seite '+formatPages(missing)+' gibt es im Vokabelteil nicht (in der Demo nur 230 und 231).');
   }
   $('#pgInfo').textContent=parts.join(' ');
-  $('#sumTitle').textContent=sel==='all'?'Alle Wörter':'Seite '+formatPages(sel)+(S.until?' · nur bis Ende '+AREA_LABEL[S.until]:'');
+  $('#sumTitle').textContent=sel==='all'?'Alle Wörter':selName(sel)+(S.until?' · nur bis Ende '+AREA_LABEL[S.until]:'');
   var pg=$('#pgProg'),sure=pp.filter(function(w){return w.box>=SURE;}).length;
   pg.hidden=true;
   $('#sumInfo').textContent=pp.length+(pp.length===1?' Wort':' Wörter')+(pp.length?' · '+(sure===pp.length?'alle sicher ✓':sure+' sicher'):'');
@@ -1952,7 +2032,7 @@ function renderSelection(skipInput){
   if(ids.indexOf(curStep)<0)curStep=ids[ids.length-1];
   var ix=ids.indexOf(curStep);
   ['st1','st2','st3'].forEach(function(s){$('#'+s).hidden=(s!==curStep);});
-  $('#sCount').textContent='Schritt '+(ix+1)+' von '+ids.length;
+  $('#sCount').textContent=ids.length>1?'Schritt '+(ix+1)+' von '+ids.length:'';
   var dots=$('#sDots');dots.textContent='';
   ids.forEach(function(s,i){dots.appendChild(el('i',i<=ix?'on':null));});
   var n1=$('#stNext1');
@@ -1961,6 +2041,7 @@ function renderSelection(skipInput){
 }
 var curStep='st1';
 function stepIds(){
+  if(isListSel(S.sel)||NOBOOK||S.sel==='test')return ['st3'];
   var ids=['st1'];
   if(S.sel!=='all'&&lastPageAreas().length>1)ids.push('st2');
   ids.push('st3');
@@ -1969,7 +2050,7 @@ function stepIds(){
 function openSetup(step){curStep=step;renderSelection();show('vSetup');}
 
 function hwName(h){
-  return 'Seite '+formatPages(h.sel)+(h.until?' · nur bis Ende '+AREA_LABEL[h.until]:'');
+  return selName(h.sel)+(h.until?' · nur bis Ende '+AREA_LABEL[h.until]:'');
 }
 function hwSame(h,sel,until){
   return sel!=='all'&&formatPages(h.sel)===formatPages(sel)&&(h.until||null)===(until||null);
@@ -2070,10 +2151,34 @@ function wordDetails(ws){
   draw();
   return det;
 }
-/* Große Karte oben: die erste offene Hausaufgabe, sonst neue eingeben */
+/* Test: mehrere Hausaufgaben zusammen, optional mit Datum. S.test={keys:[hwKey...],date:'YYYY-MM-DD'|null} */
+function hwKey(h){return formatPages(h.sel)+'|'+(h.until||'');}
+function testHws(){if(!S.test)return [];return S.hw.filter(function(h){return S.test.keys.indexOf(hwKey(h))>=0;});}
+function testPool(){
+  var out=[],seen={};
+  testHws().forEach(function(h){poolFor(h.sel,h.until||null).forEach(function(w){if(!seen[w.id]){seen[w.id]=1;out.push(w);}});});
+  return out;
+}
+function testDays(){if(!S.test||!S.test.date)return null;return dayDiff(today(),S.test.date);}
+function testWhen(){
+  var d=testDays();if(d===null)return 'Dein Test';
+  var dt=new Date(S.test.date+'T00:00:00'),txt=['So','Mo','Di','Mi','Do','Fr','Sa'][dt.getDay()]+', '+dt.getDate()+'.'+(dt.getMonth()+1)+'.';
+  return d<0?'Test am '+txt+' (vorbei)':d===0?'Test heute':d===1?'Test morgen':'Test am '+txt+' · noch '+d+' Tage';
+}
+function startTest(){S.sel='test';S.until=null;S.off={};save();openSetup('st3');}
+/* Große Karte oben: ein naher Test, sonst die neueste offene Hausaufgabe, sonst neue eingeben */
 var heroGo=null;
 function renderHero(items){
-  var open=null,ws=null;
+  var open=null,ws=null,td=testDays(),tp=testPool();
+  if(tp.length&&td!==null&&td>=0&&td<=7&&tp.some(function(w){return w.box<SURE;})){
+    var ts=tp.filter(function(x){return x.box>=SURE;}).length;
+    $('#heroK').textContent=testWhen().replace(/ · .*/,'');
+    $('#heroT').textContent=(tp.length-ts)+(tp.length-ts===1?' Wort':' Wörter')+' für den Test';
+    $('#heroS').textContent=ts+' von '+tp.length+' sicher'+(td>1?' · noch '+td+' Tage':'');
+    $('#heroGo').textContent='Für den Test üben';
+    heroGo=startTest;
+    return;
+  }
   items.some(function(it){var w=poolFor(it.h.sel,it.h.until||null),s=w.filter(function(x){return x.box>=SURE;}).length;if(!w.length||s<w.length){open=it;ws=w;return true;}return false;});
   if(!open&&items.length){open=items[0];ws=poolFor(open.h.sel,open.h.until||null);}
   if(open){
@@ -2083,6 +2188,12 @@ function renderHero(items){
     $('#heroS').textContent=left?sure+' von '+ws.length+' sicher':'Alles sicher. Nochmal üben?';
     $('#heroGo').textContent=left?'Los geht\'s':'Nochmal üben';
     heroGo=function(){S.sel=open.h.sel.slice();S.until=open.h.until||null;S.off={};save();openSetup('st3');};
+  }else if(NOBOOK){
+    $('#heroK').textContent='Los geht\'s';
+    $('#heroT').textContent='Deine erste Hausaufgabe';
+    $('#heroS').textContent=FOTO?'Fotografier deine Vokabeln oder tipp sie ein.':'Tipp die Vokabeln ein, die du lernen musst, oder füg sie ein.';
+    $('#heroGo').textContent='Vokabeln hinzufügen';
+    heroGo=function(){openList(null);};
   }else{
     $('#heroK').textContent='Los geht\'s';
     $('#heroT').textContent='Neue Hausaufgabe';
@@ -2092,34 +2203,95 @@ function renderHero(items){
   }
 }
 $('#heroGo').addEventListener('click',function(){if(heroGo)heroGo();});
+/* Hausaufgaben: aus dem Buch (Seiten) oder eigene Vokabeln (Foto, eintippen). Neueste zuerst. */
 function renderHw(){
   var box=$('#hwList');box.textContent='';
-  var items=S.hw.map(function(h,idx){return {h:h,idx:idx,saved:true};});
+  var items=S.hw.map(function(h,idx){return {h:h,idx:idx,saved:true};}).reverse();
   $('#hwCard').hidden=!items.length;
-  $('#newHwT').textContent=items.length?'Andere Hausaufgabe':'Hausaufgabe eingeben';
+  $('#newHwT').textContent='Hausaufgabe aus dem Buch';
+  $('#newHw').hidden=NOBOOK;
+  $('#newListT').textContent=NOBOOK?'Neue Hausaufgabe':'Eigene Vokabeln';
+  $('#newListS').textContent=FOTO?'Foto machen oder eintippen':'Eintippen oder einfügen';
   renderHero(items);
+  renderTest();
   items.forEach(function(it){
-    var h=it.h;
+    var h=it.h,lst=isListSel(h.sel)?listOf(h.sel[0]):null;
     var ws=poolFor(h.sel,h.until||null),sure=ws.filter(function(w){return w.box>=SURE;}).length;
     var done=ws.length>0&&sure===ws.length;
     var row=el('div','hw'+(done?' done':''));
     row.appendChild(el('b','hwt',hwName(h)));
-    row.appendChild(el('span','hwn',done?'Geschafft! Alle '+ws.length+' Wörter sicher.':'Sicher: '+sure+' von '+ws.length+' Wörtern ('+(ws.length?Math.round(sure/ws.length*100):0)+'%)'));
+    row.appendChild(el('span','hwn',(lst&&(NOBOOK||lst.lang!=='en')?langOf(lst.lang).n+' · ':'')+(done?'Geschafft! Alle '+ws.length+' Wörter sicher.':'Sicher: '+sure+' von '+ws.length+' Wörtern ('+(ws.length?Math.round(sure/ws.length*100):0)+'%)')));
     var bar=el('div','bar');var fill=el('i');fill.style.width=(ws.length?Math.round(sure/ws.length*100):0)+'%';bar.appendChild(fill);row.appendChild(bar);
     var det=wordDetails(ws);
     var acts=el('div','hwa');
-    var go=el('button','btn small',done?'Nochmal üben':'Weiter üben');go.type='button';
+    var go=el('button','btn small',done?'Nochmal üben':'Weiter üben');go.type='button';go.disabled=!ws.length;
     go.addEventListener('click',function(){S.sel=h.sel.slice();S.until=h.until||null;S.off={};save();openSetup('st3');});
     acts.appendChild(go);
-    var del=el('button','btn small ghost','Löschen');del.type='button';
-    del.addEventListener('click',function(){
-      askConfirm('Hausaufgabe wirklich löschen?','„'+hwName(h)+'“ wird aus der Liste entfernt. Dein Lernstand der Wörter bleibt erhalten.','Ja, löschen',function(){S.hw.splice(it.idx,1);save();renderHome();});
-    });
-    acts.appendChild(del);
+    if(lst){
+      var ed=el('button','btn small ghost','Bearbeiten');ed.type='button';
+      ed.addEventListener('click',function(){openList(lst);});
+      acts.appendChild(ed);
+    }else{
+      var del=el('button','btn small ghost','Löschen');del.type='button';
+      del.addEventListener('click',function(){
+        askConfirm('Hausaufgabe wirklich löschen?','„'+hwName(h)+'“ wird aus der Liste entfernt. Dein Lernstand der Wörter bleibt erhalten.','Ja, löschen',function(){S.hw.splice(it.idx,1);save();renderHome();});
+      });
+      acts.appendChild(del);
+    }
     row.appendChild(acts);
     row.appendChild(det);
     box.appendChild(row);
   });
+}
+/* Karte „Für den Test“ */
+function renderTest(){
+  var box=$('#testBox');box.textContent='';
+  var c=$('#testCard');c.hidden=S.hw.length<2&&!S.test;
+  if(c.hidden)return;
+  var tp=testPool();
+  if(!S.test||!tp.length){
+    box.appendChild(el('p','note','Steht ein Vokabeltest an? Wähl die Hausaufgaben aus, die drankommen, dann übst du sie zusammen.'));
+    var b=el('button','btn small','Test vorbereiten');b.type='button';b.addEventListener('click',openTest);
+    var a0=el('div','hwa');a0.appendChild(b);box.appendChild(a0);
+    return;
+  }
+  var sure=tp.filter(function(w){return w.box>=SURE;}).length,pc=Math.round(sure/tp.length*100),d=testDays();
+  var row=el('div','hw'+(sure===tp.length?' done':''));
+  row.appendChild(el('b','hwt',testWhen()));
+  row.appendChild(el('span','hwn',testHws().map(hwName).join(', ')));
+  row.appendChild(el('span','hwn',sure===tp.length?'Alle '+tp.length+' Wörter sicher. Gut vorbereitet!':'Sicher: '+sure+' von '+tp.length+' Wörtern ('+pc+'%)'));
+  var bar=el('div','bar');var fill=el('i');fill.style.width=pc+'%';bar.appendChild(fill);row.appendChild(bar);
+  var acts=el('div','hwa');
+  var go=el('button','btn small','Für den Test üben');go.type='button';go.addEventListener('click',startTest);acts.appendChild(go);
+  var ch=el('button','btn small ghost',d!==null&&d<0?'Neuer Test':'Ändern');ch.type='button';ch.addEventListener('click',openTest);acts.appendChild(ch);
+  row.appendChild(acts);
+  row.appendChild(wordDetails(tp));
+  box.appendChild(row);
+}
+/* Test einrichten: Hausaufgaben ankreuzen, Datum optional */
+var TK=null;
+function renderTestEd(){
+  var box=$('#tList');box.textContent='';
+  S.hw.slice().reverse().forEach(function(h){
+    var k=hwKey(h),n=poolFor(h.sel,h.until||null).length,on=TK.indexOf(k)>=0;
+    var b=el('button','tpick');b.type='button';b.setAttribute('aria-pressed',on?'true':'false');
+    b.appendChild(el('span','tbox',on?'✓':''));
+    var t=el('span','ttx');t.appendChild(el('b',null,hwName(h)));t.appendChild(el('small',null,n+(n===1?' Wort':' Wörter')));b.appendChild(t);
+    b.addEventListener('click',function(){var i=TK.indexOf(k);if(i>=0)TK.splice(i,1);else TK.push(k);renderTestEd();});
+    box.appendChild(b);
+  });
+  var cnt=0,seen={};
+  S.hw.forEach(function(h){if(TK.indexOf(hwKey(h))>=0)poolFor(h.sel,h.until||null).forEach(function(w){if(!seen[w.id]){seen[w.id]=1;cnt++;}});});
+  $('#tInfo').textContent=TK.length?TK.length+(TK.length===1?' Hausaufgabe':' Hausaufgaben')+' mit '+cnt+' Wörtern.':'Noch nichts ausgewählt.';
+  $('#tSave').disabled=!TK.length;
+}
+function openTest(){
+  TK=S.test?S.test.keys.filter(function(k){return S.hw.some(function(h){return hwKey(h)===k;});}):[];
+  var past=S.test&&testDays()!==null&&testDays()<0;
+  if(past)TK=[];
+  $('#tDate').value=S.test&&S.test.date&&!past?S.test.date:'';
+  $('#tDel').hidden=!S.test;
+  renderTestEd();show('vTest');
 }
 
 function renderHome(){
@@ -2280,8 +2452,18 @@ function englishVoices(){
       .sort(function(a,b){return voiceScore(b)-voiceScore(a);}).slice(0,14);
   }catch(e){return [];}
 }
+/* Sprache des gerade abgefragten Worts: Englisch mit Aufnahmen und gewählter Stimme, andere Sprachen mit einer Gerätestimme dieser Sprache */
+var spLang='en';
+function langVoice(){
+  var g=langOf(spLang);if(!g.v)return null;
+  try{
+    var vs=window.speechSynthesis.getVoices().filter(function(v){return String(v.lang).replace('_','-').toLowerCase().indexOf(spLang)===0;});
+    return vs.filter(function(v){return String(v.lang).replace('_','-')===g.v;})[0]||vs[0]||null;
+  }catch(e){return null;}
+}
 function deviceSpeak(list){
   if(!window.speechSynthesis||!window.SpeechSynthesisUtterance)return;
+  if(spLang!=='en')return langSpeak(list);
   try{
     pickVoice();
     var ss=window.speechSynthesis;
@@ -2295,6 +2477,22 @@ function deviceSpeak(list){
         u.lang=voice?voice.lang:'en-GB';
         if(voice)u.voice=voice;
         u.rate=0.9;u.pitch=1.05;
+        ss.speak(u);
+      });
+    },60);
+  }catch(e){}
+}
+function langSpeak(list){
+  var g=langOf(spLang);if(!g.v)return;
+  try{
+    var ss=window.speechSynthesis,lv=langVoice();
+    ss.cancel();
+    setTimeout(function(){
+      list.forEach(function(text){
+        var t=String(text).replace(/\([^)]*\)/g,' ').replace(/\s*\/\s*/g,', ').replace(/\s+/g,' ').trim();
+        if(!t)return;
+        var u=new window.SpeechSynthesisUtterance(t);
+        u.lang=lv?lv.lang:g.v;if(lv)u.voice=lv;u.rate=0.9;
         ss.speak(u);
       });
     },60);
@@ -2334,7 +2532,7 @@ function vDecode(i,cb){
 /* Eingebaute Aufnahmen (weibliche britische Stimme); fehlt eine Aufnahme, spricht die Gerätestimme */
 function speakList(list,force){
   if(!force&&!S.speak)return;
-  var tok=++speakTok,texts=list.map(speechText).filter(Boolean),i=0,idx=vIndex(),e=getAEL();
+  var tok=++speakTok,texts=list.map(spLang==='en'?speechText:String).filter(Boolean),i=0,idx=spLang==='en'?vIndex():{},e=getAEL();
   try{if(e){e.onended=null;e.onerror=null;e.pause();}}catch(x){}
   try{if(curSrc){curSrc.onended=null;curSrc.stop();curSrc=null;}}catch(x){}
   try{if(window.speechSynthesis)window.speechSynthesis.cancel();}catch(x){}
@@ -2425,9 +2623,10 @@ function renderQ(){
   var w=Q.cur.w,m=modeOf(Q.cur);
   var pf=m.dir==='ed'?'en':'de',af=m.dir==='ed'?'de':'en';
   var ans=w[af];
-  var myP=rawVars(w[pf]);
+  var myP=rawVars(w[pf]),lg=w.lang||'en';
+  spLang=lg;
   var same=S.words.filter(function(x){
-    return x===w||rawVars(x[pf]).some(function(v){return myP.indexOf(v)>=0;});
+    return x===w||(x.lang||'en')===lg&&rawVars(x[pf]).some(function(v){return myP.indexOf(v)>=0;});
   });
   if(Q.cur.czPick===undefined)Q.cur.czPick=S.cloze==='cloze'||(S.cloze==='mix'&&Math.random()<0.34);
   var cz=(Q.cur.czPick&&m.kind==='type'&&!Q.cur.help&&!Q.cur.retry)?pickCloze(w):null;
@@ -2447,9 +2646,9 @@ function renderQ(){
   if(cz){ansList=[cz.target];ans=cz.target;Q.alt=[];}
   var opts=null;
   if(m.kind==='mc'){
-    var inPool=pool();
+    var inPool=pool().filter(function(x){return (x.lang||'en')===lg;});
     var near=inPool.filter(function(x){return same.indexOf(x)<0;});
-    var rest=S.words.filter(function(x){return same.indexOf(x)<0&&inPool.indexOf(x)<0;});
+    var rest=S.words.filter(function(x){return same.indexOf(x)<0&&inPool.indexOf(x)<0&&(x.lang||'en')===lg;});
     var cands=shuffle(near).concat(shuffle(rest)).map(function(x){return x[af];});
     var seen=variants(ansList.join(' / ')),uniq=[];
     cands.forEach(function(o){
@@ -2462,7 +2661,7 @@ function renderQ(){
     if(opts.length<2){m.kind='type';opts=null;}
   }
   Q.mode=m;Q.ans=ansList.join(' / ');Q.own=ans;Q.cz=cz;
-  $('#qLabel').textContent=cz?'Lückensatz: Welches Wort fehlt?':m.kind==='type'?'Schreibe das englische Wort':(Q.cur.help?'Hilfe: Welches Wort ist richtig?':'Wähle das englische Wort');
+  $('#qLabel').textContent=cz?'Lückensatz: Welches Wort fehlt?':m.kind==='type'?'Schreibe das '+langOf(lg).adj+' Wort':(Q.cur.help?'Hilfe: Welches Wort ist richtig?':'Wähle das '+langOf(lg).adj+' Wort');
   $('#qHelp').hidden=m.kind!=='type'||S.words.length<2;
   $('#qHelp').textContent=Q.cur.tip?'Immer noch nicht: Auswahl':(cz?'Weiß ich nicht':'Tipp');
   clearTip();
@@ -2743,11 +2942,137 @@ function finish(){
   show('vResult');
 }
 
+/* Liste anlegen oder bearbeiten: Name, Sprache und Wörter (eine Zeile pro Wort, Fremdsprache = Deutsch) */
+var LE=null,LMAX=400;
+function listParse(){
+  var lines=$('#lWords').value.split(/\r?\n/),out=[],bad=[],seen={};
+  lines.forEach(function(line){
+    var t=line.trim();if(!t)return;
+    var r=parseImport(t,'x');
+    if(!r.length||r[0].en.length>120||r[0].de.length>120){bad.push(t);return;}
+    var k=r[0].en+'|'+r[0].de;if(seen[k])return;seen[k]=1;
+    out.push({en:r[0].en,de:r[0].de});
+  });
+  return {words:out,bad:bad};
+}
+function renderListEd(){
+  var lb=$('#lLang');lb.textContent='';
+  LANGS.forEach(function(g){
+    var b=el('button','unit',g.n);b.type='button';b.setAttribute('aria-pressed',LE.lang===g.id?'true':'false');
+    b.addEventListener('click',function(){LE.lang=g.id;renderListEd();});
+    lb.appendChild(b);
+  });
+  var r=listParse(),n=r.words.length,parts=[];
+  $('#lWords').placeholder=LE.lang==='fr'?'le chien = der Hund\nmanger = essen':LE.lang==='es'?'el perro = der Hund\ncomer = essen':LE.lang==='la'?'canis = der Hund\nvenire = kommen':'the cat = die Katze\nto sneeze = niesen';
+  parts.push(n?n+(n===1?' Wort erkannt.':' Wörter erkannt.'):'Noch keine Wörter.');
+  if(n>LMAX)parts.push('Höchstens '+LMAX+' Wörter pro Liste.');
+  if(r.bad.length)parts.push('Ohne = nicht verstanden: '+r.bad.slice(0,3).map(function(x){return '„'+(x.length>30?x.slice(0,30)+'…':x)+'“';}).join(', ')+(r.bad.length>3?' und '+(r.bad.length-3)+' weitere':'')+'.');
+  $('#lInfo').textContent=parts.join(' ');
+  $('#lSave').disabled=!n||n>LMAX;
+  $('#lSwap').hidden=!n;
+}
+function openList(l){
+  LE={l:l,lang:l?l.lang:(S.lists.length?S.lists[S.lists.length-1].lang:'en')};
+  $('#lHead').textContent=l?'Hausaufgabe bearbeiten':'Neue Hausaufgabe';
+  $('#lName').value=l?l.name:'';
+  $('#lWords').value=l?listWords(l).map(function(w){return w.en+' = '+w.de;}).join('\n'):'';
+  $('#lDel').hidden=!l;
+  $('#lFoto').hidden=!FOTO;fotoMsg('');
+  renderListEd();show('vList');
+}
+/* Foto auslesen: nur auf der Website (mit Code und Dienst). Das Bild wird im Gerät verkleinert, der Dienst liest die Wortpaare aus. Die Zeilen landen im Textfeld, damit das Kind sie prüfen kann. */
+var FOTO=!!(window.VK&&window.VK.dienst);
+function fotoMsg(t,bad){var m=$('#lFotoMsg');m.textContent=t||'';m.className='note'+(bad?' bkmsg-bad':'');}
+function shrink(file,cb){
+  var url=URL.createObjectURL(file),img=new Image();
+  img.onload=function(){
+    var mx=1600,w=img.naturalWidth,h=img.naturalHeight,k=Math.min(1,mx/Math.max(w,h));
+    var c=document.createElement('canvas');c.width=Math.round(w*k);c.height=Math.round(h*k);
+    c.getContext('2d').drawImage(img,0,0,c.width,c.height);URL.revokeObjectURL(url);
+    cb(c.toDataURL('image/jpeg',0.82).split(',')[1]);
+  };
+  img.onerror=function(){URL.revokeObjectURL(url);cb(null);};
+  img.src=url;
+}
+$('#lFile').addEventListener('change',function(){
+  var f=this.files&&this.files[0];this.value='';if(!f)return;
+  var btn=$('#lFotoBtn');btn.classList.add('busy');btn.textContent='Lese Vokabeln …';fotoMsg('Das dauert etwa eine halbe Minute.');
+  function done(t,bad){btn.classList.remove('busy');btn.textContent='Foto von Zettel oder Buchseite';fotoMsg(t,bad);}
+  shrink(f,function(b64){
+    if(!b64){done('Das Bild ließ sich nicht öffnen.',true);return;}
+    fetch(window.VK.dienst+'/foto/'+encodeURIComponent(window.VK.code),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({bild:b64,sprache:LE.lang})})
+      .then(function(r){return r.json().catch(function(){return {};}).then(function(j){j.status=r.status;return j;});})
+      .then(function(j){
+        if(j.status===429){done('Für diesen Monat sind alle '+(j.limit||'')+' Fotos verbraucht. Du kannst die Wörter aber eintippen.',true);return;}
+        if(j.status!==200||!j.woerter){done(j.fehler||'Das Auslesen hat nicht geklappt. Bitte nochmal versuchen.',true);return;}
+        if(!j.woerter.length){done('Auf dem Foto wurden keine Vokabeln gefunden. Am besten gerade von oben und gut beleuchtet fotografieren.',true);return;}
+        var ta=$('#lWords'),cur=ta.value.trim();
+        if(!cur&&j.sprache&&j.sprache!==LE.lang)LE.lang=j.sprache;
+        if(j.titel&&!$('#lName').value.trim())$('#lName').value=String(j.titel).slice(0,40);
+        ta.value=(cur?cur+'\n':'')+j.woerter.map(function(w){return w.f+' = '+w.d;}).join('\n');
+        renderListEd();
+        done(j.woerter.length+(j.woerter.length===1?' Wort':' Wörter')+' gelesen. Bitte prüfen und Fehler direkt im Textfeld verbessern. Noch '+j.uebrig+' Fotos in diesem Monat.');
+      })
+      .catch(function(){done('Keine Verbindung. Bitte später nochmal versuchen.',true);});
+  });
+});
+$('#newList').addEventListener('click',function(){openList(null);});
+$('#tBack').addEventListener('click',function(){renderHome();show('vHome');});
+$('#tSave').addEventListener('click',function(){
+  if(!TK.length)return;
+  var d=$('#tDate').value;
+  S.test={keys:TK.slice(),date:/^\d{4}-\d{2}-\d{2}$/.test(d)?d:null};
+  save();renderHome();show('vHome');
+});
+$('#tDel').addEventListener('click',function(){
+  askConfirm('Test entfernen?','Die Hausaufgaben und dein Lernstand bleiben erhalten.','Ja, entfernen',function(){S.test=null;if(S.sel==='test')S.sel='all';save();renderHome();show('vHome');});
+});
+$('#lBack').addEventListener('click',function(){renderHome();show('vHome');});
+$('#lWords').addEventListener('input',function(){renderListEd();});
+$('#lSwap').addEventListener('click',function(){
+  $('#lWords').value=listParse().words.map(function(w){return w.de+' = '+w.en;}).join('\n');
+  renderListEd();
+});
+$('#lSave').addEventListener('click',function(){
+  var r=listParse();if(!r.words.length||r.words.length>LMAX)return;
+  var l=LE.l,isNew=!l;
+  if(isNew){
+    var n=0;S.lists.forEach(function(x){if(x.n>n)n=x.n;});
+    l={n:n+1,name:'',lang:LE.lang,at:Date.now()};S.lists.push(l);
+  }
+  l.name=$('#lName').value.trim().slice(0,40)||'Hausaufgabe '+l.n;l.lang=LE.lang;
+  /* Wörter, die gleich bleiben, behalten ihren Lernstand */
+  var vp=LB+l.n,old={};
+  listWords(l).forEach(function(w){old[w.en+'|'+w.de]=w;});
+  var ws=r.words.map(function(x){
+    var w=old[x.en+'|'+x.de]||{id:'c:'+uid(),en:x.en,de:x.de,bp:null,be:null,vp:vp,box:0,custom:true};
+    w.unit=l.name;w.lang=l.lang;return w;
+  });
+  S.custom=S.custom.filter(function(w){return w.vp!==vp;}).concat(ws);
+  rebuild();
+  if(isNew){S.hw.push({sel:[vp],until:null,at:Date.now()});S.sel=[vp];S.until=null;S.off={};save();openSetup('st3');}
+  else{save();renderHome();show('vHome');}
+});
+$('#lDel').addEventListener('click',function(){
+  var l=LE&&LE.l;if(!l)return;
+  var vp=LB+l.n,cnt=listWords(l).length;
+  askConfirm('Hausaufgabe wirklich löschen?','„'+l.name+'“ mit '+cnt+(cnt===1?' Wort':' Wörtern')+' wird gelöscht, auch der Lernstand dieser Wörter.','Ja, löschen',function(){
+    S.lists=S.lists.filter(function(x){return x!==l;});
+    S.custom=S.custom.filter(function(w){return w.vp!==vp;});
+    S.hw=S.hw.filter(function(h){return h.sel.indexOf(vp)<0;});
+    if(S.test){S.test.keys=S.test.keys.filter(function(k){return k!==String(vp)+'|';});if(!S.test.keys.length)S.test=null;}
+    if(S.sel==='test'&&!S.test)S.sel='all';
+    if(Array.isArray(S.sel)&&S.sel.indexOf(vp)>=0){S.sel='all';S.until=null;}
+    rebuild();save();renderHome();show('vHome');
+  });
+});
+if(NOBOOK){var bm=$('.bkman');while(bm){bm.hidden=true;bm=bm.nextElementSibling;}}
+
 /* Events */
 $('#homeBtn').addEventListener('click',function(){Q=null;renderHome();show('vHome');});
 $('#soundBtn').addEventListener('click',function(){S.sound=!S.sound;save();renderHeader();if(S.sound)beep([660]);});
 function autoSaveHw(){
-  if(S.sel==='all')return;
+  if(S.sel==='all'||S.sel==='test'||isListSel(S.sel))return;
   if(!S.hw.some(function(h){return hwSame(h,S.sel,S.until);}))S.hw.push({sel:S.sel.slice(),until:S.until||null,at:Date.now()});
 }
 $('#startBtn').addEventListener('click',function(){S.len=10;autoSaveHw();save();startQuiz();});
