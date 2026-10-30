@@ -2530,6 +2530,34 @@ function vDecode(i,cb){
     if(pr&&pr.catch)pr.catch(function(){});
   }catch(e){cb(null);}
 }
+/* Aussprache für eigene Wörter: auf der Website erzeugt der Vokamon-Dienst einmal pro Wort eine Aufnahme (ElevenLabs).
+   Ist der Dienst nicht eingerichtet oder das Monatsbudget aufgebraucht, spricht die Gerätestimme. */
+var TON={},TONOFF=false;
+function tonSay(w){var t=w.en.split(' / ')[0];return (w.lang||'en')==='en'?speechText(t):String(t).replace(/\s+/g,' ').trim();}
+function tonOk(t){
+  if(TONOFF||!window.VK||!window.VK.dienst||spLang==='la')return false;
+  return S.custom.some(function(w){return (w.lang||'en')===spLang&&tonSay(w)===t;});
+}
+function tonGet(t,lg,cb){
+  var k=lg+'|'+t;
+  if(TON[k]!==undefined)return cb(TON[k]);
+  fetch(window.VK.dienst+'/ton/'+encodeURIComponent(window.VK.code)+'?l='+lg+'&t='+encodeURIComponent(t)).then(function(r){
+    if(r.status===429||r.status===503)TONOFF=true;
+    if(!r.ok)throw new Error(r.status);
+    return r.blob();
+  }).then(function(b){TON[k]=URL.createObjectURL(b);cb(TON[k]);}).catch(function(){cb(null);});
+}
+/* Nach dem Speichern einer Hausaufgabe die Aufnahmen schon im Hintergrund erzeugen lassen, damit sie beim Üben sofort da sind */
+function tonWarm(ws){
+  if(!window.VK||!window.VK.dienst)return;
+  var todo=ws.filter(function(w){return (w.lang||'en')!=='la';}),i=0;
+  (function next(){
+    if(TONOFF||i>=todo.length)return;
+    var w=todo[i++],lg=w.lang||'en',t=tonSay(w);
+    if(lg==='en'&&vIndex()[t]!=null)return next();
+    tonGet(t,lg,function(){next();});
+  })();
+}
 /* Eingebaute Aufnahmen (weibliche britische Stimme); fehlt eine Aufnahme, spricht die Gerätestimme */
 function speakList(list,force){
   if(!force&&!S.speak)return;
@@ -2551,6 +2579,20 @@ function speakList(list,force){
   function step(){
     if(tok!==speakTok||i>=texts.length)return;
     var n=idx[texts[i]];
+    if((n==null||!VB64[n])&&tonOk(texts[i])){
+      tonGet(texts[i],spLang,function(url){
+        if(tok!==speakTok)return;
+        if(!url||!e){dev();return;}
+        try{
+          e.onended=function(){if(tok===speakTok){i++;step();}};
+          e.onerror=function(){dev();};
+          e.src=url;
+          var p=e.play();
+          if(p&&p.catch)p.catch(function(){dev();});
+        }catch(x){dev();}
+      });
+      return;
+    }
     if(n==null||!VB64[n]){dev();return;}
     if(!e){viaWA(n);return;}
     try{
@@ -3046,6 +3088,7 @@ $('#lSave').addEventListener('click',function(){
   });
   S.custom=S.custom.filter(function(w){return w.vp!==vp;}).concat(ws);
   rebuild();
+  tonWarm(ws);
   if(isNew){S.hw.push({sel:[vp],until:null,at:Date.now()});S.sel=[vp];S.until=null;S.off={};save();openSetup('st3');}
   else{save();renderHome();show('vHome');}
 });
