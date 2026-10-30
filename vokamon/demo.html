@@ -175,7 +175,7 @@
   --good:#8fd0a5;--good-bg:#24392c;--bad:#f0a58c;--bad-bg:#45261d;--warn-bg:#3d3422;
   --c1:#2e4a48;--c2:#4a3e2a;--c3:#4f2f26;--c4:#2d3650;
   --mon-d:#d8cfbd;--mon-a:#efe6d2;--mon-sh:#000;--mon-sho:.45;
-  --tabs:#202126;--tabs-ink:#8d8a83;
+  --tabs:#2c2d33;--tabs-ink:#a29d92;--tabs-edge:#3d3e45;
   color-scheme:dark;
   }
 }
@@ -187,7 +187,7 @@
   --good:#8fd0a5;--good-bg:#24392c;--bad:#f0a58c;--bad-bg:#45261d;--warn-bg:#3d3422;
   --c1:#2e4a48;--c2:#4a3e2a;--c3:#4f2f26;--c4:#2d3650;
   --mon-d:#d8cfbd;--mon-a:#efe6d2;--mon-sh:#000;--mon-sho:.45;
-  --tabs:#202126;--tabs-ink:#8d8a83;
+  --tabs:#2c2d33;--tabs-ink:#a29d92;--tabs-edge:#3d3e45;
   color-scheme:dark;
 }
 *{box-sizing:border-box}
@@ -267,7 +267,6 @@ button,input,textarea{font:inherit;color:inherit}
 .link{background:none;border:0;color:var(--muted);font-weight:800;cursor:pointer;padding:8px;text-decoration:underline;text-underline-offset:3px}
 
 /* Abzeichen */
-
 
 /* Quiz */
 .qtop{display:flex;align-items:center;gap:12px}
@@ -491,16 +490,22 @@ h2,.lvltitle,.bmtitle,.sumt,.fb .t,.hw .hwt{font-weight:800;letter-spacing:-.01e
 .evomorph::before{background:radial-gradient(circle,color-mix(in srgb,var(--surface) 90%,transparent),color-mix(in srgb,var(--accent) 30%,transparent) 45%,transparent 68%)}
 
 /* Navileiste unten wie im Prototyp, auf Phone und Tablet. Kopf-Knöpfe für Ansicht und Melodymaker übernimmt sie. */
-body{padding-bottom:calc(104px + env(safe-area-inset-bottom,0px))}
+body{padding-bottom:calc(84px + env(safe-area-inset-bottom,0px))}
 .brandrow #themeBtn,.brandrow #beatBtn{display:none}
-.tabs{position:fixed;z-index:30;left:50%;transform:translateX(-50%);bottom:calc(14px + env(safe-area-inset-bottom,0px));width:min(400px,calc(100% - 32px));display:flex;justify-content:space-between;background:var(--tabs);border-radius:999px;padding:6px;box-shadow:0 10px 30px -12px rgba(0,0,0,.45)}
+.tabs{position:fixed;z-index:30;left:50%;transform:translateX(-50%);bottom:calc(10px + env(safe-area-inset-bottom,0px));width:min(360px,calc(100% - 32px));display:flex;justify-content:space-between;background:var(--tabs);border:1px solid var(--tabs-edge,transparent);border-radius:999px;padding:4px;box-shadow:0 8px 24px -10px rgba(0,0,0,.5);transition:transform .25s ease,opacity .25s ease}
+.tabs.weg{transform:translate(-50%,calc(100% + 24px));opacity:0;pointer-events:none}
 .tabs[hidden]{display:none}
-.tabs button{flex:1;height:52px;border:0;border-radius:999px;background:none;color:var(--tabs-ink);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font:inherit;font-size:.66rem;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent}
-.tabs button svg{width:20px;height:20px}
+.tabs button{flex:1;height:42px;border:0;border-radius:999px;background:none;color:var(--tabs-ink);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font:inherit;font-size:.66rem;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.tabs button svg{width:18px;height:18px}.tabs button{font-size:.6rem;gap:1px}
 .tabs button.on{background:var(--accent);color:var(--accent-ink)}
 .tabs .neu::after{top:6px;right:calc(50% - 18px);border-color:var(--tabs)}
-.themepop{position:fixed;z-index:31;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom,0px));width:min(400px,calc(100% - 32px));margin:0;box-shadow:0 14px 40px -12px rgba(0,0,0,.45)}
-@media (min-width:700px){.tabs{width:440px}.tabs button{font-size:.72rem}}
+.themepop{position:fixed;z-index:31;left:50%;transform:translateX(-50%);bottom:calc(68px + env(safe-area-inset-bottom,0px));width:min(360px,calc(100% - 32px));margin:0;box-shadow:0 14px 40px -12px rgba(0,0,0,.45)}
+@media (min-width:700px){.tabs{width:420px}.tabs button{font-size:.7rem}}
+:root[data-mode="dark"] .tabs{background:color-mix(in srgb,var(--surface) 82%,var(--ink));border-color:color-mix(in srgb,var(--surface) 68%,var(--ink))}
+@media (prefers-color-scheme: dark){:root:not([data-mode]) .tabs{background:color-mix(in srgb,var(--surface) 82%,var(--ink));border-color:color-mix(in srgb,var(--surface) 68%,var(--ink))}}
+/* Kopf: Logo und Knöpfe in einer Zeile, auf dem Handy etwas kompakter */
+.top{flex-wrap:nowrap}.top .chips{flex-wrap:nowrap;justify-content:flex-end}
+@media (max-width:480px){.top .brandlogo{height:34px;width:75px}.top .chip{font-size:.82rem;padding:3px 8px;gap:4px}.top .chip svg{width:15px;height:15px}#hStreakU{display:none}.top .soundbtn{width:32px;height:32px}.top .soundbtn svg{width:17px;height:17px}.top .chips{gap:4px}}
 
 /* Melodymaker in den Stein-Kartenfarben: Beats bunt durchgemischt, Melodie auf Schiefer, Klang und Tempo auf Sand */
 .bmcard{background:transparent;padding:0;gap:12px}
@@ -569,7 +574,7 @@ body{padding-bottom:calc(104px + env(safe-area-inset-bottom,0px))}
 .hrow .ic{width:44px;height:44px;border-radius:50%;background:var(--btn);color:var(--btn-ink);display:grid;place-items:center;flex:none}
 .hrow .ic svg{width:20px;height:20px}
 .hrt{display:flex;flex-direction:column;min-width:0;flex:1}.hrt b{font-family:var(--f-display);font-weight:800;font-size:1.1rem}.hrt small{font-size:.85rem;color:var(--muted);font-weight:600}
-.lcard{display:flex;flex-direction:column;gap:14px}.tlist{display:flex;flex-direction:column;gap:8px}.tpick{display:flex;align-items:center;gap:12px;width:100%;text-align:left;font:inherit;color:var(--ink);background:var(--bg);border:2px solid var(--line);border-radius:14px;padding:10px 12px;cursor:pointer}.tpick[aria-pressed="true"]{border-color:var(--ink)}.tbox{width:24px;height:24px;flex:none;border-radius:7px;border:2px solid var(--line);display:grid;place-items:center;font-weight:800;font-size:.85rem}.tpick[aria-pressed="true"] .tbox{background:var(--ink);border-color:var(--ink);color:var(--bg)}.ttx{display:flex;flex-direction:column;min-width:0}.ttx small{color:var(--muted,inherit);opacity:.75}
+.lcard{display:flex;flex-direction:column;gap:14px}.input.need{border-color:var(--accent)}.tlist{display:flex;flex-direction:column;gap:8px}.tpick{display:flex;align-items:center;gap:12px;width:100%;text-align:left;font:inherit;color:var(--ink);background:var(--bg);border:2px solid var(--line);border-radius:14px;padding:10px 12px;cursor:pointer}.tpick[aria-pressed="true"]{border-color:var(--ink)}.tbox{width:24px;height:24px;flex:none;border-radius:7px;border:2px solid var(--line);display:grid;place-items:center;font-weight:800;font-size:.85rem}.tpick[aria-pressed="true"] .tbox{background:var(--ink);border-color:var(--ink);color:var(--bg)}.ttx{display:flex;flex-direction:column;min-width:0}.ttx small{color:var(--muted,inherit);opacity:.75}
 .lfoto{display:flex;flex-direction:column;gap:8px}.lfoto .btn{text-align:center;cursor:pointer}.lfoto .btn.busy{opacity:.6;pointer-events:none}.lcard .note{margin:0}.lcard div.lbl{font-weight:800;font-size:.9rem;margin-bottom:-6px}
 .hrow .ar{font-weight:800;font-size:1.5rem;line-height:1}
 .hrow:active{transform:scale(.99)}
@@ -673,14 +678,11 @@ body{padding-bottom:calc(104px + env(safe-area-inset-bottom,0px))}
         <div id="hwList" class="hwlist"></div>
       </div>
 
+      <button class="hrow" id="pickRow" type="button" hidden><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7l2 2 4-4M4 17l2 2 4-4M13 7h7M13 17h7"/></svg></span><span class="hrt"><b>Mehrere zusammen üben</b><small>Aussuchen, was drankommt</small></span><span class="ar" aria-hidden="true">›</span></button>
+
       <button class="hrow" id="newHw" type="button"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h6a2 2 0 0 1 2 2v13a2 2 0 0 0-2-2H4zM20 5h-6a2 2 0 0 0-2 2v13a2 2 0 0 1 2-2h6z"/></svg></span><span class="hrt"><b id="newHwT">Hausaufgabe eingeben</b><small>Seiten aus dem Vokabelteil wählen</small></span><span class="ar" aria-hidden="true">›</span></button>
 
       <button class="hrow" id="newList" type="button"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></span><span class="hrt"><b id="newListT">Eigene Vokabeln</b><small id="newListS">Foto machen oder eintippen</small></span><span class="ar" aria-hidden="true">›</span></button>
-
-      <div class="card" id="testCard" hidden>
-        <div class="eyebrow">Für den Test</div>
-        <div id="testBox" class="hwlist"></div>
-      </div>
 
       <div class="moncard">
         <div class="mchead"><div class="eyebrow">Deine Monster</div><div class="mcnums"><b id="stWords">0</b> Wörter · <b id="stAcc">–</b> Treffer</div></div>
@@ -809,18 +811,16 @@ body{padding-bottom:calc(104px + env(safe-area-inset-bottom,0px))}
       </div>
     </section>
 
-    <!-- Test vorbereiten: Hausaufgaben ankreuzen, Datum optional -->
-    <section id="vTest" class="app" hidden>
-      <div class="qtop"><button class="qback" id="tBack" type="button">Zurück</button><div class="qcount">Test vorbereiten</div></div>
+    <!-- Üben: aussuchen, was drankommt (eine oder mehrere Hausaufgaben) -->
+    <section id="vPick" class="app" hidden>
+      <div class="qtop"><button class="qback" id="pBack" type="button">Zurück</button><div class="qcount">Üben</div></div>
       <div class="card lcard">
-        <div class="lbl" id="tListQ">Was kommt im Test dran?</div>
-        <div class="tlist" id="tList" role="group" aria-labelledby="tListQ"></div>
-        <p class="note" id="tInfo" aria-live="polite"></p>
-        <label class="lbl" for="tDate">Wann ist der Test? (freiwillig)
-          <input class="input" id="tDate" type="date">
-        </label>
-        <button class="btn wide" id="tSave" type="button">Speichern</button>
-        <button class="btn ghost wide" id="tDel" type="button" hidden>Test entfernen</button>
+        <div class="lbl" id="pListQ">Was möchtest du üben?</div>
+        <div class="tlist" id="pList" role="group" aria-labelledby="pListQ"></div>
+        <p class="note" id="pInfo" aria-live="polite"></p>
+        <button class="btn wide" id="pGo" type="button">Los geht's</button>
+        <button class="btn ghost wide" id="pBook" type="button">Seiten aus dem Buch</button>
+        <button class="btn ghost wide" id="pNew" type="button">Neue Vokabeln hinzufügen</button>
       </div>
     </section>
 
@@ -1366,7 +1366,7 @@ function selName(sel){
   return 'Seite '+formatPages(sel);
 }
 function defaults(){
-  return {xp:0,streak:0,last:null,bestCombo:0,answered:0,correct:0,sessions:0,sound:true,sel:'all',until:null,len:10,cloze:'mix',speak:true,voiceName:'',box:{},miss:{},hit:{},custom:[],lists:[],test:null,off:{},hw:[],flags:{},theme:'auto',pal:'stein',beatEdits:{}};
+  return {xp:0,streak:0,last:null,bestCombo:0,answered:0,correct:0,sessions:0,sound:true,sel:'all',until:null,len:10,cloze:'mix',speak:true,voiceName:'',box:{},miss:{},hit:{},custom:[],lists:[],pick:[],off:{},hw:[],flags:{},theme:'auto',pal:'stein',beatEdits:{}};
 }
 function load(){
   var o=null;
@@ -1377,7 +1377,8 @@ function load(){
   /* alte Farbthemen: Hellblau wird Hell, alle dunklen Themen werden Dunkel */
   if(o.theme!=='auto'&&o.theme!=='hell'&&o.theme!=='dunkel')o.theme='dunkel';
   if(typeof o.pal!=='string')o.pal='stein';
-  if(o.sel!=='all'&&o.sel!=='test'&&!Array.isArray(o.sel))o.sel='all';
+  if(o.sel==='test')o.sel='mix';
+  if(o.sel!=='all'&&o.sel!=='mix'&&!Array.isArray(o.sel))o.sel='all';
   if(!o.off||typeof o.off!=='object')o.off={};
   if(!o.miss||typeof o.miss!=='object')o.miss={};
   if(!o.hit||typeof o.hit!=='object')o.hit={};
@@ -1398,8 +1399,11 @@ function load(){
   if(!Array.isArray(o.lists))o.lists=[];
   /* jede eigene Liste ist eine Hausaufgabe */
   o.lists.forEach(function(l){var vp=1000+l.n;if(!o.hw.some(function(h){return h.sel.length===1&&h.sel[0]===vp;}))o.hw.push({sel:[vp],until:null,at:l.at||Date.now()});});
-  if(o.test&&(typeof o.test!=='object'||!Array.isArray(o.test.keys)))o.test=null;
-  if(o.sel==='test'&&!o.test)o.sel='all';
+  /* früher „Für den Test“: die angekreuzten Hausaufgaben werden zur Auswahl */
+  if(o.test&&typeof o.test==='object'&&Array.isArray(o.test.keys)&&!o.pick.length)o.pick=o.test.keys.slice();
+  delete o.test;
+  if(!Array.isArray(o.pick))o.pick=[];
+  if(o.sel==='mix'&&!o.pick.length)o.sel='all';
   return o;
 }
 var S=load();
@@ -1472,7 +1476,7 @@ function save(){
   S.box=box;
   var miss={};BOOK.forEach(function(w){if(w.miss)miss[w.id]=w.miss;});S.miss=miss;
   var hit={};BOOK.forEach(function(w){if(w.hit)hit[w.id]=w.hit;});S.hit=hit;
-  var o={xp:S.xp,streak:S.streak,last:S.last,bestCombo:S.bestCombo,answered:S.answered,correct:S.correct,sessions:S.sessions,sound:S.sound,speak:S.speak,voiceName:S.voiceName,cloze:S.cloze,sel:S.sel,until:S.until,len:S.len,box:box,miss:miss,hit:hit,custom:S.custom,lists:S.lists,test:S.test,off:S.off,hw:S.hw,flags:S.flags,theme:S.theme,pal:S.pal,beatEdits:S.beatEdits,ts:Date.now()};
+  var o={xp:S.xp,streak:S.streak,last:S.last,bestCombo:S.bestCombo,answered:S.answered,correct:S.correct,sessions:S.sessions,sound:S.sound,speak:S.speak,voiceName:S.voiceName,cloze:S.cloze,sel:S.sel,until:S.until,len:S.len,box:box,miss:miss,hit:hit,custom:S.custom,lists:S.lists,pick:S.pick,off:S.off,hw:S.hw,flags:S.flags,theme:S.theme,pal:S.pal,beatEdits:S.beatEdits,ts:Date.now()};
   try{localStorage.setItem(KEY,JSON.stringify(o));}catch(e){}
   if(window.VK&&window.VK.saved)window.VK.saved();
 }
@@ -1888,16 +1892,17 @@ function monsterSound(stg){
 }
 
 /* Ansichten */
-var VIEWS=['vHome','vSetup','vQuiz','vResult','vBeats','vList','vTest'],bmLeave=null;
+var VIEWS=['vHome','vSetup','vQuiz','vResult','vBeats','vList','vPick'],bmLeave=null;
 function show(id){
   if(id!=='vBeats'&&bmLeave)bmLeave();
   if(id!=='vQuiz'&&id!=='vResult')spLang='en';
   VIEWS.forEach(function(v){$('#'+v).hidden=(v!==id);});
+  var tb=$('#tabs');if(tb)tb.classList.remove('weg');
   navSync(id);
   window.scrollTo(0,0);
 }
 /* Navileiste unten: Start, Üben, Melodymaker, Ansicht. Im Quiz und im Ergebnis ausgeblendet. */
-var NAV={vHome:'home',vSetup:'ueben',vBeats:'beats',vList:'ueben',vTest:'ueben'};
+var NAV={vHome:'home',vSetup:'ueben',vBeats:'beats',vList:'ueben',vPick:'ueben'};
 function navSync(id){
   var t=$('#tabs');if(!t)return;
   t.hidden=(id==='vQuiz'||id==='vResult');
@@ -1907,8 +1912,21 @@ function navSync(id){
 (function(){
   var t=$('#tabs');if(!t)return;
   var map={home:'#homeBtn',ueben:'#newHw',beats:'#beatBtn',ansicht:'#themeBtn'};
-  t.querySelectorAll('button').forEach(function(b){b.addEventListener('click',function(e){e.stopPropagation();if(b.dataset.go==='ueben'&&NOBOOK){renderHome();if(heroGo)heroGo();return;}var x=$(map[b.dataset.go]);if(x)x.click();});});
+  t.querySelectorAll('button').forEach(function(b){b.addEventListener('click',function(e){e.stopPropagation();if(b.dataset.go==='ueben'){openPick();return;}var x=$(map[b.dataset.go]);if(x)x.click();});});
   var cur=VIEWS.filter(function(v){var e=$('#'+v);return e&&!e.hidden;})[0];navSync(cur||'vHome');
+})();
+/* Beim Runterscrollen verschwindet die Leiste, beim Hochscrollen und am Seitenende kommt sie zurück */
+(function(){
+  var t=$('#tabs');if(!t)return;var y0=window.scrollY,tick=false;
+  window.addEventListener('scroll',function(){
+    if(tick)return;tick=true;
+    requestAnimationFrame(function(){
+      tick=false;var y=window.scrollY,end=y+window.innerHeight>=document.documentElement.scrollHeight-40;
+      if(Math.abs(y-y0)<8&&!end)return;
+      t.classList.toggle('weg',y>y0&&y>80&&!end&&$('#themePop').hidden);
+      y0=y;
+    });
+  },{passive:true});
 })();
 function vpages(){
   var m=[];
@@ -1916,7 +1934,7 @@ function vpages(){
   return m.sort(function(a,b){return a-b;});
 }
 /* Wörter der gewählten Seiten, ohne die abgewählten */
-function lastPage(){return S.sel==='all'||S.sel==='test'?null:Math.max.apply(null,S.sel);}
+function lastPage(){return S.sel==='all'||S.sel==='mix'?null:Math.max.apply(null,S.sel);}
 function lastPageAreas(){
   var lp=lastPage(),out=[];
   if(lp==null)return out;
@@ -1931,7 +1949,7 @@ function poolFor(sel,until){
     return true;
   });
 }
-function pagePool(){return S.sel==='test'?testPool():poolFor(S.sel,S.until);}
+function pagePool(){return S.sel==='mix'?pickPool():poolFor(S.sel,S.until);}
 function pool(){
   return pagePool().filter(function(w){return !S.off[w.id];});
 }
@@ -1950,12 +1968,12 @@ function renderHeader(){
 /* Seitenwahl: Eingabefeld, Seiten-Chips, Rundenlänge, Startknopf */
 function renderSelection(skipInput){
   var sel=S.sel;
-  if(sel==='test'){
-    var tpp=testPool(),tp=pool(),tsure=tpp.filter(function(w){return w.box>=SURE;}).length,twn=wobbly(tp).length;
+  if(sel==='mix'){
+    var tpp=pickPool(),tp=pool(),tsure=tpp.filter(function(w){return w.box>=SURE;}).length,twn=wobbly(tp).length;
     curStep='st3';['st1','st2','st3'].forEach(function(x){$('#'+x).hidden=(x!=='st3');});
     $('#sCount').textContent='';$('#sDots').textContent='';
-    $('#sumTitle').textContent=testWhen();
-    $('#sumInfo').textContent=testHws().map(hwName).join(', ')+' · '+tpp.length+' Wörter · '+(tsure===tpp.length?'alle sicher ✓':tsure+' sicher');
+    $('#sumTitle').textContent='Deine Auswahl';
+    $('#sumInfo').textContent=pickHws().map(hwName).join(', ')+' · '+tpp.length+' Wörter · '+(tsure===tpp.length?'alle sicher ✓':tsure+' sicher');
     $('#pgProg').hidden=true;$('#roundInfo').textContent='';
     $('#startBtn').disabled=!tp.length;$('#startBtn').textContent=tp.length?'Los geht\'s':'Keine Wörter ausgewählt';
     $('#startAll').hidden=!twn;$('#startAll').textContent='Nur unsichere üben ('+twn+')';
@@ -2021,7 +2039,7 @@ function renderSelection(skipInput){
 }
 var curStep='st1';
 function stepIds(){
-  if(isListSel(S.sel)||NOBOOK||S.sel==='test')return ['st3'];
+  if(isListSel(S.sel)||NOBOOK||S.sel==='mix')return ['st3'];
   var ids=['st1'];
   if(S.sel!=='all'&&lastPageAreas().length>1)ids.push('st2');
   ids.push('st3');
@@ -2131,34 +2149,18 @@ function wordDetails(ws){
   draw();
   return det;
 }
-/* Test: mehrere Hausaufgaben zusammen, optional mit Datum. S.test={keys:[hwKey...],date:'YYYY-MM-DD'|null} */
+/* Auswahl: eine oder mehrere Hausaufgaben zusammen üben. S.pick=[hwKey...] */
 function hwKey(h){return formatPages(h.sel)+'|'+(h.until||'');}
-function testHws(){if(!S.test)return [];return S.hw.filter(function(h){return S.test.keys.indexOf(hwKey(h))>=0;});}
-function testPool(){
+function pickHws(){return S.hw.filter(function(h){return S.pick.indexOf(hwKey(h))>=0;});}
+function pickPool(){
   var out=[],seen={};
-  testHws().forEach(function(h){poolFor(h.sel,h.until||null).forEach(function(w){if(!seen[w.id]){seen[w.id]=1;out.push(w);}});});
+  pickHws().forEach(function(h){poolFor(h.sel,h.until||null).forEach(function(w){if(!seen[w.id]){seen[w.id]=1;out.push(w);}});});
   return out;
 }
-function testDays(){if(!S.test||!S.test.date)return null;return dayDiff(today(),S.test.date);}
-function testWhen(){
-  var d=testDays();if(d===null)return 'Dein Test';
-  var dt=new Date(S.test.date+'T00:00:00'),txt=['So','Mo','Di','Mi','Do','Fr','Sa'][dt.getDay()]+', '+dt.getDate()+'.'+(dt.getMonth()+1)+'.';
-  return d<0?'Test am '+txt+' (vorbei)':d===0?'Test heute':d===1?'Test morgen':'Test am '+txt+' · noch '+d+' Tage';
-}
-function startTest(){S.sel='test';S.until=null;S.off={};save();openSetup('st3');}
-/* Große Karte oben: ein naher Test, sonst die neueste offene Hausaufgabe, sonst neue eingeben */
+/* Große Karte oben: die neueste offene Hausaufgabe, sonst neue eingeben */
 var heroGo=null;
 function renderHero(items){
-  var open=null,ws=null,td=testDays(),tp=testPool();
-  if(tp.length&&td!==null&&td>=0&&td<=7&&tp.some(function(w){return w.box<SURE;})){
-    var ts=tp.filter(function(x){return x.box>=SURE;}).length;
-    $('#heroK').textContent=testWhen().replace(/ · .*/,'');
-    $('#heroT').textContent=(tp.length-ts)+(tp.length-ts===1?' Wort':' Wörter')+' für den Test';
-    $('#heroS').textContent=ts+' von '+tp.length+' sicher'+(td>1?' · noch '+td+' Tage':'');
-    $('#heroGo').textContent='Für den Test üben';
-    heroGo=startTest;
-    return;
-  }
+  var open=null,ws=null;
   items.some(function(it){var w=poolFor(it.h.sel,it.h.until||null),s=w.filter(function(x){return x.box>=SURE;}).length;if(!w.length||s<w.length){open=it;ws=w;return true;}return false;});
   if(!open&&items.length){open=items[0];ws=poolFor(open.h.sel,open.h.until||null);}
   if(open){
@@ -2193,7 +2195,7 @@ function renderHw(){
   $('#newListT').textContent=NOBOOK?'Neue Hausaufgabe':'Eigene Vokabeln';
   $('#newListS').textContent=FOTO?'Foto machen oder eintippen':'Eintippen oder einfügen';
   renderHero(items);
-  renderTest();
+  $('#pickRow').hidden=items.length<2;
   items.forEach(function(it){
     var h=it.h,lst=isListSel(h.sel)?listOf(h.sel[0]):null;
     var ws=poolFor(h.sel,h.until||null),sure=ws.filter(function(w){return w.box>=SURE;}).length;
@@ -2223,56 +2225,42 @@ function renderHw(){
     box.appendChild(row);
   });
 }
-/* Karte „Für den Test“ */
-function renderTest(){
-  var box=$('#testBox');box.textContent='';
-  var c=$('#testCard');c.hidden=S.hw.length<2&&!S.test;
-  if(c.hidden)return;
-  var tp=testPool();
-  if(!S.test||!tp.length){
-    box.appendChild(el('p','note','Steht ein Vokabeltest an? Wähl die Hausaufgaben aus, die drankommen, dann übst du sie zusammen.'));
-    var b=el('button','btn small','Test vorbereiten');b.type='button';b.addEventListener('click',openTest);
-    var a0=el('div','hwa');a0.appendChild(b);box.appendChild(a0);
-    return;
-  }
-  var sure=tp.filter(function(w){return w.box>=SURE;}).length,pc=Math.round(sure/tp.length*100),d=testDays();
-  var row=el('div','hw'+(sure===tp.length?' done':''));
-  row.appendChild(el('b','hwt',testWhen()));
-  row.appendChild(el('span','hwn',testHws().map(hwName).join(', ')));
-  row.appendChild(el('span','hwn',sure===tp.length?'Alle '+tp.length+' Wörter sicher. Gut vorbereitet!':'Sicher: '+sure+' von '+tp.length+' Wörtern ('+pc+'%)'));
-  var bar=el('div','bar');var fill=el('i');fill.style.width=pc+'%';bar.appendChild(fill);row.appendChild(bar);
-  var acts=el('div','hwa');
-  var go=el('button','btn small','Für den Test üben');go.type='button';go.addEventListener('click',startTest);acts.appendChild(go);
-  var ch=el('button','btn small ghost',d!==null&&d<0?'Neuer Test':'Ändern');ch.type='button';ch.addEventListener('click',openTest);acts.appendChild(ch);
-  row.appendChild(acts);
-  row.appendChild(wordDetails(tp));
-  box.appendChild(row);
-}
-/* Test einrichten: Hausaufgaben ankreuzen, Datum optional */
-var TK=null;
-function renderTestEd(){
-  var box=$('#tList');box.textContent='';
+/* Üben: ankreuzen, was drankommen soll. Eine Hausaufgabe übt wie gewohnt, mehrere werden zusammen gemischt. */
+var PK=null;
+function renderPick(){
+  var box=$('#pList');box.textContent='';
   S.hw.slice().reverse().forEach(function(h){
-    var k=hwKey(h),n=poolFor(h.sel,h.until||null).length,on=TK.indexOf(k)>=0;
+    var k=hwKey(h),ws=poolFor(h.sel,h.until||null),n=ws.length,sure=ws.filter(function(w){return w.box>=SURE;}).length,on=PK.indexOf(k)>=0;
     var b=el('button','tpick');b.type='button';b.setAttribute('aria-pressed',on?'true':'false');
     b.appendChild(el('span','tbox',on?'✓':''));
-    var t=el('span','ttx');t.appendChild(el('b',null,hwName(h)));t.appendChild(el('small',null,n+(n===1?' Wort':' Wörter')));b.appendChild(t);
-    b.addEventListener('click',function(){var i=TK.indexOf(k);if(i>=0)TK.splice(i,1);else TK.push(k);renderTestEd();});
+    var t=el('span','ttx');t.appendChild(el('b',null,hwName(h)));t.appendChild(el('small',null,n+(n===1?' Wort':' Wörter')+' · '+(n&&sure===n?'alle sicher ✓':sure+' sicher')));b.appendChild(t);
+    b.addEventListener('click',function(){var i=PK.indexOf(k);if(i>=0)PK.splice(i,1);else PK.push(k);renderPick();});
     box.appendChild(b);
   });
   var cnt=0,seen={};
-  S.hw.forEach(function(h){if(TK.indexOf(hwKey(h))>=0)poolFor(h.sel,h.until||null).forEach(function(w){if(!seen[w.id]){seen[w.id]=1;cnt++;}});});
-  $('#tInfo').textContent=TK.length?TK.length+(TK.length===1?' Hausaufgabe':' Hausaufgaben')+' mit '+cnt+' Wörtern.':'Noch nichts ausgewählt.';
-  $('#tSave').disabled=!TK.length;
+  S.hw.forEach(function(h){if(PK.indexOf(hwKey(h))>=0)poolFor(h.sel,h.until||null).forEach(function(w){if(!seen[w.id]){seen[w.id]=1;cnt++;}});});
+  $('#pInfo').textContent=!S.hw.length?'Du hast noch keine Vokabeln. Füg zuerst welche hinzu.':PK.length?PK.length+' ausgewählt, zusammen '+cnt+(cnt===1?' Wort.':' Wörter.'):'Kreuz an, was du üben willst. Du kannst auch mehrere nehmen.';
+  $('#pGo').hidden=!S.hw.length;
+  $('#pGo').disabled=!cnt;
+  $('#pBook').hidden=NOBOOK;
 }
-function openTest(){
-  TK=S.test?S.test.keys.filter(function(k){return S.hw.some(function(h){return hwKey(h)===k;});}):[];
-  var past=S.test&&testDays()!==null&&testDays()<0;
-  if(past)TK=[];
-  $('#tDate').value=S.test&&S.test.date&&!past?S.test.date:'';
-  $('#tDel').hidden=!S.test;
-  renderTestEd();show('vTest');
+function openPick(){
+  var keys=S.hw.map(hwKey);
+  PK=S.sel==='mix'?S.pick.filter(function(k){return keys.indexOf(k)>=0;}):[];
+  if(!PK.length&&Array.isArray(S.sel)){var cur=S.hw.filter(function(h){return hwSame(h,S.sel,S.until);})[0];if(cur)PK=[hwKey(cur)];}
+  if(!PK.length&&S.hw.length)PK=[hwKey(S.hw[S.hw.length-1])];
+  renderPick();show('vPick');
 }
+$('#pBack').addEventListener('click',function(){renderHome();show('vHome');});
+$('#pGo').addEventListener('click',function(){
+  var hs=S.hw.filter(function(h){return PK.indexOf(hwKey(h))>=0;});if(!hs.length)return;
+  if(hs.length===1){S.sel=hs[0].sel.slice();S.until=hs[0].until||null;}
+  else{S.pick=hs.map(hwKey);S.sel='mix';S.until=null;}
+  S.off={};save();openSetup('st3');
+});
+$('#pBook').addEventListener('click',function(){$('#newHw').click();});
+$('#pNew').addEventListener('click',function(){openList(null);});
+$('#pickRow').addEventListener('click',openPick);
 
 function renderHome(){
   var fl=Object.keys(S.flags||{});$('#wFlags').hidden=!fl.length;$('#wFlags').textContent='Gemeldete Aussprache ('+fl.length+')';
@@ -2947,8 +2935,10 @@ function renderListEd(){
   parts.push(n?n+(n===1?' Wort erkannt.':' Wörter erkannt.'):'Noch keine Wörter.');
   if(n>LMAX)parts.push('Höchstens '+LMAX+' Wörter pro Liste.');
   if(r.bad.length)parts.push('Ohne = nicht verstanden: '+r.bad.slice(0,3).map(function(x){return '„'+(x.length>30?x.slice(0,30)+'…':x)+'“';}).join(', ')+(r.bad.length>3?' und '+(r.bad.length-3)+' weitere':'')+'.');
+  var nm=$('#lName').value.trim();
+  if(n&&!nm)parts.push('Gib der Hausaufgabe noch einen Namen, damit du sie beim Üben wiederfindest.');
   $('#lInfo').textContent=parts.join(' ');
-  $('#lSave').disabled=!n||n>LMAX;
+  $('#lSave').disabled=!n||n>LMAX||!nm;
   $('#lSwap').hidden=!n;
 }
 function openList(l){
@@ -2957,7 +2947,7 @@ function openList(l){
   $('#lName').value=l?l.name:'';
   $('#lWords').value=l?listWords(l).map(function(w){return w.en+' = '+w.de;}).join('\n'):'';
   $('#lDel').hidden=!l;
-  $('#lFoto').hidden=!FOTO;fotoMsg('');
+  $('#lFoto').hidden=!FOTO;fotoMsg('');$('#lName').classList.remove('need');
   renderListEd();show('vList');
 }
 /* Foto auslesen: nur auf der Website (mit Code und Dienst). Das Bild wird im Gerät verkleinert, der Dienst liest die Wortpaare aus. Die Zeilen landen im Textfeld, damit das Kind sie prüfen kann. */
@@ -2989,6 +2979,7 @@ $('#lFile').addEventListener('change',function(){
         var ta=$('#lWords'),cur=ta.value.trim();
         if(!cur&&j.sprache&&j.sprache!==LE.lang)LE.lang=j.sprache;
         if(j.titel&&!$('#lName').value.trim())$('#lName').value=String(j.titel).slice(0,40);
+        $('#lName').classList.toggle('need',!$('#lName').value.trim());
         ta.value=(cur?cur+'\n':'')+j.woerter.map(function(w){return w.f+' = '+w.d;}).join('\n');
         renderListEd();
         done(j.woerter.length+(j.woerter.length===1?' Wort':' Wörter')+' gelesen. Bitte prüfen und Fehler direkt im Textfeld verbessern. Noch '+j.uebrig+' Fotos in diesem Monat.');
@@ -2997,24 +2988,16 @@ $('#lFile').addEventListener('change',function(){
   });
 });
 $('#newList').addEventListener('click',function(){openList(null);});
-$('#tBack').addEventListener('click',function(){renderHome();show('vHome');});
-$('#tSave').addEventListener('click',function(){
-  if(!TK.length)return;
-  var d=$('#tDate').value;
-  S.test={keys:TK.slice(),date:/^\d{4}-\d{2}-\d{2}$/.test(d)?d:null};
-  save();renderHome();show('vHome');
-});
-$('#tDel').addEventListener('click',function(){
-  askConfirm('Test entfernen?','Die Hausaufgaben und dein Lernstand bleiben erhalten.','Ja, entfernen',function(){S.test=null;if(S.sel==='test')S.sel='all';save();renderHome();show('vHome');});
-});
 $('#lBack').addEventListener('click',function(){renderHome();show('vHome');});
 $('#lWords').addEventListener('input',function(){renderListEd();});
+$('#lName').addEventListener('input',function(){this.classList.remove('need');renderListEd();});
 $('#lSwap').addEventListener('click',function(){
   $('#lWords').value=listParse().words.map(function(w){return w.de+' = '+w.en;}).join('\n');
   renderListEd();
 });
 $('#lSave').addEventListener('click',function(){
   var r=listParse();if(!r.words.length||r.words.length>LMAX)return;
+  if(!$('#lName').value.trim()){$('#lName').focus();return;}
   var l=LE.l,isNew=!l;
   if(isNew){
     var n=0;S.lists.forEach(function(x){if(x.n>n)n=x.n;});
@@ -3040,8 +3023,8 @@ $('#lDel').addEventListener('click',function(){
     S.lists=S.lists.filter(function(x){return x!==l;});
     S.custom=S.custom.filter(function(w){return w.vp!==vp;});
     S.hw=S.hw.filter(function(h){return h.sel.indexOf(vp)<0;});
-    if(S.test){S.test.keys=S.test.keys.filter(function(k){return k!==String(vp)+'|';});if(!S.test.keys.length)S.test=null;}
-    if(S.sel==='test'&&!S.test)S.sel='all';
+    S.pick=S.pick.filter(function(k){return k!==String(vp)+'|';});
+    if(S.sel==='mix'&&!S.pick.length)S.sel='all';
     if(Array.isArray(S.sel)&&S.sel.indexOf(vp)>=0){S.sel='all';S.until=null;}
     rebuild();save();renderHome();show('vHome');
   });
@@ -3051,7 +3034,7 @@ $('#lDel').addEventListener('click',function(){
 $('#homeBtn').addEventListener('click',function(){Q=null;renderHome();show('vHome');});
 $('#soundBtn').addEventListener('click',function(){S.sound=!S.sound;save();renderHeader();if(S.sound)beep([660]);});
 function autoSaveHw(){
-  if(S.sel==='all'||S.sel==='test'||isListSel(S.sel))return;
+  if(S.sel==='all'||S.sel==='mix'||isListSel(S.sel))return;
   if(!S.hw.some(function(h){return hwSame(h,S.sel,S.until);}))S.hw.push({sel:S.sel.slice(),until:S.until||null,at:Date.now()});
 }
 $('#startBtn').addEventListener('click',function(){S.len=10;autoSaveHw();save();startQuiz();});
