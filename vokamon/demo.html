@@ -822,8 +822,6 @@ body{font-size:16px}
         <label class="lbl" for="lName">Name der Hausaufgabe
           <input class="input" id="lName" type="text" maxlength="40" autocomplete="off" placeholder="zum Beispiel Unit 3 Teil B">
         </label>
-        <div class="lbl" id="lLangQ">Sprache</div>
-        <div class="units" id="lLang" role="group" aria-labelledby="lLangQ"></div>
         <div class="lfoto" id="lFoto" hidden>
           <label class="btn ghost wide" id="lFotoBtn" for="lFile">Foto von Zettel oder Buchseite</label>
           <input id="lFile" type="file" accept="image/*" hidden>
@@ -2214,7 +2212,7 @@ function renderHw(){
     var go=el('button','hwgo');go.type='button';go.disabled=!ws.length;
     var tx=el('span','hwtx');
     tx.appendChild(el('b','hwt',hwName(h)));
-    tx.appendChild(el('span','hwn',(lst&&(NOBOOK||lst.lang!=='en')?langOf(lst.lang).n+' · ':'')+(done?(ws.length===1?'Das Wort ist sicher ✓':'Alle '+ws.length+' Wörter sicher ✓'):sure+' von '+ws.length+' sicher')));
+    tx.appendChild(el('span','hwn',(lst&&lst.lang&&lst.lang!=='en'?langOf(lst.lang).n+' · ':'')+(done?(ws.length===1?'Das Wort ist sicher ✓':'Alle '+ws.length+' Wörter sicher ✓'):sure+' von '+ws.length+' sicher')));
     var bar=el('span','bar');bar.style.display='block';var fill=el('i');fill.style.width=pc+'%';bar.appendChild(fill);tx.appendChild(bar);
     go.appendChild(tx);go.appendChild(el('span','ar','›'));
     go.setAttribute('aria-label',hwName(h)+' üben');
@@ -2985,7 +2983,8 @@ function finish(){
   show('vResult');
 }
 
-/* Liste anlegen oder bearbeiten: Name, Sprache und Wörter (eine Zeile pro Wort, Fremdsprache = Deutsch) */
+/* Liste anlegen oder bearbeiten: Name und Wörter (eine Zeile pro Wort, Englisch = Deutsch).
+   Vorerst nur Englisch: neue Listen sind immer englisch, ältere Listen in anderen Sprachen behalten ihre Sprache. */
 var LE=null,LMAX=400;
 function listParse(){
   var lines=$('#lWords').value.split(/\r?\n/),out=[],bad=[],seen={};
@@ -2999,12 +2998,6 @@ function listParse(){
   return {words:out,bad:bad};
 }
 function renderListEd(){
-  var lb=$('#lLang');lb.textContent='';
-  LANGS.forEach(function(g){
-    var b=el('button','unit',g.n);b.type='button';b.setAttribute('aria-pressed',LE.lang===g.id?'true':'false');
-    b.addEventListener('click',function(){LE.lang=g.id;renderListEd();});
-    lb.appendChild(b);
-  });
   var r=listParse(),n=r.words.length,parts=[];
   $('#lWords').placeholder=LE.lang==='fr'?'le chien = der Hund\nmanger = essen':LE.lang==='es'?'el perro = der Hund\ncomer = essen':LE.lang==='la'?'canis = der Hund\nvenire = kommen':'the cat = die Katze\nto sneeze = niesen';
   parts.push(n?n+(n===1?' Wort erkannt.':' Wörter erkannt.'):'Noch keine Wörter.');
@@ -3017,7 +3010,7 @@ function renderListEd(){
   $('#lSwap').hidden=!n;
 }
 function openList(l){
-  LE={l:l,lang:l?l.lang:(S.lists.length?S.lists[S.lists.length-1].lang:'en')};
+  LE={l:l,lang:l?l.lang||'en':'en'};
   $('#lHead').textContent=l?'Hausaufgabe bearbeiten':'Neue Hausaufgabe';
   $('#lName').value=l?l.name:'';
   $('#lWords').value=l?listWords(l).map(function(w){return w.en+' = '+w.de;}).join('\n'):'';
@@ -3052,7 +3045,6 @@ $('#lFile').addEventListener('change',function(){
         if(j.status!==200||!j.woerter){done(j.fehler||'Das Auslesen hat nicht geklappt. Bitte nochmal versuchen.',true);return;}
         if(!j.woerter.length){done('Auf dem Foto wurden keine Vokabeln gefunden. Am besten gerade von oben und gut beleuchtet fotografieren.',true);return;}
         var ta=$('#lWords'),cur=ta.value.trim();
-        if(!cur&&j.sprache&&j.sprache!==LE.lang)LE.lang=j.sprache;
         if(j.titel&&!$('#lName').value.trim())$('#lName').value=String(j.titel).slice(0,40);
         $('#lName').classList.toggle('need',!$('#lName').value.trim());
         ta.value=(cur?cur+'\n':'')+j.woerter.map(function(w){return w.f+' = '+w.d;}).join('\n');
