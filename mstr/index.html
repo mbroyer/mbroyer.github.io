@@ -1,16 +1,16 @@
 <!doctype html>
-<html lang="de">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#ffffff">
-<meta name="description" content="Beats bauen im Browser. Acht Spuren, sechzehn Schritte, sechs Effekte, dazu ein eigener Klang übers Mikrofon.">
+<meta name="description" content="Build beats in your browser. Eight tracks, sixteen steps, six effects, plus your own sound from the mic.">
 <title>MSTR</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;700;800&family=Instrument+Serif&family=JetBrains+Mono:wght@500&display=swap">
 <style>
-/* Übersicht nach Entwurf C (geführte Tour), wie bei NumNum */
+/* Overview in the guided-tour layout, like NumNum (Entwurf C) */
 :root{color-scheme:light;--bg:#fff;--surface:#f4f4f5;--surface2:#fff;--ink:#0f0f10;--muted:#6e6e75;--line:#e4e4e7;--accent:#c7b3ff;--accent-text:#6b4fd6;--accent-edge:#9d86e6;--accent-ink:#0f0f10;--dot:#c7b3ff;--focus:#0f0f10;--bezel:#0f0f10;--shadow:.14;--bar:rgba(255,255,255,.9);--logo-filter:none;
 --body-font:400 16px/1.5 "Figtree",system-ui,sans-serif;--step-font:700 1.15rem/1.25 "Figtree",sans-serif;--h2-font:400 1.9rem/1.1 "Instrument Serif",Georgia,serif;--btn-font:700 1.1rem/1 "Figtree",sans-serif;--btn-track:0;--btn-case:none;--btn-radius:999px}
 *{box-sizing:border-box}
@@ -83,34 +83,34 @@ details a,.ask a{color:var(--accent-text);font-weight:700}
 </head>
 <body>
 <div class="pv">
-<nav class="top"><a href="/"><img src="/logo.png" alt="" width="320" height="354">← Alle Experimente</a><span class="chip"><i></i>im Test</span></nav>
+<nav class="top"><a href="/"><img src="/logo.png" alt="" width="320" height="354">← All experiments</a><span class="chip"><i></i>in testing</span></nav>
 <header class="hero">
 <h1 class="logo"><i aria-hidden="true"></i>MSTR</h1>
-<p class="say">gesprochen „Muster“</p>
-<p>Beats bauen im Browser. Acht Spuren, sechzehn Schritte, sechs Effekte, dazu ein eigener Klang übers Mikrofon.</p>
+<p class="say">pronounced “muster”</p>
+<p>Build beats in your browser. Eight tracks, sixteen steps, six effects, plus your own sound from the mic.</p>
 </header>
-<section class="tour" aria-label="So läuft es">
-  <div class="phone"><img id="ph" src="vorschau-2.jpg" alt="Liste der Vorlagen nach Tempo, von One Drop bis Amapiano" width="390" height="620"></div>
+<section class="tour" aria-label="How it works">
+  <div class="phone"><img id="ph" src="vorschau-2.jpg" alt="List of templates sorted by tempo, from One Drop to Amapiano" width="390" height="620"></div>
   <div>
-   <ol class="steps" role="tablist" aria-label="Schritte">
-    <li><button type="button" role="tab" aria-selected="true" data-img="vorschau-2.jpg" data-alt="Liste der Vorlagen nach Tempo, von One Drop bis Amapiano"><b>1</b><strong>Vorlage wählen</strong><span>16 Vorlagen zum Loslegen, oder mit leerem Raster anfangen.</span></button></li>
-    <li><button type="button" role="tab" aria-selected="false" data-img="vorschau-1.jpg" data-alt="Das Raster, die Vorlage Amapiano läuft, oben der Schalter Grid | Card, unten Play, Effects, Drop und Tempo"><b>2</b><strong>Beat bauen</strong><span>Schritte antippen, lange drücken für einen anderen Klang, Tempo und Swing einstellen.</span></button></li>
-    <li><button type="button" role="tab" aria-selected="false" data-img="vorschau-4.jpg" data-alt="Die Effekte Room und Echo sind an, mit Reglern"><b>3</b><strong>Effekte</strong><span>Sechs Effekte zuschalten und den Drop zünden.</span></button></li>
-    <li><button type="button" role="tab" aria-selected="false" data-img="vorschau-3.jpg" data-alt="Die Spur Mic mit dem Aufnahmeknopf"><b>4</b><strong>Mikro</strong><span>In der Spur Mic einen eigenen Klang aufnehmen.</span></button></li>
-    <li><button type="button" role="tab" aria-selected="false" data-img="vorschau-5.jpg" data-alt="Die Karte ohne Leiste: das Molekül dreht sich zum Beat Sunday Groove von @mark, darunter Save video und das Menü für Link und WAV"><b>5</b><strong>Teilen</strong><span>In der Karte dreht sich der Beat als Molekül. Video sichern, Link oder WAV-Loop verschicken.</span></button></li>
+   <ol class="steps" role="tablist" aria-label="Steps">
+    <li><button type="button" role="tab" aria-selected="true" data-img="vorschau-2.jpg" data-alt="List of templates sorted by tempo, from One Drop to Amapiano"><b>1</b><strong>Pick a template</strong><span>16 templates to start from, or begin with an empty grid.</span></button></li>
+    <li><button type="button" role="tab" aria-selected="false" data-img="vorschau-1.jpg" data-alt="The grid playing the Amapiano template, Grid | Card switch at the top, Play, Effects, Drop and Tempo at the bottom"><b>2</b><strong>Build a beat</strong><span>Tap steps, long-press for a different sound, set tempo and swing.</span></button></li>
+    <li><button type="button" role="tab" aria-selected="false" data-img="vorschau-4.jpg" data-alt="The Room and Echo effects switched on, with sliders"><b>3</b><strong>Effects</strong><span>Switch on six effects and hit the drop.</span></button></li>
+    <li><button type="button" role="tab" aria-selected="false" data-img="vorschau-3.jpg" data-alt="The Mic track with the record button"><b>4</b><strong>Mic</strong><span>Record your own sound on the Mic track.</span></button></li>
+    <li><button type="button" role="tab" aria-selected="false" data-img="vorschau-5.jpg" data-alt="The card view: the molecule spins to the beat Sunday Groove by @mark, with Save video and the menu for link and WAV below"><b>5</b><strong>Share</strong><span>On the card your beat spins as a molecule. Save a video, send a link or a WAV loop.</span></button></li>
    </ol>
-   <p class="cap" id="cap">16 Vorlagen zum Loslegen, oder mit leerem Raster anfangen.</p>
+   <p class="cap" id="cap">16 templates to start from, or begin with an empty grid.</p>
   </div>
 </section>
-<h2>Gut zu wissen</h2>
-<details open><summary>Brauche ich eine Anmeldung?</summary><p>Nein. Öffnen und loslegen, ohne Code und ohne Konto.</p></details>
-<details><summary>Auf welchen Geräten läuft MSTR?</summary><p>Im Browser auf Handy, Tablet und Computer, am besten mit Kopfhörern.</p></details>
-<details><summary>Wofür braucht MSTR das Mikrofon?</summary><p>Nur für die Spur Mic, wenn du selbst einen Klang aufnehmen willst. Alles andere geht ohne.</p></details>
+<h2>Good to know</h2>
+<details open><summary>Do I need to sign up?</summary><p>No. Just open it and start, no code and no account.</p></details>
+<details><summary>Which devices does MSTR run on?</summary><p>In the browser on phone, tablet and computer, best with headphones.</p></details>
+<details><summary>Why does MSTR need the microphone?</summary><p>Only for the Mic track, if you want to record your own sound. Everything else works without it.</p></details>
 <a class="madeby" href="/"><span>Made with love by</span><img src="/logo.png" alt="A Simple Man’s Lab" width="320" height="354"></a>
 </div>
-<nav class="bar" id="bar" aria-label="Loslegen"><div>
-  <p><strong>Leg los</strong>Ohne Anmeldung, am besten mit Kopfhörern.</p>
-  <a class="btn" href="app/">Jetzt loslegen</a>
+<nav class="bar" id="bar" aria-label="Get started"><div>
+  <p><strong>Get started</strong>No sign-up, best with headphones.</p>
+  <a class="btn" href="app/">Start now</a>
 </div></nav>
 <script>
 // Tour: die Schritte wechseln das Handybild
