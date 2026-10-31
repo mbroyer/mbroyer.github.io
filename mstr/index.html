@@ -10,53 +10,114 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;700;800&family=Instrument+Serif&family=JetBrains+Mono:wght@500&display=swap">
 <style>
-:root{color-scheme:light;--bg:#fff;--ink:#0f0f10;--muted:#8e8e94;--line:#e4e4e7;--soft:#f4f4f5;--accent:#c7b3ff;--on-accent:#0f0f10}
+/* Übersicht nach Entwurf C (geführte Tour), wie bei NumNum */
+:root{color-scheme:light;--bg:#fff;--surface:#f4f4f5;--surface2:#fff;--ink:#0f0f10;--muted:#6e6e75;--line:#e4e4e7;--accent:#c7b3ff;--accent-text:#6b4fd6;--accent-edge:#9d86e6;--accent-ink:#0f0f10;--dot:#c7b3ff;--focus:#0f0f10;--bezel:#0f0f10;--shadow:.14;--bar:rgba(255,255,255,.9);--logo-filter:none;
+--body-font:400 16px/1.5 "Figtree",system-ui,sans-serif;--step-font:700 1.15rem/1.25 "Figtree",sans-serif;--h2-font:400 1.9rem/1.1 "Instrument Serif",Georgia,serif;--btn-font:700 1.1rem/1 "Figtree",sans-serif;--btn-track:0;--btn-case:none;--btn-radius:999px}
 *{box-sizing:border-box}
-body{margin:0;min-height:100vh;background:var(--bg);color:var(--ink);font:400 16px/1.5 "Figtree",system-ui,sans-serif;display:flex;flex-direction:column;align-items:center;gap:48px;padding:44px 16px 56px}
-.pv{width:100%;max-width:740px;text-align:center;display:flex;flex-direction:column;gap:36px}
+body{margin:0;min-height:100vh;background:var(--bg);color:var(--ink);font:var(--body-font)}
+[hidden]{display:none!important}
+a{color:inherit}
+button,input{font:inherit}
+.pv{max-width:980px;margin:0 auto;padding:0 max(16px,env(safe-area-inset-right)) calc(110px + env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left))}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:14px;font-size:.9rem}
+.top a{color:var(--muted);text-decoration:none;display:flex;align-items:center;gap:8px}
+.top a:hover{color:var(--ink)}
+.top img{width:26px;height:auto;filter:var(--logo-filter);opacity:.8}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:999px;border:1.5px solid var(--line);color:var(--muted);font-size:.8rem;font-weight:600}
+.chip i{width:7px;height:7px;border-radius:50%;background:var(--dot)}
+.hero{text-align:center;display:flex;flex-direction:column;align-items:center;gap:10px;padding-block:18px 26px}
+.hero h1{margin:0}
+.hero p{margin:0;font-size:1.15rem;max-width:28em}
+.tour{display:grid;grid-template-columns:280px 1fr;gap:48px;align-items:center;background:var(--surface);border-radius:30px;padding:30px 44px}
+.phone{justify-self:center;width:230px}
+.phone img{width:100%;height:auto;display:block;border-radius:32px;border:8px solid var(--bezel);box-shadow:0 0 0 2px var(--line),0 26px 50px rgba(0,0,0,var(--shadow))}
+.steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px;min-width:0}
+.steps button{width:100%;text-align:left;display:grid;grid-template-columns:40px 1fr;gap:4px 14px;align-items:start;color:var(--muted);background:none;border:2px solid transparent;border-radius:20px;padding:16px;cursor:pointer}
+.steps button:hover{background:var(--surface2)}
+.steps button[aria-selected="true"]{background:var(--surface2);border-color:var(--accent);color:var(--ink)}
+.steps b{grid-row:span 2;width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:var(--line);color:var(--ink);font-size:1.1rem}
+.steps [aria-selected="true"] b{background:var(--accent);color:var(--accent-ink)}
+.steps strong{font:var(--step-font);color:var(--ink)}
+.steps span{font-size:.95rem}
+.cap{display:none}
+h2{font:var(--h2-font);margin:56px 0 14px}
+details{border-top:1.5px solid var(--line);padding-block:14px}
+details:last-of-type{border-bottom:1.5px solid var(--line)}
+summary{cursor:pointer;font-weight:700;list-style:none;display:flex;justify-content:space-between;gap:12px}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";color:var(--accent-text);font-size:1.3rem;line-height:1}
+details[open] summary::after{content:"–"}
+details p{margin:8px 0 0;color:var(--muted);max-width:40em}
+details a,.ask a{color:var(--accent-text);font-weight:700}
+.madeby{display:flex;flex-direction:column;align-items:center;gap:8px;opacity:.75;text-decoration:none;padding-block:48px 8px}
+.madeby img{width:58px;height:auto;display:block;filter:var(--logo-filter)}
+.madeby span{font-size:8px;line-height:1;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:var(--ink)}
+.bar{position:fixed;left:0;right:0;bottom:0;z-index:5;background:var(--bar);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-top:1.5px solid var(--line);padding:12px max(16px,env(safe-area-inset-right)) calc(12px + env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left))}
+.bar div{max-width:980px;margin:0 auto;display:flex;align-items:center;gap:12px}
+.bar p{margin:0 auto 0 0;font-size:.9rem;color:var(--muted)}
+.bar p strong{color:var(--ink);display:block;font-size:1rem}
+.btn{display:inline-block;text-align:center;font:var(--btn-font);letter-spacing:var(--btn-track);text-transform:var(--btn-case);padding:13px 24px;border-radius:var(--btn-radius);border:0;background:var(--accent);color:var(--accent-ink);box-shadow:0 4px 0 var(--accent-edge);cursor:pointer;text-decoration:none;white-space:nowrap}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--accent-edge)}
+.btn.ghost{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 2px var(--line)}
+.btn:focus-visible,.steps button:focus-visible,summary:focus-visible,.top a:focus-visible{outline:3px solid var(--focus);outline-offset:3px}
+@media (max-width:760px){
+  .hero{padding-block:8px 18px}
+  .tour{grid-template-columns:1fr;gap:18px;padding:22px 14px;border-radius:24px}
+  .phone{width:180px;order:2}
+  .steps{flex-direction:row;gap:6px}
+  .steps li{flex:1;min-width:0}
+  .steps button{grid-template-columns:1fr;justify-items:center;text-align:center;padding:10px 6px;gap:6px}
+  .steps b{grid-row:auto;width:32px;height:32px;font-size:.95rem}
+  .steps strong{font-size:.9rem;line-height:1.2}
+  .steps span{display:none}
+  .cap{display:block;text-align:center;color:var(--muted);font-size:.95rem;margin:0;min-height:3em}
+  .bar p{display:none}
+  .bar .btn{flex:1;padding-inline:10px}
+}
 .logo{display:flex;align-items:center;justify-content:center;gap:14px;margin:0;font:800 clamp(52px,14vw,88px)/.9 "Figtree",sans-serif;letter-spacing:.12em}
 .logo i{width:.32em;height:.32em;border-radius:50%;background:var(--accent);flex:none}
-.say{margin:-20px 0 0;font:400 1.6rem/1 "Instrument Serif",Georgia,serif;color:var(--muted)}
-.lead{margin:0 auto;max-width:26em;font-size:1.1rem}
-.shots{display:flex;gap:24px;justify-content:center;overflow-x:auto;scroll-snap-type:x mandatory;padding:4px 16px 10px;margin:0 -16px}
-.shots figure{margin:0;flex:0 0 auto;width:220px;scroll-snap-align:center;display:flex;flex-direction:column;gap:8px}
-.shots img{width:220px;height:auto;display:block;border-radius:26px;border:6px solid var(--ink);box-shadow:0 18px 40px rgba(0,0,0,.14)}
-.shots figcaption{font:400 1.2rem/1.25 "Instrument Serif",Georgia,serif;color:var(--muted)}
-.steps{list-style:none;margin:0 auto;padding:0;max-width:560px;width:100%;display:grid;grid-template-columns:repeat(3,1fr);gap:10px;text-align:left}
-.steps li{background:var(--soft);border-radius:14px;padding:12px;font-size:.92rem;color:var(--muted)}
-.steps b{display:block;color:var(--ink);font:500 .8rem/1 "JetBrains Mono",monospace;letter-spacing:.12em;margin-bottom:8px}
-.steps b::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--accent);margin-right:8px;vertical-align:1px}
-.play{display:flex;flex-direction:column;align-items:center;gap:10px}
-.play a{display:inline-block;background:var(--accent);color:var(--on-accent);text-decoration:none;font:700 1.25rem/1 "Figtree",sans-serif;padding:20px 44px;border-radius:999px;transition:transform .15s ease}
-.play a:hover{transform:scale(1.04)}
-.play a:focus-visible{outline:2px solid var(--ink);outline-offset:4px}
-.play small{color:var(--muted);font-size:.85rem;max-width:24em}
-.madeby{display:flex;flex-direction:column;align-items:center;gap:8px;opacity:.75;text-decoration:none}
-.madeby img{width:58px;height:auto;display:block}
-.madeby span{font-size:8px;line-height:1;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:var(--ink)}
-@media (max-width:520px){.steps{grid-template-columns:1fr}.shots{justify-content:flex-start}.shots img,.shots figure{width:200px}}
+.say{margin:-6px 0 0!important;font:400 1.6rem/1 "Instrument Serif",Georgia,serif;color:var(--muted)}
+.steps b{font:500 .85rem/1 "JetBrains Mono",monospace}
+.btn{box-shadow:none}.btn:active{box-shadow:none}
 </style>
 </head>
 <body>
-<section class="pv" aria-label="Vorschau">
-  <h1 class="logo"><i aria-hidden="true"></i>MSTR</h1>
-  <p class="say">gesprochen „Muster“</p>
-  <p class="lead">Beats bauen im Browser. Acht Spuren, sechzehn Schritte, sechs Effekte, dazu ein eigener Klang übers Mikrofon.</p>
-  <div class="shots">
-    <figure><img src="vorschau-1.jpg" alt="Das Raster, die Vorlage Amapiano läuft, oben der Schalter Grid | Card, unten Play, Effects, Drop und Tempo" width="390" height="620"><figcaption>Tippen, und der Beat läuft</figcaption></figure>
-    <figure><img src="vorschau-2.jpg" alt="Liste der Vorlagen nach Tempo, von One Drop bis Amapiano" width="390" height="620" loading="lazy"><figcaption>16 Vorlagen zum Loslegen</figcaption></figure>
-    <figure><img src="vorschau-3.jpg" alt="Die Spur Mic mit dem Aufnahmeknopf" width="390" height="620" loading="lazy"><figcaption>Eigenen Klang aufnehmen</figcaption></figure>
-    <figure><img src="vorschau-4.jpg" alt="Die Effekte Room und Echo sind an, mit Reglern" width="390" height="620" loading="lazy"><figcaption>Sechs Effekte zum Zuschalten</figcaption></figure>
-    <figure><img src="vorschau-5.jpg" alt="Die Karte ohne Leiste: das Molekül dreht sich zum Beat Sunday Groove von @mark, darunter Save video und das Menü für Link und WAV" width="390" height="620" loading="lazy"><figcaption>Die Karte: zusehen und teilen</figcaption></figure>
+<div class="pv">
+<nav class="top"><a href="/"><img src="/logo.png" alt="" width="320" height="354">← Alle Experimente</a><span class="chip"><i></i>im Test</span></nav>
+<header class="hero">
+<h1 class="logo"><i aria-hidden="true"></i>MSTR</h1>
+<p class="say">gesprochen „Muster“</p>
+<p>Beats bauen im Browser. Acht Spuren, sechzehn Schritte, sechs Effekte, dazu ein eigener Klang übers Mikrofon.</p>
+</header>
+<section class="tour" aria-label="So läuft es">
+  <div class="phone"><img id="ph" src="vorschau-2.jpg" alt="Liste der Vorlagen nach Tempo, von One Drop bis Amapiano" width="390" height="620"></div>
+  <div>
+   <ol class="steps" role="tablist" aria-label="Schritte">
+    <li><button type="button" role="tab" aria-selected="true" data-img="vorschau-2.jpg" data-alt="Liste der Vorlagen nach Tempo, von One Drop bis Amapiano"><b>1</b><strong>Vorlage wählen</strong><span>16 Vorlagen zum Loslegen, oder mit leerem Raster anfangen.</span></button></li>
+    <li><button type="button" role="tab" aria-selected="false" data-img="vorschau-1.jpg" data-alt="Das Raster, die Vorlage Amapiano läuft, oben der Schalter Grid | Card, unten Play, Effects, Drop und Tempo"><b>2</b><strong>Beat bauen</strong><span>Schritte antippen, lange drücken für einen anderen Klang, Tempo und Swing einstellen.</span></button></li>
+    <li><button type="button" role="tab" aria-selected="false" data-img="vorschau-4.jpg" data-alt="Die Effekte Room und Echo sind an, mit Reglern"><b>3</b><strong>Effekte</strong><span>Sechs Effekte zuschalten und den Drop zünden.</span></button></li>
+    <li><button type="button" role="tab" aria-selected="false" data-img="vorschau-3.jpg" data-alt="Die Spur Mic mit dem Aufnahmeknopf"><b>4</b><strong>Mikro</strong><span>In der Spur Mic einen eigenen Klang aufnehmen.</span></button></li>
+    <li><button type="button" role="tab" aria-selected="false" data-img="vorschau-5.jpg" data-alt="Die Karte ohne Leiste: das Molekül dreht sich zum Beat Sunday Groove von @mark, darunter Save video und das Menü für Link und WAV"><b>5</b><strong>Teilen</strong><span>In der Karte dreht sich der Beat als Molekül. Video sichern, Link oder WAV-Loop verschicken.</span></button></li>
+   </ol>
+   <p class="cap" id="cap">16 Vorlagen zum Loslegen, oder mit leerem Raster anfangen.</p>
   </div>
-  <ol class="steps">
-    <li><b>01</b>Eine Vorlage wählen oder mit leerem Raster anfangen</li>
-    <li><b>02</b>Schritte antippen, lange drücken für einen anderen Klang, Tempo und Swing einstellen, oder oben auf Card wechseln und dem Beat als Molekül zusehen, ein Tipp auf den Ring spielt und stoppt</li>
-    <li><b>03</b>Effekte zuschalten, Drop zünden, in der Spur Mic selbst etwas aufnehmen</li>
-    <li><b>04</b>Auf den Titel mit dem Stift tippen, um den Beat zu benennen oder zu würfeln, und in der Karte das Video für Story und Chat sichern. Link und WAV-Loop stecken hinter den drei Punkten</li>
-  </ol>
-  <div class="play"><a href="app/">Jetzt loslegen</a><small>Ohne Anmeldung. Läuft auf Handy, Tablet und Computer, am besten mit Kopfhörern.</small></div>
 </section>
+<h2>Gut zu wissen</h2>
+<details open><summary>Brauche ich eine Anmeldung?</summary><p>Nein. Öffnen und loslegen, ohne Code und ohne Konto.</p></details>
+<details><summary>Auf welchen Geräten läuft MSTR?</summary><p>Im Browser auf Handy, Tablet und Computer, am besten mit Kopfhörern.</p></details>
+<details><summary>Wofür braucht MSTR das Mikrofon?</summary><p>Nur für die Spur Mic, wenn du selbst einen Klang aufnehmen willst. Alles andere geht ohne.</p></details>
 <a class="madeby" href="/"><span>Made with love by</span><img src="/logo.png" alt="A Simple Man’s Lab" width="320" height="354"></a>
+</div>
+<nav class="bar" id="bar" aria-label="Loslegen"><div>
+  <p><strong>Leg los</strong>Ohne Anmeldung, am besten mit Kopfhörern.</p>
+  <a class="btn" href="app/">Jetzt loslegen</a>
+</div></nav>
+<script>
+// Tour: die Schritte wechseln das Handybild
+(function(){var tabs=[].slice.call(document.querySelectorAll('.steps [role=tab]')),ph=document.getElementById('ph'),cap=document.getElementById('cap');
+tabs.forEach(function(t){t.addEventListener('click',function(){
+  tabs.forEach(function(u){u.setAttribute('aria-selected',u===t);});
+  ph.src=t.getAttribute('data-img');ph.alt=t.getAttribute('data-alt');cap.textContent=t.querySelector('span').textContent;});});})();
+</script>
 </body>
 </html>
