@@ -79,6 +79,18 @@ details a,.ask a{color:var(--accent-text);font-weight:700}
 .say{margin:-6px 0 0!important;font:400 1.6rem/1 "Instrument Serif",Georgia,serif;color:var(--muted)}
 .steps b{font:500 .85rem/1 "JetBrains Mono",monospace}
 .btn{box-shadow:none}.btn:active{box-shadow:none}
+/* Vorschau als schwebende Karte (Variante C): kein Handyrahmen, dahinter ein kleiner Stapel für die übrigen Schritte */
+.phone{position:relative;width:250px;margin-block:14px}
+.phone img{position:relative;z-index:2;border:0;border-radius:22px;box-shadow:0 0 0 1px var(--line),0 2px 4px rgba(0,0,0,.06),0 28px 56px -16px rgba(0,0,0,.35)}
+.phone::before,.phone::after{content:"";position:absolute;inset:0;border-radius:22px;background:var(--surface2);box-shadow:0 0 0 1px var(--line),0 10px 30px -12px rgba(0,0,0,.25)}
+.phone::before{transform:rotate(-6deg) translate(-16px,6px);z-index:0;opacity:.7}
+.phone::after{transform:rotate(4deg) translate(14px,4px);z-index:1}
+@media (max-width:760px){
+  .phone{width:200px;margin-block:10px 16px}
+  /* Reiter: lange Wörter trennen statt über den Rahmen laufen */
+  .steps button{padding-inline:3px}
+  .steps strong{font-size:.85rem;-webkit-hyphens:auto;hyphens:auto;overflow-wrap:anywhere}
+}
 </style>
 </head>
 <body>
@@ -93,8 +105,8 @@ details a,.ask a{color:var(--accent-text);font-weight:700}
   <div class="phone"><img id="ph" src="vorschau-2.jpg" alt="List of templates sorted by tempo, from One Drop to Amapiano" width="390" height="620"></div>
   <div>
    <ol class="steps" role="tablist" aria-label="Steps">
-    <li><button type="button" role="tab" aria-selected="true" data-img="vorschau-2.jpg" data-alt="List of templates sorted by tempo, from One Drop to Amapiano"><b>1</b><strong>Pick a template</strong><span>16 templates to start from, or begin with an empty grid.</span></button></li>
-    <li><button type="button" role="tab" aria-selected="false" data-img="vorschau-1.jpg" data-alt="The grid playing the Amapiano template, Grid | Orbit switch at the top, Play, Effects, Drop and Tempo at the bottom"><b>2</b><strong>Build a beat</strong><span>Tap steps, long-press for a different sound, set tempo and swing.</span></button></li>
+    <li><button type="button" role="tab" aria-selected="true" data-img="vorschau-2.jpg" data-alt="List of templates sorted by tempo, from One Drop to Amapiano"><b>1</b><strong>Start</strong><span>16 templates to start from, or begin with an empty grid.</span></button></li>
+    <li><button type="button" role="tab" aria-selected="false" data-img="vorschau-1.jpg" data-alt="The grid playing the Amapiano template, Grid | Orbit switch at the top, Play, Effects, Drop and Tempo at the bottom"><b>2</b><strong>Build</strong><span>Tap steps, long-press for a different sound, set tempo and swing.</span></button></li>
     <li><button type="button" role="tab" aria-selected="false" data-img="vorschau-4.jpg" data-alt="The Room and Echo effects switched on, with sliders"><b>3</b><strong>Effects</strong><span>Switch on six effects and hit the drop.</span></button></li>
     <li><button type="button" role="tab" aria-selected="false" data-img="vorschau-3.jpg" data-alt="The Mic track with the record button"><b>4</b><strong>Mic</strong><span>Record your own sound on the Mic track.</span></button></li>
     <li><button type="button" role="tab" aria-selected="false" data-img="vorschau-5.jpg" data-alt="The Orbit view: the molecule spins to the beat Sunday Groove by @mark, with Play, Effects, Share video and the menu for link and WAV below"><b>5</b><strong>Share</strong><span>In Orbit your beat spins as a molecule. Share it as a video with the link to your beat, or send a WAV loop.</span></button></li>
