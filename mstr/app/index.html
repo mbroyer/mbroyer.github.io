@@ -1772,14 +1772,15 @@ var WORTE=(function(){
   /* Abbruch: auch während der Ton noch gerechnet wird (dann verfällt das Ergebnis) */
   function cardStop(){cardGen++;if(cardT){cardT();cardT=null;}if(busyC){busyC=false;cb.disabled=false;cardLabel();}}
   cb.addEventListener('click',function(){
-    if(busyC)return;var o=cardOpts(),key=cardKey(),scene=new CARD.Scene(cardModel());
+    /* Ein zweiter Tipp während der Erstellung bricht ab */
+    if(busyC){cardStop();cardNote('Cancelled. Tap again to make the video.');return;}var o=cardOpts(),key=cardKey(),scene=new CARD.Scene(cardModel());
     if(cfile&&ckey===key)return giveCard(cfile);
     if(!video){CARD.image(scene,o,function(f){if(!f){cardNote('That did not work in this browser.');return;}cfile=f;ckey=key;cardLabel();giveCard(f);});return;}
-    busyC=true;setPlay(false);cb.disabled=true;cb.textContent='Preparing sound …';cardNote('One moment.');var gen=++cardGen;
+    busyC=true;setPlay(false);cb.textContent='Preparing sound …';cardNote('One moment. Tap the button again to cancel.');var gen=++cardGen;
     renderClip(function(buf){
       if(gen!==cardGen)return;
       if(!buf){busyC=false;cb.disabled=false;cardLabel();cardNote('That did not work in this browser.');return;}
-      o.mirror=molC;o.mirrorBg=molDark()?'#0E0E0F':'#FFFFFF';cb.classList.add('gen');cardNote('Generating the video with sound. Keep this screen open until it is done, the arrow cancels.');
+      o.mirror=molC;o.mirrorBg=molDark()?'#0E0E0F':'#FFFFFF';cb.classList.add('gen');cardNote('Generating the video with sound. Keep this screen open until it is done, tap the button again to cancel.');
       cardT=CARD.record(ac,buf,scene,o,function(t,tot){cb.style.setProperty('--p',Math.min(1,t/tot));cb.textContent='Generating · '+Math.ceil(tot-t)+' s';},function(f,why){
         busyC=false;cb.disabled=false;cardT=null;
         if(why==='abort'){cardLabel();return;}
@@ -1824,7 +1825,7 @@ var WORTE=(function(){
   function molDraw(){molRaf=0;if(!molOn)return;molLast=performance.now();
     try{if(!(molTick++%12))molModel();molSize();
       if(playing)molS.time(ac.currentTime-playT0,performance.now());else if(molS.ct>=0)molS.reset();
-      var d=molDark(),o=cardOpts();if(!busyC)CARD.view(molX,molC.width,molC.height,molS,{fg:d?'#F3F3F4':'#0F0F10',bg:d?'#0E0E0F':'#FFFFFF',dark:d,title:o.title,by:o.by,preset:o.preset,hint:playing?'':'TAP TO PLAY',edit:canName()});
+      var d=molDark(),o=cardOpts();if(!busyC||!cardT)CARD.view(molX,molC.width,molC.height,molS,{fg:d?'#F3F3F4':'#0F0F10',bg:d?'#0E0E0F':'#FFFFFF',dark:d,title:o.title,by:o.by,preset:o.preset,hint:playing||busyC?'':'TAP TO PLAY',edit:canName()});
     }catch(e){}
     molRaf=requestAnimationFrame(molDraw);}
   function molGo(){if(!molOn)return;if(molRaf)cancelAnimationFrame(molRaf);molRaf=requestAnimationFrame(molDraw);}
