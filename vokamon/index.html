@@ -111,6 +111,18 @@ details a,.ask a{color:var(--accent-text);font-weight:700}
 .card .btn:disabled{opacity:.5;cursor:wait}
 .err{color:var(--bad);font-weight:600;min-height:1.4em}
 .ask{font-size:.95rem}
+/* Vorschau als schwebende Karte (Variante C): kein Handyrahmen, dahinter ein kleiner Stapel für die übrigen Schritte */
+.phone{position:relative;width:250px;margin-block:14px}
+.phone img{position:relative;z-index:2;border:0;border-radius:22px;box-shadow:0 0 0 1px var(--line),0 2px 4px rgba(0,0,0,.06),0 28px 56px -16px rgba(0,0,0,.35)}
+.phone::before,.phone::after{content:"";position:absolute;inset:0;border-radius:22px;background:var(--surface2);box-shadow:0 0 0 1px var(--line),0 10px 30px -12px rgba(0,0,0,.25)}
+.phone::before{transform:rotate(-6deg) translate(-16px,6px);z-index:0;opacity:.7}
+.phone::after{transform:rotate(4deg) translate(14px,4px);z-index:1}
+@media (max-width:760px){
+  .phone{width:200px;margin-block:10px 16px}
+  /* Reiter: lange Wörter trennen statt über den Rahmen laufen */
+  .steps button{padding-inline:3px}
+  .steps strong{font-size:.85rem;-webkit-hyphens:auto;hyphens:auto;overflow-wrap:anywhere}
+}
 </style>
 </head>
 <body>
@@ -124,17 +136,17 @@ details a,.ask a{color:var(--accent-text);font-weight:700}
   <div class="phone"><img id="ph" src="vorschau-1.jpg" alt="Startbildschirm von Vokamon mit Monster auf Level 8" width="390" height="620"></div>
   <div>
    <ol class="steps" role="tablist" aria-label="Schritte">
-    <li><button type="button" role="tab" aria-selected="true" data-img="vorschau-1.jpg" data-alt="Startbildschirm von Vokamon mit Monster auf Level 8"><b>1</b><strong>Vokabeln holen</strong><span>Hausaufgabe abfotografieren oder Seiten aus dem Buch wählen.</span></button></li>
+    <li><button type="button" role="tab" aria-selected="true" data-img="vorschau-1.jpg" data-alt="Startbildschirm von Vokamon mit Monster auf Level 8"><b>1</b><strong>Vokabeln holen</strong><span>Vokabelliste oder Hausaufgabe abfotografieren oder die Wörter eintippen.</span></button></li>
     <li><button type="button" role="tab" aria-selected="false" data-img="vorschau-2.jpg" data-alt="Eine richtig gelöste Aufgabe mit Beispielsatz"><b>2</b><strong>Kurz üben</strong><span>Kurze Runden mit Beispielsätzen und Vorlesen.</span></button></li>
     <li><button type="button" role="tab" aria-selected="false" data-img="vorschau-3.jpg" data-alt="Der Melodymaker"><b>3</b><strong>Monster wachsen</strong><span>Punkte sammeln, das Monster entwickelt sich, Melodien bauen.</span></button></li>
    </ol>
-   <p class="cap" id="cap">Hausaufgabe abfotografieren oder Seiten aus dem Buch wählen.</p>
+   <p class="cap" id="cap">Vokabelliste oder Hausaufgabe abfotografieren oder die Wörter eintippen.</p>
   </div>
 </section>
 <h2>Gut zu wissen</h2>
 <details open><summary>Brauche ich einen Code?</summary><p>Zum Ausprobieren nicht: Die Demo läuft eine Runde lang ohne Code. Wer weiterüben will, bekommt einen Code von Mark. <a href="mailto:hello@asimplemanslab.com?subject=Code%20f%C3%BCr%20Vokamon">Code anfragen</a></p></details>
 <details><summary>Wird etwas gespeichert?</summary><p>In der Demo nichts. Mit Code bleibt dein Fortschritt gespeichert, auf jedem Gerät, auf dem du dich anmeldest.</p></details>
-<details><summary>Mit welchen Vokabeln übe ich?</summary><p>Mit deinen eigenen: Fotografier eine Vokabelliste oder Hausaufgabe, oder wähle die Seiten aus deinem Buch.</p></details>
+<details><summary>Mit welchen Vokabeln übe ich?</summary><p>Mit deinen eigenen: Fotografier eine Vokabelliste oder Hausaufgabe, oder tipp die Wörter ein. Vokamon liest die Wortpaare aus dem Foto, du prüfst sie kurz.</p></details>
 <details><summary>Auf welchen Geräten läuft Vokamon?</summary><p>Im Browser auf Handy, Tablet und Computer. Installieren muss man nichts.</p></details>
 <a class="madeby" href="/"><span>Made with love by</span><img src="/logo.png" alt="A Simple Man’s Lab" width="320" height="354"></a>
 </div>
