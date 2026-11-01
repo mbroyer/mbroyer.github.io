@@ -413,7 +413,7 @@ function OUT(){if(_oc!==ac){_oc=ac;
   g.connect(c);c.connect(mk);mk.connect(lim);lim.connect(ac.destination);_og=g;}
   return _og;}
 
-/* 16 Vorlagen (Stil, Tempo, Swing, Kick/Snare/Hat; genutzt werden die ersten 16 Schritte). Start-Vorlage ist Amapiano (START in mstr.js) */
+/* 30 Vorlagen (Stil, Tempo, Swing, Kick/Snare/Hat; genutzt werden die ersten 16 Schritte). Start-Vorlage ist Amapiano (START in mstr.js) */
 var BEATS=[
   {n:'lofi',bpm:82,sw:.36,K:'x......xx.....x.x......xx.....x.',S:'....o.......o.......o.......o...',H:'x.xox.x.x.xox.x.x.xox.x.x.xox.x.',hv:[.12,.07],fill:'tom'},
   {n:'house',bpm:116,sw:0,K:'x...x...x...x...x...x...x...x...',S:'....c.......c.......c.......c...',H:'..O...O...O...O...O...O...O...O.',hv:[.2,.2],fill:'tom',clap:true},
@@ -430,7 +430,21 @@ var BEATS=[
   {n:'twostep',bpm:132,sw:.3,K:'x.........x..x..x.........x..x..',S:'....c.......c.......c.......c...',H:'..x.x.O...x.x.Ox..x.x.O...x.x.Ox',hv:[.14,.08],fill:'snare'},
   {n:'jungle',bpm:162,sw:0,K:'x.x.......xx....x.x.......xx....',S:'....x..o.o..x..o....x..o.o..x..o',H:'x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.',hv:[.14,.08],fill:'snare'},
   {n:'electro',bpm:124,sw:0,K:'x.....x...x.x...x.....x...x.x...',S:'....c.......c.......c.......c...',H:'x.x.x.O.x.x.x.O.x.x.x.O.x.x.x.O.',hv:[.15,.1],fill:'snare'},
-  {n:'amapiano',bpm:113,sw:.1,K:'x...x...x...x...x...x...x...x...',S:'..o..o....o..c....o..o....o..c..',H:'..O...O...O...O...O...O...O...O.',hv:[.12,.07],fill:'tom'}
+  {n:'amapiano',bpm:113,sw:.1,K:'x...x...x...x...x...x...x...x...',S:'..o..o....o..c....o..o....o..c..',H:'..O...O...O...O...O...O...O...O.',hv:[.12,.07],fill:'tom'},
+  {n:'phonk',bpm:130,sw:0,K:'x.....x.x.......x.....x.x.......',S:'....c.......c.......c.......c...',H:'x.x.x.x.x.x.xxx.x.x.x.x.x.x.xxx.',hv:[.14,.08],fill:'tom'},
+  {n:'jersey',bpm:140,sw:0,K:'x...x...x..x..x.x...x...x..x..x.',S:'....c.......c.......c.......c...',H:'..x...x...x...x...x...x...x...x.',hv:[.14,.08],fill:'tom'},
+  {n:'baile',bpm:130,sw:0,K:'x.....x.x.......x.....x.x.......',S:'...c......c..c.....c......c..c..',H:'................................',hv:[.14,.08],fill:'tom'},
+  {n:'gqom',bpm:124,sw:0.06,K:'x.....x.....x...x.....x.....x...',S:'....c.........c.....c.........c.',H:'..O...O...O...O...O...O...O...O.',hv:[.14,.08],fill:'tom'},
+  {n:'dubstep',bpm:140,sw:0,K:'x.........x..x..x.........x..x..',S:'........x...............x.......',H:'x...x...x...x...x...x...x...x...',hv:[.14,.08],fill:'tom'},
+  {n:'samba',bpm:100,sw:0.1,K:'x......xx......xx......xx......x',S:'..o..o.o..o..o.o..o..o.o..o..o.o',H:'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',hv:[.14,.08],fill:'tom'},
+  {n:'cumbia',bpm:92,sw:0,K:'x.......x.......x.......x.......',S:'....o.......o.......o.......o...',H:'..x...x...x...x...x...x...x...x.',hv:[.14,.08],fill:'tom'},
+  {n:'bhangra',bpm:96,sw:0.2,K:'x.....x.x.....x.x.....x.x.....x.',S:'....o.......o.......o.......o...',H:'x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.',hv:[.14,.08],fill:'tom'},
+  {n:'afrohouse',bpm:122,sw:0.08,K:'x...x...x...x...x...x...x...x...',S:'..........o..o............o..o..',H:'..O...O...O...O...O...O...O...O.',hv:[.14,.08],fill:'tom'},
+  {n:'synthwave',bpm:100,sw:0,K:'x.......x.x.....x.......x.x.....',S:'....x.......x.......x.......x...',H:'x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.',hv:[.14,.08],fill:'tom'},
+  {n:'motown',bpm:116,sw:0.05,K:'x.x...x.x.x...x.x.x...x.x.x...x.',S:'x...x...x...x...x...x...x...x...',H:'x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.',hv:[.14,.08],fill:'tom'},
+  {n:'bodiddley',bpm:112,sw:0.1,K:'x.....x...x.....x.....x...x.....',S:'................................',H:'................................',hv:[.14,.08],fill:'tom'},
+  {n:'oldschool',bpm:98,sw:0,K:'x......xx.x.....x......xx.x.....',S:'....c.......c.......c.......c...',H:'x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.',hv:[.14,.08],fill:'tom'},
+  {n:'gogo',bpm:96,sw:0.3,K:'x.....x...x.....x.....x...x.....',S:'....x.......x.......x.......x...',H:'x.xox.xox.xox.xox.xox.xox.xox.xo',hv:[.14,.08],fill:'tom'}
 ];
 
 /* ===== Klang: alle Spuren per Web Audio erzeugt, über einen Bus mit Hall, Delay, Sättigung, Sidechain und zuschaltbaren Effekten ===== */
@@ -953,33 +967,47 @@ var WORTE=(function(){
     twostep:'2 ?-?step|two ?-?step|uk garage|ukg|garage',
     jungle:'jungle|breakbeat|breaks|amen',
     electro:'electro|robot|kraftwerk|machine|maschine|roboter',
-    amapiano:'amapiano|log drum|south africa|piano'};
+    amapiano:'amapiano|log drum|south africa|piano',
+    cumbia:'cumbia|colombia|kolumbien|guiro',
+    bhangra:'bhangra|punjab|dhol|bollywood|india|indien',
+    samba:'samba|batucada|carnival|karneval|brazil|brasilien',
+    synthwave:'synthwave|retrowave|outrun|vaporwave',
+    afrohouse:'afro ?house|tribal house|tribal',
+    gqom:'gqom|durban',
+    phonk:'phonk|drift|memphis',
+    baile:'baile ?funk|funk carioca|carioca|favela',
+    jersey:'jersey ?club|jersey|club bounce',
+    dubstep:'dubstep|brostep',
+    motown:'motown|60s soul|sixties soul|northern soul|60er soul|sixties|60er',
+    bodiddley:'bo ?diddley|rockabilly|rock ?a ?billy|50s|fifties|50er',
+    oldschool:'old ?school|80s hip ?hop|golden age|run dmc|1986|80er hip ?hop',
+    gogo:'go-go|gogo|go go music|chuck brown|washington'};
   /* Stimmung, wenn kein Stil genannt ist */
   var MOOD=[
-    ['dark|duester|finster|night|nacht|evil|horror|creepy|gruselig|underground|keller|cave|hoehle',['techno','trap','minimal','dnb','electro']],
+    ['dark|duester|finster|night|nacht|evil|horror|creepy|gruselig|underground|keller|cave|hoehle',['techno','trap','minimal','dnb','electro','gqom','phonk','dubstep']],
     ['sad|traurig|melanchol|rain|regen|lonely|einsam|sleep|schlaf|mellow|sunday|sonntag|cozy|gemuetlich|coffee|kaffee',['lofi','onedrop','trap','twostep']],
-    ['happy|froehlich|sunny|sonnig|summer|sommer|beach|strand|holiday|urlaub|bright|hell',['afrobeats','funk','house','reggaeton','pop80']],
-    ['party|dance|tanz|tanzen|dancefloor|feier|wedding|hochzeit',['house','funk','amapiano','reggaeton','pop80','afrobeats']],
-    ['angry|wuetend|aggressive|aggressiv|hard|hart|brutal|heavy|schwer|metal',['rock','techno','trap','jungle']],
-    ['funny|lustig|silly|albern|bouncy|huepf|playful|verspielt',['funk','reggaeton','afrobeats','pop80']],
-    ['epic|episch|stadium|stadion|huge|riesig|big room',['rock','pop80','dnb','trap']],
-    ['heart|heartbeat|herz|herzschlag|pulse|puls|hypnotic|hypnotisch|trance',['minimal','techno','house']],
-    ['fast|schnell|frantic|hektisch|energy|energie|running|laufen|workout|sport',['dnb','jungle','twostep','techno','pop80']],
+    ['happy|froehlich|sunny|sonnig|summer|sommer|beach|strand|holiday|urlaub|bright|hell',['afrobeats','funk','house','reggaeton','pop80','cumbia','samba','motown']],
+    ['party|dance|tanz|tanzen|dancefloor|feier|wedding|hochzeit',['house','funk','amapiano','reggaeton','pop80','afrobeats','afrohouse','baile','jersey','gogo']],
+    ['angry|wuetend|aggressive|aggressiv|hard|hart|brutal|heavy|schwer|metal',['rock','techno','trap','jungle','phonk','dubstep']],
+    ['funny|lustig|silly|albern|bouncy|huepf|playful|verspielt',['funk','reggaeton','afrobeats','pop80','jersey','cumbia','baile']],
+    ['epic|episch|stadium|stadion|huge|riesig|big room',['rock','pop80','dnb','trap','dubstep']],
+    ['heart|heartbeat|herz|herzschlag|pulse|puls|hypnotic|hypnotisch|trance',['minimal','techno','house','afrohouse','gqom']],
+    ['fast|schnell|frantic|hektisch|energy|energie|running|laufen|workout|sport',['dnb','jungle','twostep','techno','pop80','jersey']],
     ['slow|langsam|lazy|faul|relaxed|entspannt|calm|ruhig',['lofi','onedrop','funk','reggaeton']],
-    ['steady|stetig|groove|groovy|nod|kopfnicken',['funk','house','afrobeats','rock','lofi']],
-    ['swing|swung|shuffle|wonky|bouncy|jazzy',['funk','lofi','twostep','onedrop']],
+    ['steady|stetig|groove|groovy|nod|kopfnicken',['funk','house','afrobeats','rock','lofi','oldschool']],
+    ['swing|swung|shuffle|wonky|bouncy|jazzy',['funk','lofi','twostep','onedrop','gogo']],
     ['dreamy|traeum|ambient|ethereal|floating|schweben',['lofi','onedrop']],
-    ['dusty|dust|staub|warm|vinyl|crackle|knister|tape|kassette|cassette|retro|old school|oldschool',['lofi','funk']],
+    ['dusty|dust|staub|warm|vinyl|crackle|knister|tape|kassette|cassette|retro|old school|oldschool',['lofi','funk','motown','oldschool']],
     ['clean|sauber|crisp|knackig',['house','pop80','afrobeats','twostep']],
     ['nervous|nervoes|anxious|restless|unruhig|jittery|zappelig',['minimal','electro','jungle','twostep']],
     ['romantic|romantisch|love|liebe|kiss|kuss|date|candle|kerze',['lofi','onedrop','reggaeton','twostep']],
-    ['festival|crowd|menge|stage|buehne|open air|openair|big stage',['house','afrobeats','amapiano','reggaeton']],
+    ['festival|crowd|menge|stage|buehne|open air|openair|big stage',['house','afrobeats','amapiano','reggaeton','afrohouse','samba','bhangra']],
     ['focus|fokus|concentrat|konzentr|deep work|work|arbeit|homework|hausaufgaben',['lofi','minimal','house']],
     ['tired|muede|exhausted|erschoepft|hopeful|hoffnung|gentle|zart|soft|sanft',['lofi','onedrop']],
-    ['drive|driving|road|strasse|autobahn|highway|cruise|cruising|roadtrip|road trip',['techno','house','electro','pop80']],
+    ['drive|driving|road|strasse|autobahn|highway|cruise|cruising|roadtrip|road trip',['techno','house','electro','pop80','synthwave','phonk']],
     ['spacey|cosmic|kosmisch|galaxy|galaxie|planet|moon|mond',['minimal','electro','twostep','dnb','techno']],
     ['glitchy|glitch|broken|kaputt|chopped|stutter',['electro','jungle','twostep']],
-    ['busy|dense|wild|crazy|verrueckt|chaotic|chaos',['jungle','dnb','funk','amapiano']],
+    ['busy|dense|wild|crazy|verrueckt|chaotic|chaos',['jungle','dnb','funk','amapiano','samba','baile']],
     /* „minimal“ allein ist eher Dichte als Stil: nur wenn nichts anderes davor steht, wird es Minimal */
     ['minimal|sparse|reduced|reduziert',['minimal','twostep','lofi']]];
   /* Klänge: Spur, Zeichen, Muster (null: eigene Regel unten) */
@@ -1007,7 +1035,11 @@ var WORTE=(function(){
     lofi:[['lofi',45,0],['room',30,0]],house:[['pump',40,4],['sweep',35,4]],funk:[['room',25,0],['stut',30,2]],rock:[['room',45,0]],
     techno:[['sweep',45,2],['pump',45,4]],trap:[['room',45,0],['stut',35,4]],onedrop:[['echo',55,3],['room',30,0]],pop80:[['room',60,0],['echo',25,2]],
     dnb:[['room',30,0],['echo',30,2]],afrobeats:[['room',30,0],['echo',25,3]],reggaeton:[['echo',30,2],['room',25,0]],minimal:[['sweep',35,4],['echo',25,3]],
-    twostep:[['sweep',35,2],['pump',35,2]],jungle:[['echo',35,2],['stut',35,4]],electro:[['sweep',40,2],['stut',30,2]],amapiano:[['room',35,0],['echo',30,3]]};
+    twostep:[['sweep',35,2],['pump',35,2]],jungle:[['echo',35,2],['stut',35,4]],electro:[['sweep',40,2],['stut',30,2]],amapiano:[['room',35,0],['echo',30,3]],
+    cumbia:[['echo',25,3],['room',25,0]],bhangra:[['room',30,0],['echo',25,2]],samba:[['room',30,0]],synthwave:[['room',60,0],['echo',30,2]],
+    afrohouse:[['room',35,0],['pump',35,4]],gqom:[['room',40,0],['sweep',35,4]],phonk:[['lofi',35,0],['room',35,0]],baile:[['stut',30,2],['room',25,0]],
+    jersey:[['stut',35,2],['pump',30,4]],dubstep:[['sweep',55,2],['room',35,0]],
+    motown:[['room',40,0],['lofi',25,0]],bodiddley:[['room',35,0],['echo',30,2]],oldschool:[['lofi',30,0],['room',25,0]],gogo:[['room',30,0],['stut',25,2]]};
   /* Stimmung bringt ihren Effekt mit, wenn er nicht schon dabei ist */
   var MOODFX=[['dark|duester|finster|night|nacht|underground|keller|cave|hoehle','sweep',40,4],['sad|traurig|melanchol|rain|regen|lonely|einsam|sleep|schlaf','room',50,0],
     ['party|dance|tanz|tanzen|dancefloor|feier|club','pump',40,4],['angry|wuetend|aggressive|aggressiv|hard|hart|brutal|heavy','stut',40,2],
@@ -1020,6 +1052,7 @@ var WORTE=(function(){
   /* Wortgrenzen; deutsche Endungen (langsamER, düsterE, schnellEN) zählen mit */
   function re(w){return new RegExp('(^|[^a-z0-9])(?:'+w+')(?:e|er|es|en|em|ern|s|n|r)?(?=[^a-z0-9]|$)','g');}
   function find(t,w){var m=re(w).exec(t);return m?m.index+m[1].length:-1;}
+  function flen(t,w){var m=re(w).exec(t);return m?m[0].length-m[1].length:0;}
   /* Ist das Wort an Stelle i verneint („no hats“, „ohne Kick“, „keine Becken“)? */
   function neg(t,i){return /(^|\s)(no|not|without|ohne|kein|keine|keinen|keiner|less|weniger|zero|minus)\s+(\S+\s+)?$/.test(t.slice(Math.max(0,i-30),i));}
   function amount(t,i){var b=t.slice(Math.max(0,i-26),i);return re(MORE).test(b)?82:re(LESS).test(b)?28:55;}
@@ -1030,8 +1063,9 @@ var WORTE=(function(){
     var t=norm(text),rnd=ctx.rnd||Math.random,i,k,best=-1,bi=1e9,id;
     function pick(a){return a[Math.floor(rnd()*a.length)];}
     function idx(n){return ctx.n.indexOf(n);}
-    /* Stil: was zuerst im Text steht; „minimal techno“ zählt als Minimal */
-    for(id in STYLE){i=find(t,STYLE[id]);if(i>=0&&(i<bi||(i===bi&&id==='minimal'))&&!neg(t,i)){bi=i;best=idx(id);}}
+    /* Stil: was zuerst im Text steht, an derselben Stelle der längere Treffer („afro house“ vor „afro“); „minimal techno“ zählt als Minimal */
+    var bl=0;
+    for(id in STYLE){i=find(t,STYLE[id]);if(i>=0&&(i<bi||(i===bi&&(id==='minimal'||flen(t,STYLE[id])>bl)))&&!neg(t,i)){bi=i;bl=flen(t,STYLE[id]);best=idx(id);}}
     /* Stimmung: jede bringt mehrere Stile mit (der erste am typischsten). Mehrere Stimmungen: erst die Schnittmenge, sonst die zuerst
        genannte. Gewürfelt wird gewichtet (2 : 1,5 : 1 …), so landet nicht alles bei Techno oder Lo-Fi. Bei „Another take“ (ctx.avoid =
        Vorlage des letzten Takes) bleibt die letzte draußen, notfalls aus allen genannten Stimmungen */
@@ -1123,7 +1157,7 @@ var WORTE=(function(){
 (function(){
   /* Vorschläge zum Würfeln für Becken, Perc, Toms, FX und die eigene Aufnahme (16 Schritte) */
   var COMMON={cym:['c...............','r.r.r.r.r.r.r.r.','..r...r...r...r.'],click:['1.1.1.1.1.1.1.1.','....2.......2...','3..3..3...3.3...'],toms:['b...p...b...p...','b.......t.t.....','b..b....p...tt..'],fx:['....m.......m...','n.....n...n.....','............z...'],mic:['....a.......a...','a.......a.a.....','..a...a...a.h.t.']};
-  var NM={lofi:'Lo-Fi',house:'House',funk:'Funk',rock:'Rock',techno:'Techno',trap:'Trap',onedrop:'One Drop',pop80:'Beat It',dnb:"Drum'n'Bass",afrobeats:'Afrobeats',reggaeton:'Reggaeton',minimal:'Minimal',twostep:'2-Step',jungle:'Jungle',electro:'Electro',amapiano:'Amapiano'};
+  var NM={lofi:'Lo-Fi',house:'House',funk:'Funk',rock:'Rock',techno:'Techno',trap:'Trap',onedrop:'One Drop',pop80:'Beat It',dnb:"Drum'n'Bass",afrobeats:'Afrobeats',reggaeton:'Reggaeton',minimal:'Minimal',twostep:'2-Step',jungle:'Jungle',electro:'Electro',amapiano:'Amapiano',phonk:'Phonk',jersey:'Jersey Club',baile:'Baile Funk',gqom:'Gqom',dubstep:'Dubstep',samba:'Samba',cumbia:'Cumbia',bhangra:'Bhangra',afrohouse:'Afro House',synthwave:'Synthwave',motown:'Motown',bodiddley:'Bo Diddley',oldschool:'Old School',gogo:'Go-Go'};
   /* Je Vorlage eigene Muster für Becken, Perc, Toms und FX. Becken: c Crash, r Ride, h China. Perc: 1 Shaker, 2 Tamburin, 3 Clave, 4 Conga, 5 Cowbell.
      FX: m Snap, n Sub, s Reverse, l Wirbel, z Riser. Riser und Reverse dauern vier Schritte, auf Schritt 13 laufen sie genau in die nächste Eins */
   var EXTRA={
@@ -1142,7 +1176,21 @@ var WORTE=(function(){
     twostep:['................','1.1.1.1.1.1.1.1.','................','............s...'],
     jungle:['c...............','................','..............tp','n.........n.....'],
     electro:['................','..5.....5.....5.','................','............z...'],
-    amapiano:['................','1111111111111111','......b..b....b.','................']};
+    amapiano:['................','1111111111111111','......b..b....b.','................'],
+    phonk:['................','5..5..5.5..5..5.','................','n.....n.........'],
+    jersey:['................','................','..............tt','..m.......m...m.'],
+    baile:['................','..1...1...1...1.','b..p..b...p..b..','............n...'],
+    gqom:['..............h.','................','b..b..p...b..t..','n...............'],
+    dubstep:['c...............','................','............tpb.','n.........n..n..'],
+    samba:['................','2..2..2...2.2...','....b.......b...','................'],
+    cumbia:['................','1.111.111.111.11','..........p.p...','................'],
+    bhangra:['................','..2...2...2...2.','b..p..p.b..p..p.','................'],
+    afrohouse:['................','..4.4..4..4.4..4','b.....p...b..t..','............z...'],
+    synthwave:['c...............','................','................','............s...'],
+    motown:['................','....2.......2...','................','................'],
+    bodiddley:['................','1111111111111111','b..b..b...p.p...','................'],
+    oldschool:['................','................','................','..............m.'],
+    gogo:['................','5..5..5...5.5...','..p..p....b..b..','................']};
 
   /* Spur-Icons: feine Linien, 24er Raster */
   var ICON={
