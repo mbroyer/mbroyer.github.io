@@ -1,0 +1,14 @@
+# Lehnt jeden PR ab, der den lesbaren MSTR-Build statt des Release-Builds auf die Website bringt.
+name: MSTR release build
+on:
+  pull_request:
+    paths: ['mstr/app/**']
+  push:
+    branches: [main]
+    paths: ['mstr/app/**']
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: sh tools/check-mstr.sh
