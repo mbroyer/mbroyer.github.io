@@ -7,8 +7,6 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="MSTR">
 <title>MSTR</title>
-<link rel="icon" type="image/png" href="/mstr/favicon.png">
-<link rel="apple-touch-icon" href="/mstr/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&family=Instrument+Serif&family=JetBrains+Mono:wght@400;500&display=swap">
@@ -41,7 +39,12 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
 .mark i{width:9px;height:9px;border-radius:50%;background:var(--accent)}
 .app.live .mark i{animation:pulse calc(60s / 120) ease-in-out infinite alternate}
 @keyframes pulse{to{transform:scale(1.35)}}
-.topr{display:flex;gap:8px;align-items:center}
+.back{border:0;background:none;padding:0 8px 0 0;display:inline-flex;align-items:center;gap:8px;font:600 14px var(--f-ui);color:var(--ink);cursor:pointer}
+.back i{width:36px;height:36px;border-radius:50%;background:var(--soft);display:grid;place-items:center}
+.back svg{width:18px;height:18px}
+.vibetxt{max-width:50%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.top .mark{margin-right:auto}.app.molecule .top .mark{margin-right:0}
+.vibetxt[hidden]{display:none}
 .ib{width:36px;height:36px;border-radius:50%;border:0;background:var(--soft);display:grid;place-items:center;cursor:pointer;flex:none;color:var(--ink);padding:0}
 .ib svg{width:18px;height:18px}
 .ib.lg{width:48px;height:48px;font-size:24px;font-weight:500}
@@ -51,17 +54,27 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
 .pill:active,.ib:active{transform:scale(.97)}
 
 .head{display:flex;flex-direction:column;gap:4px}
-.preset{margin:0;cursor:pointer;display:flex;align-items:center;gap:10px;min-width:0;font-family:var(--f-ed);font-size:clamp(42px,11vw,60px);font-weight:400;letter-spacing:-.01em;line-height:1}
-/* Beat wählen: gefüllter runder Knopf direkt neben dem Namen (im Dunkelmodus Weiß) */
+.preset{margin:0;cursor:default;display:flex;align-items:center;gap:10px;min-width:0;font-family:var(--f-ed);font-size:clamp(42px,11vw,60px);font-weight:400;letter-spacing:-.01em;line-height:1}
+/* Share: der einzige farbige Knopf im Kopf, beim Spielen läuft darin ein winziger Orbit mit */
 .prow{display:flex;align-items:center;gap:14px}
-/* Stift: zeigt, dass der Titel antippbar ist */
-.preset .pen{width:18px;height:18px;flex:none;color:var(--mute)}
 .preset #preTxt{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.ib.pick{width:44px;height:44px;background:var(--ink);color:var(--bg)}
-.ib.pick svg{width:20px;height:20px}
-.sub:empty{display:none}
+/* Textknöpfe: „Change beat“ unter dem Titel, der Link im Orbit */
+.lnk{border:0;background:none;padding:4px 0;font:600 13px var(--f-ui);color:var(--ink);display:inline-flex;align-items:center;gap:5px;cursor:pointer}
+.lnk svg{width:13px;height:13px;flex:none;color:var(--mute)}
+/* Beat beschreiben: das Feld steht oben in der Beat-Liste */
+.sayf{display:flex;gap:10px;align-items:flex-end}
+.sayf textarea{flex:1;min-width:0;min-height:64px;resize:none;border-radius:14px;border:1px solid var(--line);background:var(--soft);color:var(--ink);padding:14px 16px;font-family:var(--f-ed);font-size:24px;line-height:1.15;outline:none;caret-color:var(--accent)}
+.sayf textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 35%,transparent)}
+.sayf textarea::placeholder{color:var(--mute)}
+.sayf .ib.go{width:52px;height:52px;flex:none;background:var(--accent);color:var(--on-accent)}
+.sayf .ib.go svg{width:22px;height:22px}
 .pill svg{width:17px;height:17px;flex:none}
-.sub{margin:0;font-size:13px;color:var(--mute)}
+.sub{margin:6px 0 0;font-size:13px;color:var(--mute);display:flex;align-items:center;gap:10px;min-height:36px;flex-wrap:wrap}
+/* Change beat: ein eigener Knopf, im Raster wird nur noch der Beat gewechselt, benannt wird im Orbit */
+#preBtn{gap:4px;padding:0 10px 0 14px;color:var(--ink)}
+#preBtn svg{width:14px;height:14px;color:var(--mute)}
+#sub:empty{display:none}
+.shnote.left{text-align:left}
 
 /* Raster: Name-Zeile über 16 Punkten; ab 640 px Name links */
 .tracks{display:flex;flex-direction:column;gap:clamp(12px,2.6vh,24px)}
@@ -71,8 +84,6 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
 .tn .nm{white-space:nowrap;font-family:var(--f-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:500}
 .tn .tb{font-size:12px;color:var(--mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .tn .go{width:12px;height:12px;color:var(--mute);flex:none;align-self:center;margin-left:-4px}
-.ms{width:26px;height:22px;border-radius:6px;border:1px solid var(--line);background:transparent;font-family:var(--f-mono);font-size:10px;font-weight:500;cursor:pointer;color:var(--mute);padding:0;flex:none}
-.ms[aria-pressed="true"]{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
 .trk.quiet .steps{opacity:.28}
 /* Die eigene Spur Aufnahme steht etwas abgesetzt unter den eingebauten */
 .trk.own{border-top:1px solid var(--line);padding-top:clamp(12px,2.6vh,24px)}
@@ -114,17 +125,14 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
 #drop.on svg path{fill:currentColor}
 #drop.on{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
 .app.building #drop{animation:pulse .25s ease-in-out infinite alternate}
-#fxBtn{height:44px;padding:0 12px 0 10px;gap:6px;font-variant-numeric:tabular-nums}
-#share{width:44px;height:44px;padding:0;flex:none}
-#share svg{width:19px;height:19px}
-/* Schmale Handys: Platz für Teilen in der Leiste, der Pfeil am Tempo entfällt (die Zahl selbst öffnet das Blatt) */
-/* Handys: Effects und Drop nur als Symbol (Effects mit Zahl, wenn Effekte an sind), damit Teilen und Tempo Luft haben */
-@media (max-width:430px){.transport .fxl{display:none}#fxBtn,#drop{min-width:44px;padding:0 12px;justify-content:center;gap:4px}#drop{width:44px;padding:0}#fxBtn.on{padding:0 14px 0 12px}}
-@media (max-width:380px){.tempo .chev{display:none}}
+#fxBtn{height:44px;padding:0 14px 0 12px;gap:6px;font-variant-numeric:tabular-nums}
+/* Effects und Drop tragen ihr Wort; erst auf sehr schmalen Handys bleibt nur das Symbol, die Swing-Zeile fällt am Handy weg */
+@media (max-width:479px){.swt{display:none}}
+@media (max-width:399px){.transport{gap:6px}.tempo .big{font-size:36px}#fxBtn,#drop{padding:0 11px 0 10px;gap:5px}}
+@media (max-width:359px){.transport .fxl{display:none}#fxBtn,#drop{min-width:44px;padding:0 12px;justify-content:center;gap:4px}#drop{width:44px;padding:0}#fxBtn.on{padding:0 14px 0 12px}}
 #fxBtn.on{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
 .tempo{margin-left:auto;border:0;background:none;cursor:pointer;display:flex;align-items:center;gap:8px;padding:4px 0;line-height:1}
 .tv{display:flex;flex-direction:column;align-items:flex-end;gap:6px}
-.tempo .chev{width:30px;height:30px;padding:6px;border-radius:50%;background:var(--soft);color:var(--ink);flex:none}
 .big{font-weight:700;letter-spacing:-.04em;line-height:1;font-variant-numeric:tabular-nums;font-size:32px}
 .big small{font-size:.42em;color:var(--mute);font-weight:600;letter-spacing:0;margin-left:2px}
 .swt{font-family:var(--f-mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--mute)}
@@ -181,6 +189,23 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
 .opts{display:flex;gap:6px;flex-wrap:wrap}
 .opt{height:34px;border-radius:999px;border:1px solid var(--line);background:transparent;padding:0 14px;font-size:13px;font-weight:600;cursor:pointer}
 .opt[aria-pressed="true"]{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
+/* Willkommen: drei Karten, das Beschreiben-Feld steckt in der dritten */
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{height:34px;padding:0 13px;border-radius:999px;border:1px solid var(--line);background:transparent;font:600 13px var(--f-ui);color:var(--ink);cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.chip:active{background:var(--soft)}
+.chip.on{border-color:var(--accent);color:var(--accent)}
+.chip.on::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--accent)}
+.vibef textarea{font-size:26px;caret-color:var(--accent)}
+.vgrp{display:flex;flex-direction:column;gap:8px}
+.vgrp .lbl{font-family:var(--f-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--mute)}
+/* Die Knopfzeile bleibt unten sichtbar, auch wenn die Wortreihen länger sind als der Bildschirm */
+.vgo{margin-top:auto;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0 max(8px,env(safe-area-inset-bottom,0px));position:sticky;bottom:0;background:linear-gradient(transparent,var(--bg) 14px);box-shadow:0 48px 0 var(--bg);z-index:2}
+.pill.big.sur{height:56px;padding:0 20px 0 16px;font-size:16px;font-weight:700;gap:9px;color:var(--ink);border:1.5px solid var(--ink);background:var(--bg)}
+.pill.big.sur svg{width:22px;height:22px}
+.vgo .pill{flex:1 1 0;min-width:0}
+.vgo .pill.go.big{flex:1.4 1 0}
+.pill.go.big{height:56px;padding:0 20px 0 24px;background:var(--accent);color:var(--on-accent);border-color:transparent;font-size:17px;font-weight:700;gap:10px}
+.pill.go.big svg{width:22px;height:22px}
 /* Effekte: eine Zeile je Effekt, rechts ein Punkt wie im Raster (grau aus, Flieder an) */
 .fxlist{display:flex;flex-direction:column}
 .fxrow{border-top:1px solid var(--line)}
@@ -192,11 +217,9 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
 .fxi b{font-size:17px;font-weight:600;letter-spacing:-.01em}
 .fxi small{font-size:13px;color:var(--mute)}
 .namef{display:flex;flex-direction:column;gap:8px}
-.namef input{height:52px;border-radius:14px;border:1px solid var(--line);background:var(--soft);color:var(--ink);padding:0 16px;font-family:var(--f-ed);font-size:26px;outline:none;width:100%}
-.namef input:focus{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 35%,transparent)}
-.namef input::placeholder{color:var(--mute)}
-.namer{display:flex;gap:8px;align-items:center}
-.namer .ib{width:44px;height:44px;flex:none}
+.nameo{flex:1;min-width:0;font-family:var(--f-ed);font-weight:400;font-size:28px;line-height:1.1;letter-spacing:-.01em;overflow:hidden;text-overflow:ellipsis}
+.namer{display:flex;gap:12px;align-items:center}
+.pill.dice{flex:none;height:40px;padding:0 14px 0 12px}.pill.dice svg{width:16px;height:16px}
 /* Karte: Vorschau links, Name und Knopf rechts */
 .cardrow{display:flex;gap:16px;align-items:stretch}
 .cardrow canvas{width:126px;height:224px;border-radius:12px;flex:none;background:#0F0F10}
@@ -208,9 +231,12 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
 .cardct .pill{height:48px}
 .pill.go{background:var(--accent);color:var(--on-accent);border-color:var(--accent);font-size:15px;height:48px}
 .shnote{margin:0;font-size:13px;color:var(--mute);text-align:center}
+/* Überschriften und Hinweise im Blatt bleiben in der Spalte (ihr margin:0 überschreibt sonst das Zentrieren am Desktop) */
+.sheet>.ed,.sheet>.shnote{margin-inline:auto}
 .fxi i{width:26px;height:26px;border-radius:50%;background:var(--off);flex:none;transition:background .15s,transform .15s}
 .fxi[aria-pressed="true"] i{background:var(--accent);transform:scale(1.1)}
 .seg2{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.seg2.three{grid-template-columns:repeat(3,1fr)}
 .seg2 button{height:42px;border-radius:999px;border:1px solid var(--line);background:transparent;font-size:13px;font-weight:600;cursor:pointer;color:var(--mute)}
 .seg2 button[aria-pressed="true"]{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
 .seg2.sm{flex:1}
@@ -263,29 +289,44 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
 .vpick .opt.off{color:var(--mute);padding:0 13px}
 
 /* Molekül-Ansicht: ersetzt Raster und Taktzeile, füllt die Höhe bis zum Transport */
-.mol{display:block;width:100%;flex:1 1 0;min-height:220px;border-radius:24px;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.mol{display:block;width:100%;flex:1 1 0;min-height:220px;border-radius:24px;cursor:pointer;touch-action:pan-y;-webkit-tap-highlight-color:transparent}
 .mol:focus-visible{outline:2px solid var(--accent);outline-offset:4px}
 .app.molecule .tracks,.app.molecule .beatrow{display:none}
-/* Umschalter oben: Grid zum Bauen, Orbit zum Zusehen und Teilen */
-.seg{display:flex;background:var(--soft);border-radius:999px;padding:3px;gap:2px}
-.seg button{height:30px;padding:0 14px;border-radius:999px;border:0;background:none;color:var(--mute);font:600 13px var(--f-ui);cursor:pointer}
-.seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+/* Im Orbit: Pfeil zurück links, die Marke bleibt in der Mitte (rechts ein gleich breiter Platzhalter) */
 .cardfoot{display:flex;gap:8px;align-items:center}
+.takes{display:flex;gap:8px;align-items:center}
+.takes .play{width:56px;height:56px;flex:none}
+.takes .pill{flex:1;height:44px;padding:0 10px;font-size:13px}
+.takes .pill svg{width:15px;height:15px;flex:none}
+/* Another take: kurzer Blitz in der Akzentfarbe, Symbol dreht sich einmal */
+.takes .pill.hit{animation:takehit 1.1s ease-out}
+.takes .pill.hit svg{animation:takespin .55s cubic-bezier(.3,.7,.4,1)}
+@keyframes takehit{0%{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}60%{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}100%{background:transparent}}
+@keyframes takespin{to{transform:rotate(360deg)}}
+.machine{margin:0;padding:0 0 max(8px,env(safe-area-inset-bottom,0px));text-align:center;font-size:13px;color:var(--mute);display:flex;justify-content:center;gap:6px;align-items:center;flex-wrap:wrap}
+.machine .lnk{font-size:13px}
+.machine[hidden]{display:none}
+/* Farbwahl im Orbit: fünf Punkte, der gewählte trägt einen Ring; die Orbit-Farbe färbt dort auch den Video-Knopf */
+/* Zurückhaltend wie die App: kleine graue Punkte, nur der gewählte trägt seine Farbe; die Tipp-Fläche bleibt groß */
+.hue{display:flex;justify-content:flex-start;gap:2px;height:0;position:relative;z-index:1}
+.app.molecule .cardfoot{margin-top:0}
+.hue button{width:28px;height:24px;border:0;padding:0;background:none;cursor:pointer;display:grid;place-items:center}
+.hue button::after{content:"";width:6px;height:6px;border-radius:50%;background:var(--off);transition:transform .15s,background .15s}
+.hue button[aria-checked="true"]::after{background:var(--c);transform:scale(1.5)}
+.hue button:active::after{transform:scale(.8)}
+.app.molecule{--accent:var(--orbit,#C7B3FF)}
 .cardfoot .pill{flex:1;width:auto}
-.cardfoot .ib{width:48px;height:48px}
+.cardfoot .ib{width:44px;height:44px;background:transparent;border:1px solid var(--line)}
+.cardfoot .ib.ok{color:var(--accent);border-color:var(--accent)}
 .app.molecule .head{display:none}
-.app.molecule #theme{display:none}
 /* In der Karte gibt es keine Leiste: Tipp auf den Ring spielt und stoppt, Tipp auf den Titel benennt */
 .app.molecule .transport{display:none}
 /* Orbit füllt genau den sichtbaren Bereich, nichts rutscht unter die Safari-Leiste; Play und Effekte stehen in der Reihe beim Knopf */
 .app.molecule{height:100%;height:100dvh;min-height:0;overflow:hidden;box-sizing:border-box}
 .app.molecule .cardfoot{padding-bottom:0}
-.cardfoot .play{width:48px;height:48px}
-.cardfoot #fxBtn{flex:none;height:48px;min-width:48px;width:48px;padding:0;border-radius:50%;justify-content:center;gap:4px}
-.cardfoot #fxBtn .fxl{display:none}
-.cardfoot #fxBtn.on{width:auto;padding:0 14px 0 12px;border-radius:999px}
-#shCardT{min-height:2.7em;padding-bottom:max(10px,env(safe-area-inset-bottom,0px))}
-#shCardT{margin-top:-8px;line-height:1.35}
+/* Hinweis nur, wenn es etwas zu sagen gibt (Video entsteht, fertig, Link kopiert) */
+#shCardT{margin-top:-4px;line-height:1.35}
+.app.molecule{gap:12px}
 /* Video entsteht: der Knopf füllt sich von links mit dem Fortschritt (--p 0..1) */
 .pill.go.gen,.pill.go.gen:disabled{opacity:1;color:var(--ink);border-color:transparent;background:linear-gradient(90deg,color-mix(in srgb,var(--accent) 60%,var(--bg)) calc(var(--p,0) * 100%),color-mix(in srgb,var(--accent) 18%,var(--bg)) calc(var(--p,0) * 100%));transition:background .2s linear}
 </style>
@@ -293,26 +334,27 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
 <body>
 <div class="app" id="app">
   <header class="top">
+    <button type="button" class="back" id="vOrbit" hidden aria-label="Back to the orbit"><i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></i><span>Orbit</span></button>
     <span class="mark"><i aria-hidden="true"></i>MSTR</span>
-    <div class="topr">
-      <div class="seg" id="view" role="group" aria-label="View"><button type="button" id="vGrid" aria-pressed="true">Grid</button><button type="button" id="vCard" aria-pressed="false">Orbit</button></div>
-      <button type="button" class="ib" id="theme" aria-label="Theme"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 4a8 8 0 0 1 0 16z" fill="currentColor"/></svg></button>
-    </div>
+    <span class="eyebrow vibetxt" id="vibeTxt"></span>
   </header>
   <div class="head">
-    <div class="prow"><h1 class="preset" id="preName" title="Name your beat"><span id="preTxt">Amapiano</span><svg class="pen" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></h1><button type="button" class="ib pick" id="preBtn" aria-haspopup="dialog" aria-label="Choose beat" title="Choose beat"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h10" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></button></div>
-    <p class="sub" id="sub"></p>
+    <div class="prow"><h1 class="preset" id="preName"><span id="preTxt">Amapiano</span></h1></div>
+    <p class="sub"><span id="sub"></span><button type="button" class="pill" id="preBtn" aria-haspopup="dialog">Change beat<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button></p>
   </div>
   <main class="tracks" id="tracks" aria-label="Tracks"></main>
-  <canvas class="mol" id="mol" hidden aria-label="Your beat as an orbit. Tap the ring to play or stop, tap the title to name it" role="button" tabindex="0"></canvas>
-  <div class="cardfoot" id="cardfoot" hidden><button type="button" class="pill wide go" id="shCardBtn">Share video</button><button type="button" class="ib" id="more" aria-haspopup="dialog" aria-label="Link and WAV loop" title="Link and WAV loop"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="2" fill="currentColor"/><circle cx="12" cy="12" r="2" fill="currentColor"/><circle cx="19" cy="12" r="2" fill="currentColor"/></svg></button></div>
+  <canvas class="mol" id="mol" hidden aria-label="Your beat as an orbit. Tap the ring to play or stop, tap the title to name it, swipe sideways to change the colour" role="button" tabindex="0"></canvas>
+  <div class="hue" id="hue" hidden role="radiogroup" aria-label="Orbit colour"></div>
+  <div class="takes" id="takes" hidden><button type="button" class="pill" id="takeBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 0 1 14-5.3M20 12a8 8 0 0 1-14 5.3M18 3v4h-4M6 21v-4h4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Another take</button><button type="button" class="pill" id="vibeBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h10M4 17h6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Change vibe</button></div>
+  <div class="cardfoot" id="cardfoot" hidden><button type="button" class="pill wide go" id="shCardBtn">Share video</button><button type="button" class="ib" id="shSend" aria-label="Copy link" title="Copy link"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button></div>
   <p class="shnote" id="shCardT" hidden></p>
+  <p class="machine" id="machineRow" hidden><button type="button" class="lnk" id="vMachine">Open the machine<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button></p>
   <div class="trk beatrow" aria-hidden="true"><div class="tl"></div><div class="steps"><div class="grp"><span>1</span><span></span><span></span><span></span></div><div class="grp"><span>2</span><span></span><span></span><span></span></div><div class="grp"><span>3</span><span></span><span></span><span></span></div><div class="grp"><span>4</span><span></span><span></span><span></span></div></div></div>
   <footer class="transport">
     <button type="button" class="play" id="play" aria-label="Play (Space)"></button>
     <button type="button" class="pill" id="fxBtn" aria-haspopup="dialog" aria-label="Effects"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h9M17 7h3M4 17h3M11 17h9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="15" cy="7" r="2.2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="9" cy="17" r="2.2" fill="none" stroke="currentColor" stroke-width="2"/></svg><span class="fxl">Effects</span><span class="fxn" id="fxN"></span></button>
     <button type="button" class="pill" id="drop" aria-label="Drop"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13.5 2.5L5 13.5h6l-1.5 8 8.5-11h-6z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg><span class="fxl">Drop</span></button>
-    <button type="button" class="tempo" id="tempoBtn" aria-haspopup="dialog" aria-label="Tempo and swing"><span class="tv"><span class="swt" id="swTxt">Swing 0 %</span><span class="big"><span id="bpm">100</span><small>bpm</small></span></span><svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 15l6-6 6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    <button type="button" class="tempo" id="tempoBtn" aria-haspopup="dialog" aria-label="Tempo and swing"><span class="tv"><span class="swt" id="swTxt">Swing 0 %</span><span class="big"><span id="bpm">100</span><small>bpm</small></span></span></button>
   </footer>
 </div>
 <section class="sheet" id="sheet" aria-labelledby="sheetT" hidden></section>
@@ -327,10 +369,10 @@ function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
 function lsGet(k){try{return localStorage.getItem(k);}catch(e){return null;}}
 function lsSet(k,v){try{if(v==null)localStorage.removeItem(k);else localStorage.setItem(k,v);}catch(e){}}
 
-/* Farbschema: System, hell oder dunkel */
+/* Farbschema: System, hell oder dunkel. Wer noch nichts gewählt hat, startet dunkel (auch im Grid) */
 var THEMES=['system','light','dark'];
 function applyTheme(){
-  var t=THEMES.indexOf(S.theme)>=0?S.theme:'system',de=document.documentElement;
+  var t=THEMES.indexOf(S.theme)>=0?S.theme:'dark',de=document.documentElement;
   if(t==='system')de.removeAttribute('data-theme');else de.setAttribute('data-theme',t);
   var dark=t==='dark'||(t==='system'&&window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches);
   var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute('content',dark?'#0E0E0F':'#FFFFFF');
@@ -371,7 +413,7 @@ function OUT(){if(_oc!==ac){_oc=ac;
   g.connect(c);c.connect(mk);mk.connect(lim);lim.connect(ac.destination);_og=g;}
   return _og;}
 
-/* 16 Vorlagen (Stil, Tempo, Swing, Kick/Snare/Hat; genutzt werden die ersten 16 Schritte). Start-Vorlage ist Amapiano (START in mstr.js) */
+/* 30 Vorlagen (Stil, Tempo, Swing, Kick/Snare/Hat; genutzt werden die ersten 16 Schritte). Start-Vorlage ist Amapiano (START in mstr.js) */
 var BEATS=[
   {n:'lofi',bpm:82,sw:.36,K:'x......xx.....x.x......xx.....x.',S:'....o.......o.......o.......o...',H:'x.xox.x.x.xox.x.x.xox.x.x.xox.x.',hv:[.12,.07],fill:'tom'},
   {n:'house',bpm:116,sw:0,K:'x...x...x...x...x...x...x...x...',S:'....c.......c.......c.......c...',H:'..O...O...O...O...O...O...O...O.',hv:[.2,.2],fill:'tom',clap:true},
@@ -388,7 +430,21 @@ var BEATS=[
   {n:'twostep',bpm:132,sw:.3,K:'x.........x..x..x.........x..x..',S:'....c.......c.......c.......c...',H:'..x.x.O...x.x.Ox..x.x.O...x.x.Ox',hv:[.14,.08],fill:'snare'},
   {n:'jungle',bpm:162,sw:0,K:'x.x.......xx....x.x.......xx....',S:'....x..o.o..x..o....x..o.o..x..o',H:'x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.',hv:[.14,.08],fill:'snare'},
   {n:'electro',bpm:124,sw:0,K:'x.....x...x.x...x.....x...x.x...',S:'....c.......c.......c.......c...',H:'x.x.x.O.x.x.x.O.x.x.x.O.x.x.x.O.',hv:[.15,.1],fill:'snare'},
-  {n:'amapiano',bpm:113,sw:.1,K:'x...x...x...x...x...x...x...x...',S:'..o..o....o..c....o..o....o..c..',H:'..O...O...O...O...O...O...O...O.',hv:[.12,.07],fill:'tom'}
+  {n:'amapiano',bpm:113,sw:.1,K:'x...x...x...x...x...x...x...x...',S:'..o..o....o..c....o..o....o..c..',H:'..O...O...O...O...O...O...O...O.',hv:[.12,.07],fill:'tom'},
+  {n:'phonk',bpm:130,sw:0,K:'x.....x.x.......x.....x.x.......',S:'....c.......c.......c.......c...',H:'x.x.x.x.x.x.xxx.x.x.x.x.x.x.xxx.',hv:[.14,.08],fill:'tom'},
+  {n:'jersey',bpm:140,sw:0,K:'x...x...x..x..x.x...x...x..x..x.',S:'....c.......c.......c.......c...',H:'..x...x...x...x...x...x...x...x.',hv:[.14,.08],fill:'tom'},
+  {n:'baile',bpm:130,sw:0,K:'x.....x.x.......x.....x.x.......',S:'...c......c..c.....c......c..c..',H:'................................',hv:[.14,.08],fill:'tom'},
+  {n:'gqom',bpm:124,sw:0.06,K:'x.....x.....x...x.....x.....x...',S:'....c.........c.....c.........c.',H:'..O...O...O...O...O...O...O...O.',hv:[.14,.08],fill:'tom'},
+  {n:'dubstep',bpm:140,sw:0,K:'x.........x..x..x.........x..x..',S:'........x...............x.......',H:'x...x...x...x...x...x...x...x...',hv:[.14,.08],fill:'tom'},
+  {n:'samba',bpm:100,sw:0.1,K:'x......xx......xx......xx......x',S:'..o..o.o..o..o.o..o..o.o..o..o.o',H:'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',hv:[.14,.08],fill:'tom'},
+  {n:'cumbia',bpm:92,sw:0,K:'x.......x.......x.......x.......',S:'....o.......o.......o.......o...',H:'..x...x...x...x...x...x...x...x.',hv:[.14,.08],fill:'tom'},
+  {n:'bhangra',bpm:96,sw:0.2,K:'x.....x.x.....x.x.....x.x.....x.',S:'....o.......o.......o.......o...',H:'x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.',hv:[.14,.08],fill:'tom'},
+  {n:'afrohouse',bpm:122,sw:0.08,K:'x...x...x...x...x...x...x...x...',S:'..........o..o............o..o..',H:'..O...O...O...O...O...O...O...O.',hv:[.14,.08],fill:'tom'},
+  {n:'synthwave',bpm:100,sw:0,K:'x.......x.x.....x.......x.x.....',S:'....x.......x.......x.......x...',H:'x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.',hv:[.14,.08],fill:'tom'},
+  {n:'motown',bpm:116,sw:0.05,K:'x.x...x.x.x...x.x.x...x.x.x...x.',S:'x...x...x...x...x...x...x...x...',H:'x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.',hv:[.14,.08],fill:'tom'},
+  {n:'bodiddley',bpm:112,sw:0.1,K:'x.....x...x.....x.....x...x.....',S:'................................',H:'................................',hv:[.14,.08],fill:'tom'},
+  {n:'oldschool',bpm:98,sw:0,K:'x......xx.x.....x......xx.x.....',S:'....c.......c.......c.......c...',H:'x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.',hv:[.14,.08],fill:'tom'},
+  {n:'gogo',bpm:96,sw:0.3,K:'x.....x...x.....x.....x...x.....',S:'....x.......x.......x.......x...',H:'x.xox.xox.xox.xox.xox.xox.xox.xo',hv:[.14,.08],fill:'tom'}
 ];
 
 /* ===== Klang: alle Spuren per Web Audio erzeugt, über einen Bus mit Hall, Delay, Sättigung, Sidechain und zuschaltbaren Effekten ===== */
@@ -522,6 +578,14 @@ function cymbal(t,v,o){
     os.connect(g);g.connect(out);os.start(t);os.stop(t+d+.05);}
   var gs=band(t,.06,'highpass',3000,.7,lp);gs.gain.setValueAtTime(o.stick*v,t);gs.gain.exponentialRampToValueAtTime(.001,t+.03);
 }
+/* Velocity: betonte Zählzeiten lauter, Sechzehntel dazwischen leiser, jeder Schlag leicht anders, das Timing schwankt um wenige Millisekunden.
+   Fester Zufall je Takt, Schritt und Spur, damit nichts gespeichert werden muss. Liefert [Faktor, Versatz in s] */
+function rnd3(a,b,c){var x=Math.sin(a*127.1+b*311.7+c*74.7)*43758.5453;return x-Math.floor(x);}
+function feel(id,w,s,bar){var r=rnd3(bar,s,id.length),j=rnd3(bar,s,id.length+9)-.5;
+  if(id==='hats')return [(w==='o'?.9:[1,.5,.78,.5][s%4])*(.88+.24*r),j*.008];
+  if(id==='beat')return [(s%4===0?1:.84)*(.95+.1*r),0];
+  if(id==='snare')return [.9+.1*r,j*.004];
+  return [1,0];}
 function duck(t){B.DUCK.gain.cancelScheduledValues(t);B.DUCK.gain.setValueAtTime(.5,t);B.DUCK.gain.linearRampToValueAtTime(1,t+st()*2);}
 var dr={
   tom:function(t,f,v){var g=vca(t,.001,0,.25,v);var o=osc('sine',f,t,t+.28,g);o.frequency.exponentialRampToValueAtTime(f*.78,t+.2);send(g,B.REV,.25);}
@@ -537,10 +601,15 @@ function playSynth(id,t,n){
   else if(id==='hats'){
     if(w==='o'){nz(t,.004,.3*v,'highpass',3000);nz(t+.004,.26,.28*v,'bandpass',6800,1.2,.1);}
     else if(w==='k'){nz(t,.025,.35*v,'bandpass',3400,3);}
-    else{nz(t,.004,.35*v,'highpass',3000);nz(t+.003,.045,.32*v,'bandpass',7200,1.3);}}
+    /* Geschlossen: leise Schläge (Velocity) klingen kürzer und dunkler */
+    else{var hb=Math.min(1,v);nz(t,.004,.35*v,'highpass',3000);nz(t+.003,.03+.025*hb,.32*v,'bandpass',6000+1800*hb,1.3);}}
   else if(id==='snare'){
     if(w==='c'){[0,.009,.019].forEach(function(o2,i){nz(t+o2,.012,.5*v,'bandpass',1400+i*300,1.6);});nz(t+.026,.16,.5*v,'bandpass',3200,.8,.25);}
-    else if(w==='p'){nz(t,.014,.8*v,'lowpass',900,1);nz(t+.008,.16,.6*v,'bandpass',2300,.7,.18);var gp=vca(t,.001,0,.05,.18*v);osc('triangle',240,t,t+.07,gp);}
+    /* Snare (Tight): Stockanschlag, drei Fellmoden um 262 Hz mit kurzem Pitch-Abfall, heller Teppich.
+       Je leiser der Schlag, desto dunkler und kürzer der Teppich */
+    else if(w==='p'){var a=.95*v,br=.55+.45*Math.min(1,v);nz(t,.005,.9*a,'highpass',2500,.7);
+      [[1,1,.06],[1.59,.5,.045],[2.14,.3,.035]].forEach(function(m){var gm=vca(t,.001,0,m[2],.4*a*m[1]),om=osc('sine',262*m[0]*1.06,t,t+m[2]+.05,gm);om.frequency.exponentialRampToValueAtTime(262*m[0],t+.03);});
+      nz(t+.002,.09+.06*br,.6*a,'bandpass',3800+1500*br,.7,.12);nz(t+.002,.06,.25*a*br,'highpass',7000,.7);}
     else if(w==='k'){nz(t,.007,.6*v,'highpass',4000);nz(t+.004,.08,.7*v,'bandpass',1700,2.2,.15);var gk=vca(t,.001,0,.04,.2*v);osc('triangle',420,t,t+.06,gk);}
     else{nz(t,.012,.7*v,'lowpass',900,1);nz(t+.01,.45,.45*v,'bandpass',4300,.8,.3);}}
   else if(id==='click'){
@@ -646,6 +715,10 @@ function dropRec(id){delete REC[id];lsSet('mstr-rec-'+id,null);}
    Staub: bei manchen Schlägen bleiben kleine Körner zurück, die langsam nach außen und oben in die Atmosphäre gleiten */
 var CARD=(function(){
   var LIL='#C7B3FF',INK='#0F0F10',WHT='#F3F3F4',GRY='#7A7A81',ORDER=[1,2,0,4,5,3,6],NBAR=9,TAIL=2.4;
+  /* Akzentfarbe je Beat (m.col, Hex): fünf Töne auf Schwarz, Flieder ist der Standard. Das Molekül behält seine Form, nur die Farbe wechselt */
+  var HUES={f:'#C7B3FF',m:'#9FE8C8',k:'#FF9A8B',b:'#F5C56B',e:'#9FD3FF'},LILA='rgba(199,179,255,A)',RGB='199,179,255';
+  function accent(c){c=HUES[c]||(/^#[0-9a-f]{6}$/i.test(c||'')?c:HUES.f);if(c===LIL)return;LIL=c;
+    RGB=parseInt(c.slice(1,3),16)+','+parseInt(c.slice(3,5),16)+','+parseInt(c.slice(5,7),16);LILA='rgba('+RGB+',A)';}
   function hash(s){var h=2166136261,i;for(i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619);}return h>>>0;}
   function rng(a){return function(){a|=0;a=a+0x6D2B79F5|0;var t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
   /* feste Zufallsabweichung je Atom (bricht jede Drehsymmetrie) */
@@ -657,11 +730,11 @@ var CARD=(function(){
   /* Effekte normiert: je id {a: Stärke 0–1, o: Auswahl}; Zahl = nur Stärke */
   function fxNorm(f){var o={},k,D={echo:3,sweep:2,pump:4,stut:2};if(!f)return o;
     for(k in f){var v=f[k];if(!v)continue;var a=typeof v==='number'?v:(v.a==null?.5:v.a);o[k]={a:Math.max(0,Math.min(1,a)),o:(v&&v.o)||D[k]||0};}return o;}
-  function model(rows,bpm,sw,fx){
+  function model(rows,bpm,sw,fx,col){
     var R=rows.slice(0,7).map(function(r){return (r||'').padEnd(16,'0').slice(0,16);}),cnt=[],tot=0,dom=0,i;
     R.forEach(function(r){var n=0;for(i=0;i<16;i++)if(r.charAt(i)!=='0')n++;cnt.push(n);tot+=n;});
     var TYP=[8,4,3,1,6,2,1];for(i=1;i<7;i++)if(cnt[i]/TYP[i]>cnt[dom]/TYP[dom])dom=i;
-    return {R:R,cnt:cnt,tot:tot,bpm:bpm,sw:sw,dom:dom,fx:fxNorm(fx),seed:hash(R.join('')+bpm)};
+    return {R:R,cnt:cnt,tot:tot,bpm:bpm,sw:sw,dom:dom,fx:fxNorm(fx),col:col||'f',seed:hash(R.join('')+bpm)};
   }
   /* Arrangement: welche Spur in welchem Takt klingt (Takt 0 = erster). Takt 8 ist der Schlussschlag */
   function active(tr,bar){if(bar===0)return tr===1||tr===0;if(bar===1)return tr!==3&&tr!==5&&tr!==6;if(bar===6)return tr!==1;if(bar===8)return false;return true;}
@@ -768,7 +841,7 @@ var CARD=(function(){
     x.moveTo((P[N-1][0]+P[0][0])/2,(P[N-1][1]+P[0][1])/2);
     for(k=0;k<N;k++){var q=P[(k+1)%N];x.quadraticCurveTo(P[k][0],P[k][1],(P[k][0]+q[0])/2,(P[k][1]+q[1])/2);}x.closePath();}
   function halo(x,px,py,R,col,al){var g=x.createRadialGradient(px,py,0,px,py,R);g.addColorStop(0,col.replace('A',al.toFixed(3)));g.addColorStop(1,col.replace('A','0'));x.fillStyle=g;x.beginPath();x.arc(px,py,R,0,7);x.fill();}
-  var LILA='rgba(199,179,255,A)',WHTA='rgba(243,243,244,A)';
+  var WHTA='rgba(243,243,244,A)';
   function atom(x,p,sc,fg,bg,kickStroke,glass,room){var tr=p.tr,v=p.v,px=p.x,py=p.y,va=(.3+.7*p.vis)*(1-.5*glass),k=(1+p.hp*.7)*(.35+.65*p.vis)*p.pk;
     /* Glas: nach jeder Füllung ein feiner Rand in derselben Farbe */
     var F=function(){x.fill();if(glass>.6){var a0=x.globalAlpha,s0=x.strokeStyle,w0=x.lineWidth;x.globalAlpha=.9*p.vis;x.strokeStyle=x.fillStyle;x.lineWidth=1.1*sc;x.stroke();x.globalAlpha=a0;x.strokeStyle=s0;x.lineWidth=w0;}};
@@ -794,7 +867,7 @@ var CARD=(function(){
     if(fx.sweep&&live){x.globalAlpha=1;halo(x,cx,cy,(60+S.open*180)*sc,LILA,.04+.07*fx.sweep.a*S.open);}
     x.strokeStyle=fg;x.globalAlpha=.07+(fx.sweep?.08*fx.sweep.a*S.open:0);x.lineWidth=1*sc;for(i=0;i<7;i++){x.beginPath();x.arc(cx,cy,(62+i*30)*sc,0,7);x.stroke();}x.globalAlpha=1;
     bonds(x,S,G,fg,sc,live);chains(x,S,G,fg,sc,live);
-    if(live)S.waves.forEach(function(w){var age=(performance.now()-w.t)/900;if(age>1||age<0)return;x.strokeStyle='rgba(199,179,255,'+(0.5*(1-age))+')';x.lineWidth=1.5*sc;x.beginPath();x.arc(cx,cy,(w.r+age*90)*sc,0,7);x.stroke();});
+    if(live)S.waves.forEach(function(w){var age=(performance.now()-w.t)/900;if(age>1||age<0)return;x.strokeStyle='rgba('+RGB+','+(0.5*(1-age))+')';x.lineWidth=1.5*sc;x.beginPath();x.arc(cx,cy,(w.r+age*90)*sc,0,7);x.stroke();});
     var ne=Math.min(7,2+m.cnt[3]+m.cnt[6]);for(i=0;i<ne;i++){var orb=(70+g()*190)*sc,sp=(0.3+g()*0.6)*(m.bpm/110)*(g()>.5?1:-1),ph=g()*7,ea=ph+(live||!reduce()?T*sp:0);
       x.fillStyle=LIL;x.globalAlpha=.85;x.beginPath();x.arc(cx+Math.cos(ea)*orb,cy+Math.sin(ea)*orb,2.6*sc,0,7);x.fill();x.globalAlpha=1;}
     if(live&&fx.echo)S.ghosts.forEach(function(gh){var age=(now-gh.t)/gh.dt;if(age<0||age>=1)return;var p=G.byId[gh.id];if(!p)return;
@@ -824,7 +897,7 @@ var CARD=(function(){
      alles Wichtige liegt zwischen y = 150 und y = 800 (Instagram: Kopfzeile bis etwa 12 %, Antwortfeld ab etwa 84 %) */
   /* Tiefe: leises Licht um die Mitte und wenige feine Sterne (fest je Beat, keine Bewegung), o.space:false lässt es weg */
   function space(x,W,H,S,cx,cy,sc){
-    var g=x.createRadialGradient(cx,cy,0,cx,cy,W*.95);g.addColorStop(0,'rgba(199,179,255,.09)');g.addColorStop(.45,'rgba(199,179,255,.025)');g.addColorStop(1,'rgba(0,0,0,0)');
+    var g=x.createRadialGradient(cx,cy,0,cx,cy,W*.95);g.addColorStop(0,'rgba('+RGB+',.09)');g.addColorStop(.45,'rgba('+RGB+',.025)');g.addColorStop(1,'rgba(0,0,0,0)');
     x.fillStyle=g;x.fillRect(0,0,W,H);
     var h=hash(S.m.bpm+':'+S.m.tot+':'+S.m.sw),i,r,n=110;
     for(i=0;i<n;i++){h=(Math.imul(h,1664525)+1013904223)>>>0;var px=(h%10000)/10000*W;h=(Math.imul(h,1664525)+1013904223)>>>0;var py=(h%10000)/10000*H;h=(Math.imul(h,1664525)+1013904223)>>>0;var q=(h%1000)/1000;
@@ -832,7 +905,7 @@ var CARD=(function(){
       r=(q<.85?.5+q*.7:1.1+q)*sc;x.fillStyle=(i%9===0?LILA:WHTA).replace('A',(.12+q*.35).toFixed(3));x.beginPath();x.arc(px,py,r,0,7);x.fill();}
   }
   function story(x,W,H,S,o){
-    var sc=W/540,fg=WHT,bg=INK,live=!!o.live&&S.live();x.setTransform(1,0,0,1,0,0);
+    var sc=W/540,fg=WHT,bg=INK,live=!!o.live&&S.live();accent(S.m.col);x.setTransform(1,0,0,1,0,0);
     x.fillStyle=bg;x.fillRect(0,0,W,H);if(o.space!==false)space(x,W,H,S,W/2,408*sc,sc);
     x.fillStyle=LIL;x.beginPath();x.arc(38*sc,164*sc,6*sc,0,7);x.fill();x.fillStyle=fg;x.font='700 '+(20*sc)+'px Figtree,sans-serif';x.textAlign='left';x.fillText('M S T R',52*sc,171*sc);
     if(o.by){x.font='600 '+(19*sc)+'px Figtree,sans-serif';x.textAlign='right';x.fillText('by '+(o.by.charAt(0)==='@'?o.by:'@'+o.by),W-32*sc,172*sc);x.textAlign='left';}
@@ -847,7 +920,7 @@ var CARD=(function(){
 
   /* Karte im Sequencer: füllt eine Fläche W×H in den Farben der App; o = {fg, bg, dark, title, by, preset}.
      Unten stehen Titel und Zeile wie auf der fertigen Karte, oben rechts „by @name“, oben links o.hint (etwa TAP TO PLAY), o.edit zeichnet einen kleinen Stift hinter den Titel. Läuft der Beat nicht, steht das Bild */
-  function view(x,W,H,S,o){var sc=Math.min(W/540,H/760),live=S.live(),txt=o.title?130*sc:0;x.setTransform(1,0,0,1,0,0);x.fillStyle=o.bg;x.fillRect(0,0,W,H);
+  function view(x,W,H,S,o){var sc=Math.min(W/540,H/760),live=S.live(),txt=o.title?130*sc:0;accent(S.m.col);x.setTransform(1,0,0,1,0,0);x.fillStyle=o.bg;x.fillRect(0,0,W,H);
     var rs=Math.min(sc,(H-txt-40*sc)/560);ring(x,S,W/2,(H-txt)/2,rs,o.fg,o.dark?INK:o.bg,live,0);if(S.m.fx.lofi&&o.dark)vinyl(x,W,H,S,S.m.fx.lofi.a,live,sc);
     if(o.hint)mono(x,o.hint,24*sc,34*sc,GRY,'left',sc);
     if(o.by){x.fillStyle=o.fg;x.font='600 '+(14*sc)+'px Figtree,sans-serif';x.textAlign='right';x.fillText('by '+(o.by.charAt(0)==='@'?o.by:'@'+o.by),W-24*sc,34*sc);x.textAlign='left';}
@@ -880,14 +953,224 @@ var CARD=(function(){
   /* Standbild als PNG */
   function image(S,o,done){var cv=document.createElement('canvas');cv.width=1080;cv.height=1920;S.reset();story(cv.getContext('2d'),1080,1920,S,o);
     cv.toBlob(function(b){done(b?new File([b],o.file+'.png',{type:'image/png'}):null);},'image/png');}
-  return {model:model,title:title,Scene:Scene,story:story,view:view,record:record,image:image,canVideo:canVideo,clipLen:clipLen,active:active,NBAR:NBAR,TAIL:TAIL};
+  return {model:model,title:title,Scene:Scene,story:story,view:view,HUES:HUES,record:record,image:image,canVideo:canVideo,clipLen:clipLen,active:active,NBAR:NBAR,TAIL:TAIL};
+})();
+
+/* ===== Beat aus Worten: eine Beschreibung (Englisch oder Deutsch) wird zu einem Beat, ganz ohne Server.
+   Stichworte für Stil, Stimmung, Tempo, Swing, Dichte, Klänge und Effekte. Der Stil wählt die Vorlage als Grundlage,
+   der Rest verändert sie; dazu etwas Zufall, so gibt dieselbe Beschreibung beim nächsten Mal eine Variante.
+   WORTE(text, ctx) liefert {pre, bpm, sw, g (sieben Spuren), fx {id:[Stärke, Auswahl]}}.
+   Jeder Beat bekommt Effekte: genannte zuerst, sonst die, die zum Stil passen (außer „dry“/„trocken“).
+   ctx: n (Namen der Vorlagen), bpm (ihr Tempo), sw (ihr Swing), rows(i) (ihre sieben Spuren), rnd (Zufall 0–1) ===== */
+var WORTE=(function(){
+  /* Stile in Reihenfolge der Vorlagen-Namen; was im Text zuerst steht, gewinnt */
+  var STYLE={
+    lofi:'lo-?fi|chill ?hop|hip ?hop|boom ?bap|jazzy|study|lernen|beats to',
+    house:'house|deep house|disco|club',
+    funk:'funk|funky|groovy|soul',
+    rock:'rock|punk|indie|band|garage rock|grunge',
+    techno:'techno|rave|warehouse|berlin|industrial|hard ?techno',
+    trap:'trap|drill|rap|808s',
+    onedrop:'reggae|dub|one ?drop|ska|jamaica',
+    pop80:'pop|80s|80er|eighties|beat it|michael jackson|synth ?pop',
+    dnb:"drum ?(and|n|'n'|&) ?bass|dnb|d&b|liquid",
+    afrobeats:'afro|afrobeat|afrobeats|nigeria|lagos|afropop',
+    reggaeton:'reggaeton|dembow|latin|perreo',
+    minimal:'minimal techno|microhouse|tech ?house',
+    twostep:'2 ?-?step|two ?-?step|uk garage|ukg|garage',
+    jungle:'jungle|breakbeat|breaks|amen',
+    electro:'electro|robot|kraftwerk|machine|maschine|roboter',
+    amapiano:'amapiano|log drum|south africa|piano',
+    cumbia:'cumbia|colombia|kolumbien|guiro',
+    bhangra:'bhangra|punjab|dhol|bollywood|india|indien',
+    samba:'samba|batucada|carnival|karneval|brazil|brasilien',
+    synthwave:'synthwave|retrowave|outrun|vaporwave',
+    afrohouse:'afro ?house|tribal house|tribal',
+    gqom:'gqom|durban',
+    phonk:'phonk|drift|memphis',
+    baile:'baile ?funk|funk carioca|carioca|favela',
+    jersey:'jersey ?club|jersey|club bounce',
+    dubstep:'dubstep|brostep',
+    motown:'motown|60s soul|sixties soul|northern soul|60er soul|sixties|60er',
+    bodiddley:'bo ?diddley|rockabilly|rock ?a ?billy|50s|fifties|50er',
+    oldschool:'old ?school|80s hip ?hop|golden age|run dmc|1986|80er hip ?hop',
+    gogo:'go-go|gogo|go go music|chuck brown|washington'};
+  /* Stimmung, wenn kein Stil genannt ist */
+  var MOOD=[
+    ['dark|duester|finster|night|nacht|evil|horror|creepy|gruselig|underground|keller|cave|hoehle',['techno','trap','minimal','dnb','electro','gqom','phonk','dubstep']],
+    ['sad|traurig|melanchol|rain|regen|lonely|einsam|sleep|schlaf|mellow|sunday|sonntag|cozy|gemuetlich|coffee|kaffee',['lofi','onedrop','trap','twostep']],
+    ['happy|froehlich|sunny|sonnig|summer|sommer|beach|strand|holiday|urlaub|bright|hell',['afrobeats','funk','house','reggaeton','pop80','cumbia','samba','motown']],
+    ['party|dance|tanz|tanzen|dancefloor|feier|wedding|hochzeit',['house','funk','amapiano','reggaeton','pop80','afrobeats','afrohouse','baile','jersey','gogo']],
+    ['angry|wuetend|aggressive|aggressiv|hard|hart|brutal|heavy|schwer|metal',['rock','techno','trap','jungle','phonk','dubstep']],
+    ['funny|lustig|silly|albern|bouncy|huepf|playful|verspielt',['funk','reggaeton','afrobeats','pop80','jersey','cumbia','baile']],
+    ['epic|episch|stadium|stadion|huge|riesig|big room',['rock','pop80','dnb','trap','dubstep']],
+    ['heart|heartbeat|herz|herzschlag|pulse|puls|hypnotic|hypnotisch|trance',['minimal','techno','house','afrohouse','gqom']],
+    ['fast|schnell|frantic|hektisch|energy|energie|running|laufen|workout|sport',['dnb','jungle','twostep','techno','pop80','jersey']],
+    ['slow|langsam|lazy|faul|relaxed|entspannt|calm|ruhig',['lofi','onedrop','funk','reggaeton']],
+    ['steady|stetig|groove|groovy|nod|kopfnicken',['funk','house','afrobeats','rock','lofi','oldschool']],
+    ['swing|swung|shuffle|wonky|bouncy|jazzy',['funk','lofi','twostep','onedrop','gogo']],
+    ['dreamy|traeum|ambient|ethereal|floating|schweben',['lofi','onedrop']],
+    ['dusty|dust|staub|warm|vinyl|crackle|knister|tape|kassette|cassette|retro|old school|oldschool',['lofi','funk','motown','oldschool']],
+    ['clean|sauber|crisp|knackig',['house','pop80','afrobeats','twostep']],
+    ['nervous|nervoes|anxious|restless|unruhig|jittery|zappelig',['minimal','electro','jungle','twostep']],
+    ['romantic|romantisch|love|liebe|kiss|kuss|date|candle|kerze',['lofi','onedrop','reggaeton','twostep']],
+    ['festival|crowd|menge|stage|buehne|open air|openair|big stage',['house','afrobeats','amapiano','reggaeton','afrohouse','samba','bhangra']],
+    ['focus|fokus|concentrat|konzentr|deep work|work|arbeit|homework|hausaufgaben',['lofi','minimal','house']],
+    ['tired|muede|exhausted|erschoepft|hopeful|hoffnung|gentle|zart|soft|sanft',['lofi','onedrop']],
+    ['drive|driving|road|strasse|autobahn|highway|cruise|cruising|roadtrip|road trip',['techno','house','electro','pop80','synthwave','phonk']],
+    ['spacey|cosmic|kosmisch|galaxy|galaxie|planet|moon|mond',['minimal','electro','twostep','dnb','techno']],
+    ['glitchy|glitch|broken|kaputt|chopped|stutter',['electro','jungle','twostep']],
+    ['busy|dense|wild|crazy|verrueckt|chaotic|chaos',['jungle','dnb','funk','amapiano','samba','baile']],
+    /* „minimal“ allein ist eher Dichte als Stil: nur wenn nichts anderes davor steht, wird es Minimal */
+    ['minimal|sparse|reduced|reduziert',['minimal','twostep','lofi']]];
+  /* Klänge: Spur, Zeichen, Muster (null: eigene Regel unten) */
+  var SOUND=[
+    ['clap|klatsch',2,'c'],['rim|rimshot|sidestick',2,'k'],
+    ['cowbell|kuhglocke',4,'..5.....5.....5.'],['shaker|rassel',4,'1.1.1.1.1.1.1.1.'],['conga|bongo|hand ?drum|percussion|perkussion',4,'4..4..4...4.4...'],
+    ['tambourine|tamburin',4,'....2.......2...'],['clave|wood|holz',4,'3..3..3...3.3...'],
+    ['ride',3,'r.r.r.r.r.r.r.r.'],['crash|becken|cymbal',3,'c...............'],['china',3,'..............h.'],
+    ['toms?|fill|wirbel',5,'..........t.p.b.'],
+    ['808|sub|bass|wobble',6,null],['snap|finger|schnips',6,'....m.......m...'],['riser|build|aufbau|rising',6,'............z...'],
+    ['reverse|rueckwaerts',6,'............s...'],['roll|drumroll',6,'............l...'],
+    ['open ?hats?|offene',0,null]];
+  /* Spuren für „ohne …“ */
+  var ROW=[['hats?|hi-?hats?|hihats?',0],['kicks?|bass ?drum|bassdrum',1],['snares?|claps?',2],['cymbals?|becken|crash|ride',3],['perc|percussion|perkussion|shaker|cowbell',4],['toms?',5],['fx|effects|effekte',6],['drums?',-1]];
+  /* Effekte: id, Wörter, Auswahl (Echo und Filter) */
+  var FXW=[
+    ['room','reverb|hall|room|raum|space|spacious|weit|cathedral|kirche|church|cave|hoehle|dreamy|traeum|ambient|ethereal|atmospher|wide|big room',0],
+    ['echo','echo|delay|dub|spacey|weltall|outer space|bouncing',3],
+    ['sweep','filter|sweep|underwater|unter ?wasser|muffled|dumpf|gedaempft|wobble|wobbly|breathing filter',2],
+    ['pump','pump|pumping|sidechain|side-chain|breath|atmen|atmend|ducking|pumpend',4],
+    ['stut','stutter|stotter|glitch|glitchy|chopped|broken|kaputt|stuttering',2],
+    ['lofi','vinyl|dust|dusty|staub|old|alt|retro|crackle|knister|tape|kassette|cassette|warm|grain|grainy|lo-?fi|record|schallplatte|platte']];
+  /* Effekte, die zum Stil gehören, wenn keine genannt sind: der erste immer, der zweite zur Hälfte */
+  var STYLEFX={
+    lofi:[['lofi',45,0],['room',30,0]],house:[['pump',40,4],['sweep',35,4]],funk:[['room',25,0],['stut',30,2]],rock:[['room',45,0]],
+    techno:[['sweep',45,2],['pump',45,4]],trap:[['room',45,0],['stut',35,4]],onedrop:[['echo',55,3],['room',30,0]],pop80:[['room',60,0],['echo',25,2]],
+    dnb:[['room',30,0],['echo',30,2]],afrobeats:[['room',30,0],['echo',25,3]],reggaeton:[['echo',30,2],['room',25,0]],minimal:[['sweep',35,4],['echo',25,3]],
+    twostep:[['sweep',35,2],['pump',35,2]],jungle:[['echo',35,2],['stut',35,4]],electro:[['sweep',40,2],['stut',30,2]],amapiano:[['room',35,0],['echo',30,3]],
+    cumbia:[['echo',25,3],['room',25,0]],bhangra:[['room',30,0],['echo',25,2]],samba:[['room',30,0]],synthwave:[['room',60,0],['echo',30,2]],
+    afrohouse:[['room',35,0],['pump',35,4]],gqom:[['room',40,0],['sweep',35,4]],phonk:[['lofi',35,0],['room',35,0]],baile:[['stut',30,2],['room',25,0]],
+    jersey:[['stut',35,2],['pump',30,4]],dubstep:[['sweep',55,2],['room',35,0]],
+    motown:[['room',40,0],['lofi',25,0]],bodiddley:[['room',35,0],['echo',30,2]],oldschool:[['lofi',30,0],['room',25,0]],gogo:[['room',30,0],['stut',25,2]]};
+  /* Stimmung bringt ihren Effekt mit, wenn er nicht schon dabei ist */
+  var MOODFX=[['dark|duester|finster|night|nacht|underground|keller|cave|hoehle','sweep',40,4],['sad|traurig|melanchol|rain|regen|lonely|einsam|sleep|schlaf','room',50,0],
+    ['party|dance|tanz|tanzen|dancefloor|feier|club','pump',40,4],['angry|wuetend|aggressive|aggressiv|hard|hart|brutal|heavy','stut',40,2],
+    ['happy|froehlich|sunny|sonnig|summer|sommer|beach|strand','echo',25,3],['epic|episch|stadium|stadion|huge|riesig','room',70,0]];
+  var DRY='dry|trocken|clean|sauber|no effects|without effects|ohne effekte|keine effekte|pur|pure|raw|roh';
+  var MORE='very|super|lots of|lot of|loads of|tons of|heavy|massive|extreme|really|sehr|extrem|viel|voll|krass|ganz viel|mega|so much',
+      LESS='a bit|a little|little|slight|slightly|subtle|soft|light|leicht|etwas|wenig|bisschen|dezent|sanft|kaum';
+
+  function norm(t){return ' '+String(t||'').toLowerCase().replace(/ä/g,'ae').replace(/ö/g,'oe').replace(/ü/g,'ue').replace(/ß/g,'ss').replace(/[^a-z0-9&'\-]+/g,' ')+' ';}
+  /* Wortgrenzen; deutsche Endungen (langsamER, düsterE, schnellEN) zählen mit */
+  function re(w){return new RegExp('(^|[^a-z0-9])(?:'+w+')(?:e|er|es|en|em|ern|s|n|r)?(?=[^a-z0-9]|$)','g');}
+  function find(t,w){var m=re(w).exec(t);return m?m.index+m[1].length:-1;}
+  function flen(t,w){var m=re(w).exec(t);return m?m[0].length-m[1].length:0;}
+  /* Ist das Wort an Stelle i verneint („no hats“, „ohne Kick“, „keine Becken“)? */
+  function neg(t,i){return /(^|\s)(no|not|without|ohne|kein|keine|keinen|keiner|less|weniger|zero|minus)\s+(\S+\s+)?$/.test(t.slice(Math.max(0,i-30),i));}
+  function amount(t,i){var b=t.slice(Math.max(0,i-26),i);return re(MORE).test(b)?82:re(LESS).test(b)?28:55;}
+  function set(row,k,ch){return row.slice(0,k)+ch+row.slice(k+1);}
+  function dots(s){return s.replace(/\./g,'0');}
+
+  return function(text,ctx){
+    var t=norm(text),rnd=ctx.rnd||Math.random,i,k,best=-1,bi=1e9,id;
+    function pick(a){return a[Math.floor(rnd()*a.length)];}
+    function idx(n){return ctx.n.indexOf(n);}
+    /* Stil: was zuerst im Text steht, an derselben Stelle der längere Treffer („afro house“ vor „afro“); „minimal techno“ zählt als Minimal */
+    var bl=0;
+    for(id in STYLE){i=find(t,STYLE[id]);if(i>=0&&(i<bi||(i===bi&&(id==='minimal'||flen(t,STYLE[id])>bl)))&&!neg(t,i)){bi=i;bl=flen(t,STYLE[id]);best=idx(id);}}
+    /* Stimmung: jede bringt mehrere Stile mit (der erste am typischsten). Mehrere Stimmungen: erst die Schnittmenge, sonst die zuerst
+       genannte. Gewürfelt wird gewichtet (2 : 1,5 : 1 …), so landet nicht alles bei Techno oder Lo-Fi. Bei „Another take“ (ctx.avoid =
+       Vorlage des letzten Takes) bleibt die letzte draußen, notfalls aus allen genannten Stimmungen */
+    var styled=best>=0;
+    if(best<0){var hits=[];MOOD.forEach(function(m){var j=find(t,m[0]);if(j>=0)hits.push([j,m[1]]);});
+      if(hits.length){hits.sort(function(a,b){return a[0]-b[0];});
+        var cand=hits[0][1].filter(function(n){return hits.every(function(h){return h[1].indexOf(n)>=0;});});if(!cand.length)cand=hits[0][1].slice();
+        var all=[];hits.forEach(function(h){h[1].forEach(function(n){if(all.indexOf(n)<0)all.push(n);});});
+        if(ctx.avoid!=null){var av=ctx.n[ctx.avoid],c2=cand.filter(function(n){return n!==av;});if(!c2.length)c2=all.filter(function(n){return n!==av;});if(c2.length)cand=c2;}
+        var wt=cand.map(function(n,q){return q===0?2:q===1?1.5:1;}),sum=wt.reduce(function(a,b){return a+b;},0),r0=rnd()*sum,q=0;
+        while(q<cand.length-1&&(r0-=wt[q])>=0)q++;best=idx(cand[q]);}}
+    /* Tempo als Zahl (nicht „80s“ oder „90er“) */
+    var num=/(^|\s)(\d{2,3})\s*(bpm)?(?=\s)/.exec(t.replace(/\b\d{2}(s|er|ies)\b/g,' ')),bpm=null;
+    if(num&&+num[2]>=60&&+num[2]<=180)bpm=+num[2];
+    if(best<0&&bpm){var d=1e9;ctx.bpm.forEach(function(b,j){var e=Math.abs(b-bpm)+rnd()*6;if(e<d){d=e;best=j;}});}
+    if(best<0)best=Math.floor(rnd()*ctx.n.length);
+    var g=ctx.rows(best).slice(0,7),sw=ctx.sw[best],base=ctx.bpm[best];
+
+    /* Tempo-Wörter */
+    if(!bpm){var f=1;
+      if(find(t,'very slow|super slow|sehr langsam|crawling|schleppend')>=0)f=.78;
+      else if(find(t,'slow|slower|langsam|lazy|faul|chill|chilled|relaxed|entspannt|laid ?back|calm|ruhig|sleepy|mellow|dreamy|traeum|tired|muede|romantic|romantisch')>=0)f=.88;
+      if(find(t,'very fast|super fast|sehr schnell|insane|wahnsinnig')>=0)f=1.22;
+      else if(find(t,'fast|faster|schnell|quick|hektisch|frantic|rush|uptempo|up-tempo|energetic|treibend|driving')>=0)f=1.1;
+      if(find(t,'half ?time|halftime')>=0)f*=.75;if(find(t,'double ?time')>=0)f*=1.3;
+      bpm=Math.round(base*f+(rnd()-.5)*12);}
+    bpm=Math.max(60,Math.min(180,bpm));
+    /* Swing */
+    if(find(t,'swing|swung|shuffle|wonky|drunk|betrunken|lazy|laid ?back|groovy|jazzy|bouncy|dilla|loose|locker')>=0)sw=Math.max(sw,find(t,'very|heavy|sehr|drunk|betrunken|dilla')>=0?.45:.3);
+    if(find(t,'straight|gerade|tight|exakt|robotic|mechanical|mechanisch|quantized|stiff|steif')>=0)sw=0;
+
+    /* Dichte */
+    var sparse=find(t,'minimal|sparse|empty|leer|simple|reduced|reduziert|sparsam|stripped|bare|nackt|quiet|leise|space|luftig|airy')>=0&&ctx.n[best]!=='minimal'||find(t,'very minimal|super minimal')>=0,
+        busy=find(t,'busy|dense|full|voll|wild|crazy|verrueckt|chaotic|chaos|energetic|driving|treibend|lots of drums|complex|komplex|intense|intensiv|frantic|hektisch')>=0;
+    if(sparse&&!busy){
+      g[0]=g[0].replace(/./g,function(c,j){return j%4===2?c:'0';});if(g[0]===dots('................'))g[0]=dots('..o...o...o...o.');
+      g[2]=g[2].replace(/k/g,'0');g[4]=dots('................');g[5]=dots('................');g[6]=dots('................');
+      g[1]=g[1].replace(/./g,function(c,j){return j%4===0||j===0?c:'0';});if(g[1].charAt(0)==='0')g[1]=set(g[1],0,'b');}
+    if(busy){
+      for(k=0;k<16;k++)if(g[0].charAt(k)==='0'&&(k%2===0||rnd()<.5))g[0]=set(g[0],k,k%2?'k':'x');
+      [7,10,15].forEach(function(s){if(g[2].charAt(s)==='0'&&rnd()<.6)g[2]=set(g[2],s,'k');});
+      [3,10,14].forEach(function(s){if(g[1].charAt(s)==='0'&&rnd()<.4)g[1]=set(g[1],s,'b');});
+      if(g[4]===dots('................'))g[4]=dots(pick(['1.1.1.1.1.1.1.1.','4..4..4...4.4...','..1...1...1...1.']));
+      if(g[5]===dots('................'))g[5]=dots('............tpb.');}
+
+    /* Jeder Take bekommt einen eigenen Groove, damit „Another take“ hörbar anders ist: Hi-Hat-Figur, Kick-Schub, Ghost-Notes,
+       Percussion, Tom-Fill und FX-Akzent werden neu gewürfelt; genannte Klänge und „ohne …“ kommen danach und gewinnen */
+    var EMPTY=dots('................');
+    if(g[0]!==EMPTY&&rnd()<.75)g[0]=dots(pick(sparse?['..o...o...o...o.','x...x...x...x...','..x...x...x..kx.']:
+      ['x.x.x.x.x.x.x.x.','xkxkxkxkxkxkxkxk','x.xkx.x.x.xkx.xx','..o...o...o...o.','x.o.x.o.x.o.x.o.','xxkxxxkxxxkxxxkx','x..xx.x.x..xx.x.']));
+    if(g[1]!==EMPTY&&rnd()<.6){var kv=pick(sparse?[[3],[10],[14]]:[[3],[6],[10,11],[14],[7,10],[6,14]]);kv.forEach(function(q){if(g[1].charAt(q)==='0')g[1]=set(g[1],q,'b');});}
+    if(!sparse&&g[2]!==EMPTY){var gn=1+Math.floor(rnd()*3);while(gn--){var gs=pick([2,3,7,9,11,14,15]);if(g[2].charAt(gs)==='0')g[2]=set(g[2],gs,'k');}}
+    if(!sparse&&rnd()<.55)g[4]=dots(pick(['1.1.1.1.1.1.1.1.','4..4..4...4.4...','..1...1...1...1.','3..3..3...3.3...','..5.....5.....5.','1111.1.11111.1.1','....2.......2...']));
+    else if(sparse&&rnd()<.5)g[4]=dots(pick(['..1...1...1...1.','....2.......2...','..5.....5.....5.','3.....3.....3...']));
+    if(rnd()<.35)g[5]=dots(pick(['............t.p.','..............pb','...........t..b.','............tpb.']));
+    if(!sparse&&rnd()<.3)g[6]=dots(pick(['....m.......m...','............z...','............s...','m.......m.......']));
+    if(!styled&&ctx.avoid!=null&&find(t,'straight|gerade|tight|robotic|mechanical|mechanisch')<0&&rnd()<.35)sw=Math.min(.45,sw+.1+rnd()*.12);
+
+    /* Klänge, die genannt werden; „ohne …“ leert die Spur */
+    SOUND.forEach(function(s){i=find(t,s[0]);if(i<0||neg(t,i))return;var r=s[1];
+      if(s[0]==='808|sub|bass|wobble'){if(find(t.replace(/drum ?(and|n|'n'|&) ?bass|bass ?drum|bassdrum/g,' '),s[0])<0)return;
+        var o='';for(k=0;k<16;k++)o+=g[1].charAt(k)!=='0'&&(k%8===0||rnd()<.35)?'n':g[6].charAt(k);g[6]=o;return;}
+      if(s[0]==='open ?hats?|offene'){for(k=2;k<16;k+=4)g[0]=set(g[0],k,'o');return;}
+      if(r===2){g[2]=g[2].replace(/p/g,s[2]);if(g[2].indexOf(s[2])<0){g[2]=set(g[2],4,s[2]);g[2]=set(g[2],12,s[2]);}return;}
+      var p=dots(s[2]),o2='';for(k=0;k<16;k++)o2+=p.charAt(k)!=='0'?p.charAt(k):g[r].charAt(k);g[r]=o2;});
+    ROW.forEach(function(w){var j,rg=re(w[0]),m;while((m=rg.exec(t))){j=m.index+m[1].length;if(neg(t,j)){
+      if(w[1]<0){g[0]=g[1]=g[2]=g[3]=g[4]=g[5]=dots('................');}else g[w[1]]=dots('................');}}});
+
+    /* Effekte: alles aus, außer was gesagt wird; Lo-Fi und Dub bringen ihr Vinyl und Echo mit */
+    var fx={};
+    FXW.forEach(function(f){i=find(t,f[1]);if(i>=0&&!neg(t,i))fx[f[0]]=[amount(t,i),f[2]];});
+    var said=Object.keys(fx);
+    if(ctx.n[best]==='lofi'&&!fx.lofi&&find(t,'vinyl|staub|dust')<0&&!/(no|without|ohne|kein)\s+(vinyl|crackle|knistern)/.test(t))fx.lofi=[45,0];
+    if(find(t,'dub')>=0&&!fx.echo)fx.echo=[60,3];
+    if(find(t,'dreamy|traeum|ambient|ethereal|floating|schweben')>=0&&!fx.echo)fx.echo=[35,3];
+    /* Nichts genannt: der Stil bringt seine Effekte mit, die Stimmung legt einen dazu; „dry“ lässt alles aus */
+    if(find(t,DRY)<0){
+      if(!Object.keys(fx).length){var sf=STYLEFX[ctx.n[best]]||[['room',30,0]];fx[sf[0][0]]=[sf[0][1],sf[0][2]];if(sf[1]&&rnd()<.5)fx[sf[1][0]]=[sf[1][1],sf[1][2]];}
+      MOODFX.forEach(function(m){if(!fx[m[1]]&&Object.keys(fx).length<3&&find(t,m[0])>=0&&!neg(t,find(t,m[0])))fx[m[1]]=[m[2],m[3]];});
+      /* Ein Take würfelt auch die Effekte: Stärken streuen (genannte behalten ihre Stärke), manchmal kommt einer dazu, aber nur, wenn keiner genannt ist */
+      var POOL=[['room',35,0],['echo',30,3],['sweep',35,4],['pump',35,4],['stut',30,2],['lofi',35,0]];
+      if(!said.length&&Object.keys(fx).length<3&&rnd()<.45){var ex=pick(POOL);if(!fx[ex[0]])fx[ex[0]]=[ex[1],ex[2]];}
+      for(id in fx)if(said.indexOf(id)<0)fx[id]=[Math.max(15,Math.min(95,Math.round(fx[id][0]*(.75+rnd()*.55)))),fx[id][1]];}
+    return {pre:best,bpm:bpm,sw:Math.max(0,Math.min(.6,sw)),g:g,fx:fx};
+  };
 })();
 
 /* ===== MSTR: Raster, Transport, Vorlagen, Spur-Einstellungen ===== */
 (function(){
   /* Vorschläge zum Würfeln für Becken, Perc, Toms, FX und die eigene Aufnahme (16 Schritte) */
   var COMMON={cym:['c...............','r.r.r.r.r.r.r.r.','..r...r...r...r.'],click:['1.1.1.1.1.1.1.1.','....2.......2...','3..3..3...3.3...'],toms:['b...p...b...p...','b.......t.t.....','b..b....p...tt..'],fx:['....m.......m...','n.....n...n.....','............z...'],mic:['....a.......a...','a.......a.a.....','..a...a...a.h.t.']};
-  var NM={lofi:'Lo-Fi',house:'House',funk:'Funk',rock:'Rock',techno:'Techno',trap:'Trap',onedrop:'One Drop',pop80:'Beat It',dnb:"Drum'n'Bass",afrobeats:'Afrobeats',reggaeton:'Reggaeton',minimal:'Minimal',twostep:'2-Step',jungle:'Jungle',electro:'Electro',amapiano:'Amapiano'};
+  var NM={lofi:'Lo-Fi',house:'House',funk:'Funk',rock:'Rock',techno:'Techno',trap:'Trap',onedrop:'One Drop',pop80:'Beat It',dnb:"Drum'n'Bass",afrobeats:'Afrobeats',reggaeton:'Reggaeton',minimal:'Minimal',twostep:'2-Step',jungle:'Jungle',electro:'Electro',amapiano:'Amapiano',phonk:'Phonk',jersey:'Jersey Club',baile:'Baile Funk',gqom:'Gqom',dubstep:'Dubstep',samba:'Samba',cumbia:'Cumbia',bhangra:'Bhangra',afrohouse:'Afro House',synthwave:'Synthwave',motown:'Motown',bodiddley:'Bo Diddley',oldschool:'Old School',gogo:'Go-Go'};
   /* Je Vorlage eigene Muster für Becken, Perc, Toms und FX. Becken: c Crash, r Ride, h China. Perc: 1 Shaker, 2 Tamburin, 3 Clave, 4 Conga, 5 Cowbell.
      FX: m Snap, n Sub, s Reverse, l Wirbel, z Riser. Riser und Reverse dauern vier Schritte, auf Schritt 13 laufen sie genau in die nächste Eins */
   var EXTRA={
@@ -906,7 +1189,21 @@ var CARD=(function(){
     twostep:['................','1.1.1.1.1.1.1.1.','................','............s...'],
     jungle:['c...............','................','..............tp','n.........n.....'],
     electro:['................','..5.....5.....5.','................','............z...'],
-    amapiano:['................','1111111111111111','......b..b....b.','................']};
+    amapiano:['................','1111111111111111','......b..b....b.','................'],
+    phonk:['................','5..5..5.5..5..5.','................','n.....n.........'],
+    jersey:['................','................','..............tt','..m.......m...m.'],
+    baile:['................','..1...1...1...1.','b..p..b...p..b..','............n...'],
+    gqom:['..............h.','................','b..b..p...b..t..','n...............'],
+    dubstep:['c...............','................','............tpb.','n.........n..n..'],
+    samba:['................','2..2..2...2.2...','....b.......b...','................'],
+    cumbia:['................','1.111.111.111.11','..........p.p...','................'],
+    bhangra:['................','..2...2...2...2.','b..p..p.b..p..p.','................'],
+    afrohouse:['................','..4.4..4..4.4..4','b.....p...b..t..','............z...'],
+    synthwave:['c...............','................','................','............s...'],
+    motown:['................','....2.......2...','................','................'],
+    bodiddley:['................','1111111111111111','b..b..b...p.p...','................'],
+    oldschool:['................','................','................','..............m.'],
+    gogo:['................','5..5..5...5.5...','..p..p....b..b..','................']};
 
   /* Spur-Icons: feine Linien, 24er Raster */
   var ICON={
@@ -950,7 +1247,7 @@ var CARD=(function(){
   function num(x,lo,hi,d){x=+x;return isFinite(x)?Math.max(lo,Math.min(hi,x)):d;}
   function arr(a,f,d){var o=[],r;for(r=0;r<R;r++)o.push(Array.isArray(a)&&a.length===R?f(a[r]):d);return o;}
 
-  var P=S.pat;
+  var P=S.pat,col='f'; /* Farbe des Orbits je Beat: Schlüssel aus CARD.HUES (f Flieder, m Mint, k Koralle, b Bernstein, e Eisblau) */
   /* Alter Stand (vor v2): Spuren hats, beat, clap, snare, click, toms, fx. Die Clap wandert in die Snare,
      die Becken aus der Toms-Spur in die neue Becken-Spur an Stelle 3 */
   if(P&&!P.v&&Array.isArray(P.g)&&P.g.length===7){
@@ -969,13 +1266,13 @@ var CARD=(function(){
   if(P&&P.v===3){if([0,6,10,12].indexOf(P.pre)>=0)P.pre=-1;P.v=4;}
   /* Stand v4: Bossa ist durch Beat It ersetzt, Shuffle durch Afrobeats */
   if(P&&P.v===4){if(P.pre===7||P.pre===9)P.pre=-1;P.v=5;}
-  if(P&&clean(P.g)){pat=clean(P.g);bpm=Math.round(num(P.bpm,60,180,100));sw=num(P.sw,0,.6,0);pre=P.pre|0;if(pre<-1||pre>=BEATS.length)pre=-1;edited=!!P.ed;title=typeof P.nm==='string'?P.nm.slice(0,40):'';}
+  if(P&&clean(P.g)){pat=clean(P.g);bpm=Math.round(num(P.bpm,60,180,100));sw=num(P.sw,0,.6,0);pre=P.pre|0;if(pre<-1||pre>=BEATS.length)pre=-1;edited=!!P.ed;title=typeof P.nm==='string'?P.nm.slice(0,40):'';if(P.col&&CARD.HUES[P.col])col=P.col;}
   else{pat=empty();fromBeat(START);}
   vol=arr(P&&P.vol,function(x){return num(x,0,1,.8);},.8);
   mute=arr(P&&P.mute,function(x){return !!x;},false);
   solo=arr(P&&P.solo,function(x){return !!x;},false);
   if(P&&Array.isArray(P.br)&&P.br.length===R)brush=brush.map(function(d,r){return sndIx(r,P.br[r])>=0?P.br[r]:d;});
-  function persist(){S.pat={v:5,g:pat,bpm:bpm,sw:sw,vol:vol,mute:mute,solo:solo,pre:pre,ed:edited,br:brush,nm:title};save();}
+  function persist(){S.pat={v:5,g:pat,bpm:bpm,sw:sw,vol:vol,mute:mute,solo:solo,pre:pre,ed:edited,br:brush,nm:title,col:col};save();}
   function anySolo(){return solo.some(Boolean);}
   /* ARR: beim Rechnen der Karte entscheidet das Arrangement je Takt mit, welche Spur klingt */
   var ARR=null,playT0=0;
@@ -994,9 +1291,6 @@ var CARD=(function(){
       tn.setAttribute('aria-label',T.n+': Einstellungen');
       tn.addEventListener('click',function(){trackSheet(r);});
       tl.appendChild(tn);
-      ['M','S'].forEach(function(k){var b=document.createElement('button');b.type='button';b.className='ms '+k.toLowerCase();b.textContent=k;
-        b.setAttribute('aria-label',(k==='M'?'Mute: ':'Solo: ')+T.n);
-        b.addEventListener('click',function(){if(k==='M')mute[r]=!mute[r];else solo[r]=!solo[r];paint();persist();});tl.appendChild(b);});
       row.appendChild(tl);
       var steps=document.createElement('div');steps.className='steps';cells.push([]);
       for(var g=0;g<4;g++){var grp=document.createElement('div');grp.className='grp';
@@ -1059,8 +1353,6 @@ var CARD=(function(){
         b.classList.toggle('on',on);b.setAttribute('aria-pressed',on?'true':'false');
         b.textContent=on&&multi&&(T.id==='click'||k>0)?(T.id==='click'?w:String(k+1)):'';}
       rows[r].classList.toggle('quiet',!audible(r));
-      rows[r].querySelector('.ms.m').setAttribute('aria-pressed',mute[r]?'true':'false');
-      rows[r].querySelector('.ms.s').setAttribute('aria-pressed',solo[r]?'true':'false');
       rows[r].querySelector('.tb').textContent=r===MIC&&!REC.mic?'Record your own sound':multi?T.s[sndIx(r,brush[r])][1]:'';
     }
     app.classList.toggle('solo',so);
@@ -1068,9 +1360,12 @@ var CARD=(function(){
     /* Eigener Name (beim Teilen vergeben) geht vor; sonst Name der Vorlage */
     $('preTxt').textContent=title||(pre>=0?NM[BEATS[pre].n]:'Your beat');
     $('sub').textContent=title&&pre>=0?'based on '+NM[BEATS[pre].n]:pre>=0&&edited?'edited':'';
+    /* Eine unveränderte Vorlage behält ihren Namen: kein Stift, kein Namens-Blatt */
     if(cb&&molOn)cardLabel();
   }
   function changed(){edited=true;paint();persist();}
+  /* Benennen geht nur bei eigenen oder veränderten Beats; Namen werden nur erzeugt, nie getippt */
+  function canName(){return pre<0||edited;}
 
   /* ---------- Wiedergabe ---------- */
   function head(s,b){
@@ -1107,7 +1402,7 @@ var CARD=(function(){
     /* Stottern: am Ende jedes n-ten Takts spielt statt der letzten Schritte immer wieder der erste davon, in Zweiunddreißigsteln */
     var L=FX.stut&&(bar+1)%FXO.stut===0?fxStutLen():0,src=N-L,k,r;
     if(L&&s>=src){for(r=0;r<R;r++)if(audible(r)){var w2=pat[r].charAt(src);if(w2!=='0')for(k=0;k<2;k++)play(TRACKS[r].id,t+k*six/2,[src,w2,2,gainOf(r)*(1-.35*(s-src+k/2)/L)]);}}
-    else for(r=0;r<R;r++)if(audible(r)){var w=pat[r].charAt(s);if(w!=='0')play(TRACKS[r].id,t,[s,w,2,gainOf(r)]);}
+    else for(r=0;r<R;r++)if(audible(r)){var w=pat[r].charAt(s);if(w!=='0'){var fe=feel(TRACKS[r].id,w,s,bar);play(TRACKS[r].id,t+Math.max(0,fe[1]),[s,w,2,gainOf(r)*fe[0]]);}}
     fxPump(t,s);
   }
   /* Drop: je nach Beat anders. Der Beat läuft im Anlauf weiter, nur ohne Kick, Toms, Becken und FX in der zweiten Hälfte.
@@ -1187,13 +1482,17 @@ var CARD=(function(){
   var catcher=document.createElement('div');catcher.className='catcher';catcher.hidden=true;document.body.appendChild(catcher);
   catcher.addEventListener('click',function(){closeSheet();});
   function openSheet(html,init,name,half){
-    lastFocus=document.activeElement;sheet.innerHTML=(half?'<div class="grab" aria-hidden="true"></div>':BACK)+html;sheet.hidden=false;sheet.scrollTop=0;
+    /* page: ganze Seite ohne Zurück-Pfeil (Willkommen), nur die Marke oben */
+    var page=half==='page';if(page)half=false;
+    lastFocus=document.activeElement;sheet.innerHTML=(half?'<div class="grab" aria-hidden="true"></div>':page?'<div class="pnav"><span class="mark"><i aria-hidden="true"></i>MSTR</span></div>':BACK)+html;sheet.hidden=false;sheet.scrollTop=0;
     sheet.classList.toggle('half',!!half);sheet.classList.toggle('top',half==='top');catcher.hidden=!half;
     if(!half)document.body.classList.add('noscroll');
-    sheet.querySelector('[data-close]').addEventListener('click',closeSheet);
+    var xb=sheet.querySelector('[data-close]');if(xb)xb.addEventListener('click',closeSheet);
     if(init)init(sheet);
-    var f=sheet.querySelector('[data-focus]')||sheet.querySelector('button');if(f)f.focus({preventScroll:true});
-    pageName=name;if(location.hash!=='#'+name){pushed=true;location.hash=name;}
+    var f=sheet.querySelector('[data-focus]')||(page?null:sheet.querySelector('button'));if(f)f.focus({preventScroll:true});
+    /* Willkommen öffnet ohne Geste: ein Hash dort würde den Verlaufseintrag ersetzen (Chrome), darum kein eigener Eintrag */
+    pageName=name;if(page){pushed=false;return;}
+    if(location.hash!=='#'+name){pushed=true;location.hash=name;}
   }
   function hideSheet(){if(sheet.__stop){sheet.__stop();sheet.__stop=null;}sheet.hidden=true;catcher.hidden=true;sheet.innerHTML='';document.body.classList.remove('noscroll');if(lastFocus&&lastFocus.focus)lastFocus.focus({preventScroll:true});}
   function closeSheet(){if(sheet.hidden)return;hideSheet();if(pushed){pushed=false;ignoreHash=true;history.back();}}
@@ -1201,7 +1500,16 @@ var CARD=(function(){
   var X='',XB='<button type="button" class="ib" data-close aria-label="Close"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>';
   function presetSheet(){
     var order=BEATS.map(function(b,i){return i;}).sort(function(a,b){return BEATS[a].bpm-BEATS[b].bpm||a-b;});
-    openSheet('<div class="sh-top"><h2 class="ed" id="sheetT">'+BEATS.length+' beats<br><em>by tempo</em></h2>'+X+'</div><div class="plist" role="listbox" aria-label="Beats"></div><a class="lab" href="https://asimplemanslab.com/" aria-label="Made with love by A Simple Man\u2019s Lab"><span>Made with love by</span><i aria-hidden="true"></i></a>',function(el){
+    openSheet('<div class="sh-top"><span class="eyebrow" id="sheetT">Describe a beat</span></div>'+
+      '<form class="sayf" autocomplete="off"><textarea id="sayIn" rows="2" maxlength="200" enterkeyhint="send" aria-labelledby="sheetT"></textarea>'+
+      '<button type="submit" class="ib go" id="sayGo" aria-label="Make the beat" title="Make the beat"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button></form>'+
+      '<p class="shnote left">Style, mood, tempo, sounds, effects. In your own words, English or German.</p>'+
+      '<h2 class="ed">or pick one<br><em>'+BEATS.length+' beats by tempo</em></h2><div class="plist" role="listbox" aria-label="Beats"></div>'+
+      '<div class="field"><span class="lbl">Theme</span><div class="seg2 three" id="themeSeg"><button type="button" data-t="system">System</button><button type="button" data-t="light">Light</button><button type="button" data-t="dark">Dark</button></div></div>'+
+      '<a class="lab" href="https://asimplemanslab.com/" aria-label="Made with love by A Simple Man\u2019s Lab"><span>Made with love by</span><i aria-hidden="true"></i></a>',function(el){
+      sayInit(el);
+      el.querySelectorAll('#themeSeg button').forEach(function(b){b.addEventListener('click',function(){S.theme=b.dataset.t;save();themeUI();});});
+      themeUI();
       var list=el.querySelector('.plist'),e=document.createElement('button');e.type='button';e.id='clr';e.className='pitem'+(pre<0&&pat.slice(0,7).join('')===empty().slice(0,7).join('')?' sel':'');e.setAttribute('role','option');
       e.innerHTML='<span class="n">Empty grid</span><span class="v">'+bpm+'<small>BPM</small></span>';e.addEventListener('click',function(){clearAll();closeSheet();});list.appendChild(e);
       order.forEach(function(i){var Bt=BEATS[i],b=document.createElement('button');b.type='button';b.className='pitem'+(i===pre?' sel':'');b.setAttribute('role','option');b.setAttribute('aria-selected',i===pre?'true':'false');
@@ -1210,7 +1518,71 @@ var CARD=(function(){
         b.addEventListener('click',function(){fromBeat(i);paint();persist();closeSheet();if(!playing)setPlay(true);});list.appendChild(b);});
     },'vorlagen');
   }
-  $('preBtn').addEventListener('click',presetSheet);$('preName').addEventListener('click',function(){nameSheet();});
+  $('preBtn').addEventListener('click',presetSheet);
+  /* ---------- Beat aus Worten: beschreiben, abschicken, der Beat ist da (Regeln in worte.js, alles im Browser).
+     Ersetzt die sieben eingebauten Spuren, Tempo, Swing und Effekte; die Spur Aufnahme bleibt. Die Beschreibung wird der Name.
+     Nochmal abschicken gibt eine Variante. Rückgängig über den Hinweis ---------- */
+  function beatRows(i){var Bt=BEATS[i],X=EXTRA[Bt.n],o=[],r;for(r=0;r<7;r++)o.push(r<3?rowFromBeat(Bt,TRACKS[r].id):dots(X?X[r-3]:COMMON[TRACKS[r].id][0]));return o;}
+  var SAY=['dusty slow hip hop with vinyl','dark fast techno, lots of echo','happy summer beat with cowbell','dreamy, minimal, a bit of swing','drum and bass without hats'];
+  var SAYF='<form class="sayf" autocomplete="off"><textarea id="sayIn" rows="2" maxlength="200" enterkeyhint="send" aria-label="Describe a beat"></textarea>'+
+      '<button type="submit" class="ib go" id="sayGo" aria-label="Make the beat" title="Make the beat"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button></form>';
+  /* Das Feld „Describe a beat“ (Beat-Liste und Willkommen): Enter oder Pfeil schickt ab, leer nimmt das Beispiel, die letzte Beschreibung steht wieder drin */
+  function sayInit(el,after){
+    var inp=el.querySelector('#sayIn'),f=el.querySelector('form.sayf');
+    var used=[].map.call(el.querySelectorAll('.chip'),function(c){return c.textContent;}),pool=SAY.filter(function(x){return used.indexOf(x)<0;});
+    inp.value=typeof S.say==='string'?S.say:'';inp.placeholder=pool[Math.floor(Math.random()*pool.length)];
+    function go(v){v=v||inp.value.trim()||inp.placeholder;S.say=v===inp.placeholder?inp.value.trim():v;if(after)after();save();closeSheet();sayBeat(v);}
+    f.addEventListener('submit',function(e){e.preventDefault();go();});
+    inp.addEventListener('keydown',function(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();go();}});
+    el.querySelectorAll('.chip').forEach(function(c){c.addEventListener('click',function(){go(c.textContent);});});
+  }
+  /* ---------- Vibe: die Frage „What's the vibe?“ ist der Einstieg (erster Besuch) und „Change vibe“ im Orbit.
+     Drei Reihen Wörter (Stimmung, Energie, Farbe), die der Parser sicher kennt; Tippen baut den Satz im Feld, Tippen ins Feld erlaubt
+     eigene Wörter. „Make the beat“ schickt ab, „Surprise me“ würfelt. Beim ersten Besuch ohne X (S.seen danach), sonst mit X ---------- */
+  var VIBE=[['Mood',['calm','dark','happy','sad','party','angry','dreamy','epic','playful']],['Energy',['slow','steady','fast','minimal','busy','swing']],['Colour',['dusty','warm','clean','spacey','dub','glitchy']],['Style',['funk','hip hop','house','reggae','rock','80s','afro','latin','trap','garage','jungle','techno']]];
+  function vibe(on){
+    if(on===false){S.seen=1;save();if(pageName==='vibe'&&!sheet.hidden)closeSheet();return;}
+    var first=!S.seen;S.seen=1;save();
+    openSheet('<div class="sh-top"><span class="eyebrow">'+(first?'Your beat starts here':'New beat')+'</span>'+(first?'':XB)+'</div><h2 class="ed" id="sheetT">What\u2019s the vibe?</h2>'+
+      '<form class="sayf vibef" autocomplete="off"><textarea id="sayIn" rows="2" maxlength="200" enterkeyhint="send" aria-labelledby="sheetT" placeholder="Tap words, or type"></textarea></form>'+
+      VIBE.map(function(g){return '<div class="vgrp"><span class="lbl">'+g[0]+'</span><div class="chips">'+g[1].map(function(w){return '<button type="button" class="chip" data-w="'+w+'" aria-pressed="false">'+w+'</button>';}).join('')+'</div></div>';}).join('')+
+      '<div class="vgo"><button type="button" class="pill big sur" id="vSurprise"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="4" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="9" cy="9" r="1.5" fill="currentColor"/><circle cx="15" cy="15" r="1.5" fill="currentColor"/><circle cx="15" cy="9" r="1.5" fill="currentColor"/><circle cx="9" cy="15" r="1.5" fill="currentColor"/></svg>Surprise me</button><button type="button" class="pill go big" id="sayGo">Make the beat<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>',function(el){
+      var inp=el.querySelector('#sayIn'),chips=[].slice.call(el.querySelectorAll('.chip'));
+      inp.value=typeof S.say==='string'?S.say:'';
+      function has(w){return new RegExp('(^|[^a-z])'+w+'(?=[^a-z]|$)','i').test(inp.value);}
+      function mark(){chips.forEach(function(c){var on=has(c.dataset.w);c.classList.toggle('on',on);c.setAttribute('aria-pressed',on?'true':'false');});}
+      function go(v){v=String(v||inp.value).trim();if(!v)v=surprise();S.say=v;save();closeSheet();sayBeat(v);molSet(true);}
+      function surprise(){var p=function(a){return a[Math.floor(Math.random()*a.length)];},w=[p(VIBE[0][1]),p(VIBE[1][1])];var r=Math.random();if(r<.35)w.push(p(VIBE[3][1]));else if(r<.7)w.push(p(VIBE[2][1]));return w.join(' · ');}
+      chips.forEach(function(c){c.addEventListener('click',function(){var w=c.dataset.w;
+        if(has(w))inp.value=inp.value.replace(new RegExp('(^|[^a-z])'+w+'(?=[^a-z]|$)','i'),'$1').replace(/\s*·\s*·\s*/g,' · ').replace(/^\s*·\s*|\s*·\s*$/g,'').trim();
+        else inp.value=inp.value.trim()?inp.value.trim()+' · '+w:w;
+        mark();});});
+      inp.addEventListener('input',mark);mark();
+      el.querySelector('form').addEventListener('submit',function(e){e.preventDefault();go();});
+      inp.addEventListener('keydown',function(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();go();}});
+      el.querySelector('#sayGo').addEventListener('click',function(){go();});
+      el.querySelector('#vSurprise').addEventListener('click',function(){inp.value=surprise();mark();go();});
+    },'vibe','page');
+  }
+  /* „Another take“: dieselbe Beschreibung noch einmal (der Parser würfelt leicht); ohne Beschreibung nimmt er den Stil der Vorlage, ohne beides fragt er nach dem Vibe */
+  function anotherTake(){var t=typeof S.say==='string'&&S.say.trim()?S.say:pre>=0?BEATS[pre].n:'';if(!t){vibe();return;}sayBeat(t);}
+  var lastSay=typeof S.say==='string'?S.say.trim():'';
+  function sayBeat(text){
+    text=String(text||'').trim();if(!text)return false;
+    /* Gleicher Satz wie eben = ein neuer Take: andere Vorlage, wenn die Stimmung eine hergibt, und deutlich anderes Muster (bis zu acht Würfe) */
+    var again=text===lastSay,ctxW={n:BEATS.map(function(b){return b.n;}),bpm:BEATS.map(function(b){return b.bpm;}),sw:BEATS.map(function(b){return b.sw;}),rows:beatRows,avoid:again?pre:null},o,tries=0;
+    do{o=WORTE(text,ctxW);}while(again&&++tries<8&&o.g.reduce(function(n,row,r){for(var k=0;k<16;k++)if(row.charAt(k)!==pat[r].charAt(k))n++;return n;},0)<12);
+    lastSay=text;
+    var r;
+    for(r=0;r<7;r++)pat[r]=o.g[r];
+    bpm=o.bpm;sw=o.sw;pre=o.pre;edited=true;
+    FXS.forEach(function(f){var id=f[0],x=o.fx[id];FX[id]=!!x;if(x){FXA[id]=x[0];if(f[4]&&f[4].some(function(q){return q[0]===x[1];}))FXO[id]=x[1];}});
+    fxSave();fxApply(false);fxUI();
+    /* Der Name kommt aus dem Beat selbst, nicht aus dem getippten Text */
+    title=CARD.title(cardModel(),Math.floor(Math.random()*8));paint();persist();
+    if(!playing)setPlay(true);
+    return true;
+  }
 
   function tempoSheet(){
     var taps=[];
@@ -1322,6 +1694,7 @@ var CARD=(function(){
      Läufe von Nullen als Großbuchstaben (A = 1 … P = 16). lautstärke: je Spur zwei Zeichen Base36 (leer, wenn alle 80 %).
      mute/solo: Bitmasken Base36. effekte: je eingeschaltetem Effekt Nummer, Stärke (2 Zeichen Base36) und Auswahl.
      Danach optional .<name>: der eigene Name, URL-kodiert (Punkte als %2E), höchstens 40 Zeichen.
+     Danach optional .<farbe>: ein Buchstabe für die Orbit-Farbe (f m k b e), fehlt er, ist es Flieder; dann steht der Name davor, notfalls leer.
      Die Spur Aufnahme fehlt absichtlich: die Aufnahme liegt nur auf dem eigenen Gerät, beim Empfänger bleibt seine Spur, wie sie ist ---------- */
   var SR=MIC<0?R:MIC; /* geteilt werden die Spuren vor der Aufnahme */
   function b36(v){return (v<36?'0':'')+v.toString(36);}
@@ -1334,16 +1707,16 @@ var CARD=(function(){
     for(r=0;r<SR;r++){if(mute[r])m|=1<<r;if(solo[r])so|=1<<r;}
     if(vol.slice(0,SR).some(function(x){return Math.round(x*100)!==80;}))for(r=0;r<SR;r++)v+=b36(Math.round(vol[r]*100));
     FXS.forEach(function(x,i){var id=x[0];if(FX[id])f+=i+b36(FXA[id])+(x[4]?FXO[id]:0);});
-    return ['1',bpm,Math.round(sw*100),pre>=0?BEATS[pre].n+(edited?'*':''):'',g,v,m||so?m.toString(36)+'_'+so.toString(36):'',f].concat(title?[encodeURIComponent(title).replace(/\./g,'%2E')]:[]).join('.');
+    return ['1',bpm,Math.round(sw*100),pre>=0?BEATS[pre].n+(edited?'*':''):'',g,v,m||so?m.toString(36)+'_'+so.toString(36):'',f].concat(title||col!=='f'?[encodeURIComponent(title).replace(/\./g,'%2E')]:[],col!=='f'?[col]:[]).join('.');
   }
   /* Liest einen Link-Code. Ungültig: null, dann bleibt alles, wie es ist */
   function readCode(s){
     var p=String(s||'').split('.').map(function(x){try{return decodeURIComponent(x);}catch(e){return '';}}),g='',k,c,r;
-    if((p.length!==8&&p.length!==9)||p[0]!=='1')return null;
+    if(p.length<8||p.length>10||p[0]!=='1')return null;
     for(k=0;k<p[4].length;k++){c=p[4].charAt(k);if(c>='A'&&c<='P')g+=new Array(c.charCodeAt(0)-63).join('0');else g+=c;}
     if(g.length!==SR*N)return null;
     var rows=[];for(r=0;r<SR;r++){var row=g.substr(r*N,N);for(k=0;k<N;k++)if(row.charAt(k)!=='0'&&sndIx(r,row.charAt(k))<0)return null;rows.push(row);}
-    var o={g:rows,bpm:Math.round(num(p[1],60,180,100)),sw:num(p[2],0,60,0)/100,pre:-1,ed:false,vol:null,mute:0,solo:0,fx:[],nm:(p[8]||'').replace(/[\u0000-\u001f]/g,'').trim().slice(0,40)};
+    var o={g:rows,bpm:Math.round(num(p[1],60,180,100)),sw:num(p[2],0,60,0)/100,pre:-1,ed:false,vol:null,mute:0,solo:0,fx:[],nm:(p[8]||'').replace(/[\u0000-\u001f]/g,'').trim().slice(0,40),col:CARD.HUES[p[9]]?p[9]:'f'};
     var nm=p[3].replace(/\*$/,''),ix=BEATS.map(function(b){return b.n;}).indexOf(nm);if(nm&&ix>=0){o.pre=ix;o.ed=/\*$/.test(p[3]);}
     if(p[5].length===SR*2){o.vol=[];for(r=0;r<SR;r++)o.vol.push(num(parseInt(p[5].substr(r*2,2),36),0,100,80)/100);}
     var ms=p[6].split('_');if(ms.length===2){o.mute=parseInt(ms[0],36)||0;o.solo=parseInt(ms[1],36)||0;}
@@ -1351,13 +1724,13 @@ var CARD=(function(){
       o.fx.push([F[0],num(parseInt(p[7].substr(k+1,2),36),0,100,50),+p[7].charAt(k+3)]);}
     return o;
   }
-  function snap(){return {pat:pat.slice(),bpm:bpm,sw:sw,pre:pre,ed:edited,nm:title,vol:vol.slice(),mute:mute.slice(),solo:solo.slice(),
+  function snap(){return {pat:pat.slice(),bpm:bpm,sw:sw,pre:pre,ed:edited,nm:title,col:col,vol:vol.slice(),mute:mute.slice(),solo:solo.slice(),
     fx:JSON.parse(JSON.stringify(FX)),fxa:JSON.parse(JSON.stringify(FXA)),fxo:JSON.parse(JSON.stringify(FXO))};}
-  function restore(z){pat=z.pat;bpm=z.bpm;sw=z.sw;pre=z.pre;edited=z.ed;title=z.nm;vol=z.vol;mute=z.mute;solo=z.solo;
+  function restore(z){pat=z.pat;bpm=z.bpm;sw=z.sw;pre=z.pre;edited=z.ed;title=z.nm;col=z.col||'f';hueUI();vol=z.vol;mute=z.mute;solo=z.solo;
     FXS.forEach(function(f){var id=f[0];FX[id]=z.fx[id];FXA[id]=z.fxa[id];FXO[id]=z.fxo[id];});fxSave();fxApply(false);fxUI();paint();persist();}
   function useCode(o){
     var r;for(r=0;r<SR;r++){pat[r]=o.g[r];mute[r]=!!(o.mute&1<<r);solo[r]=!!(o.solo&1<<r);if(o.vol)vol[r]=o.vol[r];}
-    bpm=o.bpm;sw=o.sw;pre=o.pre;edited=o.ed;title=o.nm;
+    bpm=o.bpm;sw=o.sw;pre=o.pre;edited=o.ed;title=o.nm;col=o.col||'f';hueUI();
     FXS.forEach(function(f){FX[f[0]]=false;});
     o.fx.forEach(function(x){var F=FXS.filter(function(f){return f[0]===x[0];})[0];FX[x[0]]=true;FXA[x[0]]=x[1];if(F[4]&&F[4].some(function(q){return q[0]===x[2];}))FXO[x[0]]=x[2];});
     fxSave();fxApply(false);persist();
@@ -1376,28 +1749,7 @@ var CARD=(function(){
     if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(url).then(shown,function(){window.prompt('Copy this link',url);});
     else window.prompt('Copy this link',url);
   }
-  /* Beat als WAV-Loop zum Samplen: vier Takte, offline berechnet, genau wie sie klingen (mit Effekten und eigener Aufnahme).
-     Nahtlos: ein Takt Vorlauf wird mitgerechnet und weggeschnitten, so liegen Hall und Echo des letzten Takts schon am Anfang,
-     und Filter und Stottern (Perioden 1, 2 oder 4 Takte) stehen am Ende wieder genau wie am Anfang.
-     Dafür wird ac kurz gegen einen OfflineAudioContext getauscht: Bus und Ausgang entstehen dort neu, alle Schritte werden
-     eingeplant, dann gilt sofort wieder der echte Kontext */
-  var BARS=4;
-  function renderLoop(done){
-    getAC();var OAC=window.OfflineAudioContext||window.webkitOfflineAudioContext;if(!ac||!OAC)return done(null);
-    if(REC.mic&&!REC.mic.buf){decodeRec('mic');var w=0,iv=setInterval(function(){if(!REC.mic||REC.mic.buf||++w>20){clearInterval(iv);renderLoop(done);}},100);return;}
-    var six=st(),barT=N*six,sr=ac.sampleRate,n=Math.round(BARS*barT*sr),a=Math.round(barT*sr),off,keep={ac:ac,B:B,bac:_bac,oc:_oc,og:_og,live:FXLIVE},s,k;
-    try{
-      off=new OAC(2,a+n,sr);
-      ac=off;B=null;_bac=null;_oc=null;bus();FXLIVE=true;fxApply(true);
-      /* Takt -1 ist der Vorlauf; er zählt als letzter Takt der Schleife (wichtig fürs Stottern) */
-      for(k=-1;k<BARS;k++){fxTempo();for(s=0;s<N;s++)playStep(s,(k+1)*barT+s*six+((s%4===2)?six*sw:0),six,(k+BARS)%BARS);}
-    }catch(e){off=null;}
-    ac=keep.ac;B=keep.B;_bac=keep.bac;_oc=keep.oc;_og=keep.og;FXLIVE=keep.live;
-    if(!off)return done(null);
-    var p=off.startRendering(),fin=function(buf){done(wavBlob([buf.getChannelData(0).slice(a,a+n),buf.getChannelData(1).slice(a,a+n)],sr));};
-    if(p&&p.then)p.then(fin,function(){done(null);});else off.oncomplete=function(e){fin(e.renderedBuffer);};
-  }
-  /* Ton für die Karte: der Bogen über 8 Takte plus Schlussschlag (Kick und Crash) und Nachklang, offline gerechnet wie der WAV-Loop,
+  /* Ton für die Karte: der Bogen über 8 Takte plus Schlussschlag (Kick und Crash) und Nachklang, offline gerechnet,
      ohne Vorlauf (der Clip fängt leer an). done(AudioBuffer|null) */
   function renderClip(done){
     getAC();var OAC=window.OfflineAudioContext||window.webkitOfflineAudioContext;if(!ac||!OAC)return done(null);
@@ -1415,72 +1767,51 @@ var CARD=(function(){
     var p=off.startRendering();
     if(p&&p.then)p.then(done,function(){done(null);});else off.oncomplete=function(e){done(e.renderedBuffer);};
   }
-  function wavBlob(ch,sr){
-    var n=ch[0].length,C=ch.length,ab=new ArrayBuffer(44+n*C*2),v=new DataView(ab),i,c,o=44;
-    function w(at,t){for(var j=0;j<t.length;j++)v.setUint8(at+j,t.charCodeAt(j));}
-    w(0,'RIFF');v.setUint32(4,36+n*C*2,true);w(8,'WAVE');w(12,'fmt ');v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,C,true);v.setUint32(24,sr,true);v.setUint32(28,sr*C*2,true);v.setUint16(32,C*2,true);v.setUint16(34,16,true);w(36,'data');v.setUint32(40,n*C*2,true);
-    for(i=0;i<n;i++)for(c=0;c<C;c++){var x=Math.max(-1,Math.min(1,ch[c][i]));v.setInt16(o,x*32767,true);o+=2;}
-    return new Blob([ab],{type:'audio/wav'});
-  }
   function baseName(){
     return (title||(pre>=0?NM[BEATS[pre].n]:'MSTR beat')).normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^A-Za-z0-9]+/g,'-').replace(/^-+|-+$/g,'')||'MSTR-beat';
   }
-  function fileName(){return baseName()+'-'+bpm+'bpm.wav';}
   function canSendFile(f){try{return !!(navigator.canShare&&navigator.share&&navigator.canShare({files:[f]}));}catch(e){return false;}}
   function saveFile(f){var u=URL.createObjectURL(f),a=document.createElement('a');a.href=u;a.download=f.name;document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(u);},4000);}
-  /* Teilen in drei Stücken: Name und „By“ im Namens-Blatt (Titel antippen; der Würfel schlägt einen Titel aus dem Beat vor),
-     „Share“ in der Karten-Ansicht macht das Video, „⋯“ daneben hat Link und WAV-Loop */
+  /* Teilen: Name und „By“ im Namens-Blatt (Titel antippen; der Würfel schlägt einen Titel aus dem Beat vor),
+     „Share video“ im Orbit macht das Video, darunter steht der Link */
   var handle=typeof S.by==='string'?S.by.slice(0,24):'';
   /* Karte: die eingeschalteten Effekte wandern mit ins Bild (Stärke 0–1 und Auswahl), GLASS ist die Durchsichtigkeit der Atome */
   var GLASS=0;
   function cardFx(){var o={};FXS.forEach(function(f){var id=f[0];if(FX[id])o[id]={a:FXA[id]/100,o:FXO[id]};});return o;}
-  function cardModel(){return CARD.model(pat.slice(0,7),bpm,sw,cardFx());}
+  function cardModel(){return CARD.model(pat.slice(0,7),bpm,sw,cardFx(),col);}
+  /* Farbwahl im Orbit: fünf Punkte, die Farbe gehört zum Beat, reist im Link mit und gilt für Orbit und Video (die App bleibt Flieder) */
+  var hueRow=$('hue');
+  function hueUI(){var on=hueRow.querySelector('[aria-checked="true"]');if(on&&on.dataset.hue===col)return;
+    hueRow.querySelectorAll('button').forEach(function(b){b.setAttribute('aria-checked',b.dataset.hue===col?'true':'false');});app.style.setProperty('--orbit',CARD.HUES[col]);}
+  function setHue(k){if(!CARD.HUES[k]||k===col)return;col=k;hueUI();persist();if(typeof cardLabel==='function')cardLabel();}
+  Object.keys(CARD.HUES).forEach(function(k){var b=document.createElement('button');b.type='button';b.setAttribute('role','radio');b.dataset.hue=k;b.style.setProperty('--c',CARD.HUES[k]);
+    b.setAttribute('aria-label',{f:'Lilac',m:'Mint',k:'Coral',b:'Amber',e:'Ice blue'}[k]);b.title=b.getAttribute('aria-label');b.addEventListener('click',function(){setHue(k);});hueRow.appendChild(b);});
+  hueUI();
   function setTitle(v){v=v.replace(/[\u0000-\u001f]/g,'').trim().slice(0,40);if(v!==title){title=v;paint();persist();}}
   function nameSheet(){
     openSheet('<div class="sh-top"><span class="eyebrow" id="sheetT">Name your beat</span>'+XB+'</div>'+
-      '<label class="namef"><span class="lbl">Name</span><span class="namer"><input id="shName" type="text" maxlength="40" autocomplete="off" enterkeyhint="done" data-focus>'+
-      '<button type="button" class="ib" id="shDice" aria-label="Suggest a title" title="Suggest a title"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 0 1 14-5.3M20 12a8 8 0 0 1-14 5.3M18 3v4h-4M6 21v-4h4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button></span></label>'+
+      '<div class="namef"><span class="lbl">Name</span><div class="namer"><strong class="nameo" id="shName"></strong>'+
+      '<button type="button" class="pill dice" id="shDice"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 0 1 14-5.3M20 12a8 8 0 0 1-14 5.3M18 3v4h-4M6 21v-4h4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Another name</button></div></div>'+
       '<label class="byf"><span class="lbl">By</span><input id="shBy" type="text" maxlength="24" autocomplete="off" placeholder="@you"></label>'+
-      '<p class="shnote">Both appear on your card. The name also travels with the link.</p>',function(el){
-      var inp=el.querySelector('#shName'),dice=el.querySelector('#shDice'),diceN=0,m=cardModel();
-      inp.value=title;inp.placeholder=pre>=0?NM[BEATS[pre].n]:'Your beat';
-      inp.addEventListener('input',function(){setTitle(inp.value);});
-      inp.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();closeSheet();}});
-      dice.addEventListener('click',function(){inp.value=CARD.title(m,diceN++);setTitle(inp.value);});
+      '<p class="shnote">Names come from the beat itself: tempo, swing and the loudest track. Both appear on your card, the name also travels with the link.</p>',function(el){
+      var out=el.querySelector('#shName'),dice=el.querySelector('#shDice'),diceN=0,m=cardModel();
+      /* Ohne Namen bekommt der Beat gleich einen; „Another name“ geht die Vorschläge durch */
+      if(!title)setTitle(CARD.title(m,diceN));diceN++;out.textContent=title;
+      dice.addEventListener('click',function(){setTitle(CARD.title(m,diceN++));out.textContent=title;});
       var by=el.querySelector('#shBy');by.value=handle;
       by.addEventListener('input',function(){handle=by.value.replace(/[\u0000-\u001f\s]/g,'').slice(0,24);S.by=handle;save();});
       by.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();closeSheet();}});
     },'name','top');
   }
-  function moreSheet(){
-    var own=pat[MIC]&&pat[MIC]!==zero(),mob=nativeShare();
-    openSheet('<div class="sh-top"><span class="eyebrow" id="sheetT">Link and loop</span>'+XB+'</div>'+
-      '<button type="button" class="pill wide" id="shSend">'+(mob?'Send link':'Copy link')+'</button>'+
-      '<p class="shnote" id="shSendT">'+(mob?'':'Paste it into a chat or mail. ')+'Opens your beat on asimplemanslab.com/mstr'+(own?'. Your recording stays on this device.':'.')+'</p>'+
-      '<button type="button" class="pill wide" id="shWav"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M8 11l4 4 4-4M5 19h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Download WAV</span></button>'+
-      '<p class="shnote" id="shWavT">'+BARS+' bars that loop seamlessly, for sampling'+(own?', with your recording':'')+'</p>',function(el){
-      var sb=el.querySelector('#shSend'),sbT=0;
-      sb.addEventListener('click',function(){shareBeat(function(){
-        sb.textContent='✓ Link copied';clearTimeout(sbT);sbT=setTimeout(function(){sb.textContent='Copy link';},2500);});});
-      /* Download: am Handy übers Teilen-Menü (dort „In Dateien sichern“), sonst direkt. Lässt der Browser das Teilen
-         nach dem Rechnen nicht mehr zu, braucht es einen zweiten Tipp */
-      var wb=el.querySelector('#shWav'),wt=el.querySelector('#shWavT'),file=null,busy=false;
-      function give(f){
-        if(navigator.share&&matchMedia('(pointer: coarse)').matches&&canSendFile(f)){
-          navigator.share({files:[f],title:f.name}).catch(function(e){if(e&&e.name==='NotAllowedError'){wb.querySelector('span').textContent='Save '+f.name;wb.classList.add('go');}});return;}
-        saveFile(f);wt.textContent='Saved '+f.name;
-      }
-      wb.addEventListener('click',function(){
-        if(busy)return;
-        if(file&&file.name===fileName())return give(file);
-        busy=true;wt.textContent='Rendering …';
-        renderLoop(function(blob){busy=false;
-          if(!blob){wt.textContent='That did not work in this browser.';return;}
-          file=new File([blob],fileName(),{type:'audio/wav'});wt.textContent=file.name+', '+(Math.round(BARS*N*st()*10)/10)+' s';give(file);});
-      });
-    },'mehr',true);
-  }
-  $('more').addEventListener('click',moreSheet);
+  /* Der Link ist ein runder Knopf neben dem Video-Knopf; die Hinweiszeile darunter antwortet kurz */
+  (function(){
+    var sb=$('shSend'),sbT=0;
+    function sendLabel(){var t=nativeShare()?'Send link':'Copy link';sb.setAttribute('aria-label',t);sb.title=t;sb.classList.remove('ok');}
+    sendLabel();window.addEventListener('resize',sendLabel);
+    sb.addEventListener('click',function(){shareBeat(function(){
+      var own=pat[MIC]&&pat[MIC]!==zero();cardNote('Link copied.'+(own?' Your recording stays on this device.':''));
+      sb.classList.add('ok');sb.setAttribute('aria-label','Link copied');clearTimeout(sbT);sbT=setTimeout(function(){sendLabel();cardNote('');},2500);});});
+  })();
   /* „Share“ in der Karten-Ansicht: Ton offline rechnen, Video in Echtzeit aufnehmen (die Karten-Ansicht zeigt derweil die Aufnahme),
      dann teilen (Handy) oder sichern (Rechner). Ohne Video gibt es ein Bild. Dieselbe Datei wird beim zweiten Tipp sofort gegeben */
   var cb=$('shCardBtn'),ct=$('shCardT'),cardT=null,cfile=null,ckey='',busyC=false,cardGen=0,video=CARD.canVideo();
@@ -1488,12 +1819,11 @@ var CARD=(function(){
   /* Der Knopf heißt von Anfang an „Share video“ (Rechner: „Save video“), während der Erstellung „Generating · 12 s“ mit Füllstand;
      die Zeile darunter erklärt jeden Schritt (erst entsteht das Video, dann öffnet sich das Teilen-Menü). Ändert sich der Beat, fängt es von vorn an */
   function cardKey(){var o=cardOpts();return shareCode()+'|'+o.title+'|'+o.by;}
-  function cardNote(t){ct.textContent=t;ct.hidden=!t;}
+  function cardNote(t){ct.textContent=t;ct.hidden=!t||!molOn;}
   function cardLabel(){if(busyC)return;cb.classList.remove('gen');cb.style.removeProperty('--p');var ready=cfile&&ckey===cardKey(),mob=nativeShare(),secs=Math.round(CARD.clipLen(bpm));
     cb.textContent=video?(mob?'Share video':'Save video'):(mob?'Share image':'Save image');
-    if(!video){cardNote(ready?'Ready. Tap to share it again.':'A picture of your orbit for Story and chats.');return;}
-    if(ready)cardNote(mob?'Ready, '+secs+' s with sound. Tap to open the share sheet, the link to your beat comes along. It stays until you change the beat.':'Ready, '+secs+' s with sound. Tap to save it again, it stays until you change the beat.');
-    else cardNote('Makes a '+secs+' s video with sound for Story, Reels and chats, then '+(mob?'opens the share sheet with the link to your beat':'saves it')+'. Takes as long as the video.');}
+    if(!video){cardNote(ready?'Ready. Tap to share it again.':'');return;}
+    cardNote(ready?(mob?'Ready, '+secs+' s with sound. Tap to share.':'Ready, '+secs+' s with sound. Tap to save it again.'):'');}
   /* Am Handy reist der Link als Text mit dem Video: in Chats kommt beides in einer Nachricht an, Instagram nimmt nur das Video */
   /* Am Handy öffnet erst ein frischer Tipp das Teilen-Menü (iOS verweigert es ohne Geste); verweigert es trotzdem, wird die Datei gesichert */
   function giveCard(f){
@@ -1503,19 +1833,20 @@ var CARD=(function(){
         if(e&&e.name==='AbortError')return;
         if(e&&e.name==='NotAllowedError'){cardNote('Tap Share video once more to open the share sheet.');return;}
         saveFile(f);cardNote('Sharing did not work here, saved '+f.name+' instead.');});return;}
-    saveFile(f);cardNote('Saved '+f.name+'. Add the link from ⋯ so friends can open the beat.');
+    saveFile(f);cardNote('Saved '+f.name+'. Copy the link too, so friends can open the beat.');
   }
   /* Abbruch: auch während der Ton noch gerechnet wird (dann verfällt das Ergebnis) */
   function cardStop(){cardGen++;if(cardT){cardT();cardT=null;}if(busyC){busyC=false;cb.disabled=false;cardLabel();}}
   cb.addEventListener('click',function(){
-    if(busyC)return;var o=cardOpts(),key=cardKey(),scene=new CARD.Scene(cardModel());
+    /* Ein zweiter Tipp während der Erstellung bricht ab */
+    if(busyC){cardStop();cardNote('Cancelled. Tap again to make the video.');return;}var o=cardOpts(),key=cardKey(),scene=new CARD.Scene(cardModel());
     if(cfile&&ckey===key)return giveCard(cfile);
     if(!video){CARD.image(scene,o,function(f){if(!f){cardNote('That did not work in this browser.');return;}cfile=f;ckey=key;cardLabel();giveCard(f);});return;}
-    busyC=true;setPlay(false);cb.disabled=true;cb.textContent='Preparing sound …';cardNote('One moment.');var gen=++cardGen;
+    busyC=true;setPlay(false);cb.textContent='Preparing sound …';cardNote('One moment. Tap the button again to cancel.');var gen=++cardGen;
     renderClip(function(buf){
       if(gen!==cardGen)return;
       if(!buf){busyC=false;cb.disabled=false;cardLabel();cardNote('That did not work in this browser.');return;}
-      o.mirror=molC;o.mirrorBg=molDark()?'#0E0E0F':'#FFFFFF';cb.classList.add('gen');cardNote('Generating the video with sound. Keep this screen open until it is done, Grid cancels.');
+      o.mirror=molC;o.mirrorBg=molDark()?'#0E0E0F':'#FFFFFF';cb.classList.add('gen');cardNote('Generating the video with sound. Keep this screen open until it is done, tap the button again to cancel.');
       cardT=CARD.record(ac,buf,scene,o,function(t,tot){cb.style.setProperty('--p',Math.min(1,t/tot));cb.textContent='Generating · '+Math.ceil(tot-t)+' s';},function(f,why){
         busyC=false;cb.disabled=false;cardT=null;
         if(why==='abort'){cardLabel();return;}
@@ -1534,29 +1865,33 @@ var CARD=(function(){
 
   /* ---------- Farbschema ---------- */
   var TN={system:'system',light:'light',dark:'dark'};
-  function themeUI(){var t=applyTheme();if(molOn)forceDark();$('theme').setAttribute('aria-label','Theme: '+TN[t]);$('theme').title='Theme: '+TN[t];}
-  $('theme').addEventListener('click',function(){var t=THEMES.indexOf(S.theme);S.theme=THEMES[(t<0?1:t+1)%3];save();themeUI();});
+  /* Das Farbschema wohnt am Ende der Beat-Liste (drei Schalter), nicht mehr im Kopf der Seite */
+  function themeUI(){var t=applyTheme();if(molOn)forceDark();var sg=$('themeSeg');if(sg)[].forEach.call(sg.children,function(b){b.setAttribute('aria-pressed',b.dataset.t===t?'true':'false');});}
   if(window.matchMedia)try{matchMedia('(prefers-color-scheme: dark)').addEventListener('change',themeUI);}catch(e){}
 
   build();themeUI();fxUI();playB.innerHTML=I_PLAY;
   if(shared){var before=shared;showToast(title?'“'+title+'” loaded':'Shared beat loaded','Undo',function(){restore(before);});}
+  else if(!P&&!S.seen&&!location.hash)vibe();
   /* ---------- Molekül-Ansicht: das Raster gegen das Ring-Molekül der Karte tauschen, live mit dem Beat.
      Schläge kommen aus head() (Schritt, Takt), Mute, Solo und Drop entscheiden mit; steht der Beat, steht das Bild.
      Ein Tipp aufs Molekül bringt das Raster zurück, bearbeitet wird nur dort ---------- */
-  var molC=$('mol'),molX=molC.getContext('2d'),vGrid=$('vGrid'),vCard=$('vCard'),foot=$('cardfoot'),molS=null,molKey='',molRaf=0,molOn=false,molTick=0,molLast=0;
+  var molC=$('mol'),molX=molC.getContext('2d'),vOrbit=$('vOrbit'),vMachine=$('vMachine'),machineRow=$('machineRow'),takes=$('takes'),vibeTxt=$('vibeTxt'),foot=$('cardfoot'),molS=null,molKey='',molRaf=0,molOn=false,molTick=0,molLast=0;
   /* Der Orbit ist immer schwarz, auch wenn das Grid hell ist: solange er an ist, steht die Seite auf dunkel */
   function molDark(){return true;}
   function forceDark(){document.documentElement.setAttribute('data-theme','dark');var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute('content','#0E0E0F');}
   function molModel(){var k=shareCode();if(k===molKey&&molS)return;molKey=k;var m=cardModel();
     if(molS)molS.m=m;else{molS=new CARD.Scene(m);molS.clip=false;molS.act=function(r){return audible(r)&&!drop;};}}
+  /* Die Farbpunkte sitzen im Bild direkt über dem Titel, bündig mit ihm (Titelstreifen = untere 130 Einheiten) */
+  var hueY=0;
   function molSize(){var b=molC.getBoundingClientRect(),d=Math.min(2,window.devicePixelRatio||1),w=Math.round(b.width*d),h=Math.round(b.height*d);
-    if(w&&h&&(molC.width!==w||molC.height!==h)){molC.width=w;molC.height=h;}}
+    if(w&&h&&(molC.width!==w||molC.height!==h)){molC.width=w;molC.height=h;}
+    var sc=Math.min(b.width/540,b.height/760),y=Math.round(130*sc+48);if(y!==hueY){hueY=y;hueRow.style.transform='translateY(-'+y+'px)';hueRow.style.paddingLeft=Math.round(24*sc-11)+'px';}}
   /* Die Schleife läuft, solange die Ansicht an ist. Ein Fehler beim Zeichnen bricht sie nicht ab, und molGo startet sie
      immer frisch, damit ein liegen gebliebener Frame (etwa nach dem Sperren des Handys) sie nicht blockiert */
   function molDraw(){molRaf=0;if(!molOn)return;molLast=performance.now();
     try{if(!(molTick++%12))molModel();molSize();
       if(playing)molS.time(ac.currentTime-playT0,performance.now());else if(molS.ct>=0)molS.reset();
-      var d=molDark(),o=cardOpts();if(!busyC)CARD.view(molX,molC.width,molC.height,molS,{fg:d?'#F3F3F4':'#0F0F10',bg:d?'#0E0E0F':'#FFFFFF',dark:d,title:o.title,by:o.by,preset:o.preset,hint:playing?'':'TAP TO PLAY',edit:true});
+      var d=molDark(),o=cardOpts();if(!busyC||!cardT)CARD.view(molX,molC.width,molC.height,molS,{fg:d?'#F3F3F4':'#0F0F10',bg:d?'#0E0E0F':'#FFFFFF',dark:d,title:o.title,by:o.by,preset:o.preset,hint:playing||busyC?'':'TAP TO PLAY',edit:canName()});
     }catch(e){}
     molRaf=requestAnimationFrame(molDraw);}
   function molGo(){if(!molOn)return;if(molRaf)cancelAnimationFrame(molRaf);molRaf=requestAnimationFrame(molDraw);}
@@ -1565,19 +1900,36 @@ var CARD=(function(){
     molS.fire({s:q,b:b,h:h,st:stu?1:0},performance.now());
     if(stu)setTimeout(function(){if(molOn&&playing)molS.fire({s:q,b:b,h:h,st:1},performance.now());},st()*500);}
   var transport=document.querySelector('.transport');
-  function molSet(on){molOn=!!on;if(!molOn)cardStop();app.classList.toggle('molecule',molOn);molC.hidden=!molOn;foot.hidden=!molOn;
-    if(molOn){foot.insertBefore(playB,cb);foot.insertBefore(fxB,cb);cardLabel();forceDark();}else{transport.insertBefore(playB,transport.firstChild);transport.insertBefore(fxB,dropB);ct.hidden=true;themeUI();}
-    vGrid.setAttribute('aria-pressed',molOn?'false':'true');vCard.setAttribute('aria-pressed',molOn?'true':'false');
-    S.view=molOn?'mol':'';save();if(molOn){molModel();molSize();molGo();}}
-  vGrid.addEventListener('click',function(){molSet(false);});vCard.addEventListener('click',function(){molSet(true);});
+    /* Der Orbit ist die Startseite, das Raster ist „die Maschine“ dahinter (S.view 'grid'); Play wandert mit in die Reihe bei Another take */
+  function molSet(on){molOn=!!on;if(!molOn)cardStop();app.classList.toggle('molecule',molOn);molC.hidden=!molOn;foot.hidden=!molOn;hueRow.hidden=!molOn;takes.hidden=!molOn;machineRow.hidden=!molOn;vOrbit.hidden=molOn;vibeTxt.hidden=!molOn;
+    if(molOn){takes.insertBefore(playB,takes.firstChild);cardLabel();vibeUI();forceDark();}else{transport.insertBefore(playB,transport.firstChild);ct.hidden=true;themeUI();}
+    S.view=molOn?'':'grid';save();if(molOn){molModel();molSize();molGo();}}
+  function vibeUI(){var t=typeof S.say==='string'?S.say.trim():'';vibeTxt.textContent=t.length>26?t.slice(0,25).trim()+'…':t;}
+  vMachine.addEventListener('click',function(){molSet(false);});vOrbit.addEventListener('click',function(){molSet(true);});
+  /* Another take antwortet sichtbar: der Knopf blitzt in der Akzentfarbe, das Symbol dreht sich einmal, kurz steht „Take 2“, „Take 3“ … darin
+     (zählt pro Vibe); am Handy ein kurzes Tippen. Change vibe hält den Beat an, solange man neue Wörter sucht */
+  var takeB=$('takeBtn'),takeL=takeB.lastChild,takeN=1,takeSay='',takeT=0;
+  takeB.addEventListener('click',function(){
+    var cur=typeof S.say==='string'?S.say.trim():'';if(cur!==takeSay){takeSay=cur;takeN=1;}
+    anotherTake();if(!cur&&pre<0)return;takeN++;
+    takeB.classList.remove('hit');void takeB.offsetWidth;takeB.classList.add('hit');takeL.textContent='Take '+takeN;
+    try{if(navigator.vibrate)navigator.vibrate(12);}catch(e){}
+    clearTimeout(takeT);takeT=setTimeout(function(){takeB.classList.remove('hit');takeL.textContent='Another take';},1100);});
+  $('vibeBtn').addEventListener('click',function(){setPlay(false);vibe();});
   /* Unterer Streifen (Titel und Zeile) öffnet den Namen, der Rest spielt oder stoppt */
   function molTitleHit(e){var r=molC.getBoundingClientRect(),sc=Math.min(r.width/540,r.height/760);return e.clientY-r.top>r.height-130*sc;}
-  molC.addEventListener('click',function(e){if(busyC)return;if(molTitleHit(e))nameSheet();else setPlay(!playing);});
-  molC.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();if(!busyC)nameSheet();}});
+  /* Wischen über den Orbit (links/rechts) schaltet die Farbe weiter, ein Tipp bleibt ein Tipp: erst ab 40 px quer, und mehr quer als längs */
+  var swX=0,swY=0,swOn=false,swiped=false,HK=Object.keys(CARD.HUES);
+  function hueStep(d){setHue(HK[(HK.indexOf(col)+d+HK.length)%HK.length]);}
+  molC.addEventListener('pointerdown',function(e){swX=e.clientX;swY=e.clientY;swOn=true;swiped=false;});
+  molC.addEventListener('pointermove',function(e){if(!swOn||swiped||busyC)return;var dx=e.clientX-swX,dy=e.clientY-swY;if(Math.abs(dx)>40&&Math.abs(dx)>Math.abs(dy)*1.5){swiped=true;hueStep(dx<0?1:-1);}});
+  molC.addEventListener('pointerup',function(){swOn=false;});molC.addEventListener('pointercancel',function(){swOn=false;swiped=false;});
+  molC.addEventListener('click',function(e){if(swiped){swiped=false;return;}if(busyC)return;if(molTitleHit(e)){if(canName())nameSheet();}else setPlay(!playing);});
+  molC.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();if(!busyC&&canName())nameSheet();}});
   document.addEventListener('visibilitychange',function(){if(!document.hidden)molGo();});window.addEventListener('pageshow',molGo);
-  if(S.view==='mol')molSet(true);
+  molSet(S.view!=='grid');
 
-  window.MSTR={view:molSet,setPlay:setPlay,renderLoop:renderLoop,renderClip:renderClip,card:CARD,code:shareCode,url:shareUrl,state:function(){return {pat:pat.slice(),bpm:bpm,sw:sw,pre:pre,playing:playing,fx:JSON.parse(JSON.stringify(FX)),fxa:JSON.parse(JSON.stringify(FXA)),fxo:JSON.parse(JSON.stringify(FXO))};}};
+  window.MSTR={name:nameSheet,welcome:vibe,vibe:vibe,take:anotherTake,view:molSet,say:sayBeat,setPlay:setPlay,renderClip:renderClip,card:CARD,code:shareCode,url:shareUrl,hue:setHue,state:function(){return {pat:pat.slice(),bpm:bpm,sw:sw,pre:pre,playing:playing,col:col,fx:JSON.parse(JSON.stringify(FX)),fxa:JSON.parse(JSON.stringify(FXA)),fxo:JSON.parse(JSON.stringify(FXO))};}};
 })();
 
 })();
