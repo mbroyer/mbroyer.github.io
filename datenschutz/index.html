@@ -57,7 +57,8 @@
   <p>Die Apps speichern deinen Stand im lokalen Speicher deines Browsers (localStorage), zum Beispiel Einstellungen, Farben, Beats, Fortschritt und eigene Aufnahmen. Diese Daten bleiben auf deinem Gerät und werden nicht an mich übertragen. Das ist für die Funktion der Apps unbedingt erforderlich (§ 25 Abs. 2 Nr. 2 TDDDG). Du kannst die Daten jederzeit löschen, indem du die Websitedaten für asimplemanslab.com in deinem Browser löschst.</p>
 
   <h2>Schriften</h2>
-  <p><span class="todo">(Gilt erst, wenn alle Apps umgestellt sind.)</span> Alle Schriften liegen auf diesem Server. Beim Laden der Seite wird keine Verbindung zu Google oder anderen Schriftanbietern aufgebaut.</p>
+  <p>Die Startseite, das Impressum und diese Seite laden ihre Schriften von diesem Server. Dabei wird keine Verbindung zu Google oder anderen Schriftanbietern aufgebaut.</p>
+  <p><span class="todo">Übergangsweise laden Vokamon, NumNum (App), Orbista und MSTR ihre Schriften noch von Google Fonts (Google Ireland Limited, Gordon House, Barrow Street, Dublin 4, Irland). Dabei erhält Google deine IP-Adresse. Diese Apps werden gerade umgestellt. Dieser Absatz entfällt, sobald das erledigt ist.</span></p>
 
   <h2>MSTR</h2>
   <h3>Mikrofon</h3>
@@ -67,8 +68,18 @@
   <p>Damit jeder geteilte Beat eine Nummer bekommt (zum Beispiel „No. 0042“), sendet MSTR beim Teilen den Beat-Code an einen kleinen Dienst, den ich bei der Cloudflare, Inc., 101 Townsend St., San Francisco, CA 94107, USA, betreibe (Cloudflare Workers). Übertragen wird nur der Rhythmus-Code (Spuren, Tempo, Swing, Effekte), ohne Name, Farbe und Aufnahme. Gespeichert werden der Beat-Code, die Nummer und der Zeitpunkt.</p>
   <p>Für die Verbindung verarbeitet Cloudflare deine IP-Adresse. Der Dienst bildet daraus nur einen gekürzten, nicht umkehrbaren Hashwert, um mehr als 30 neue Nummern pro Stunde vom selben Absender zu verhindern. Dieser Wert liegt nur kurz im Arbeitsspeicher und wird nicht gespeichert. Rechtsgrundlage ist mein berechtigtes Interesse an der Nummernfunktion und am Schutz vor Missbrauch (Art. 6 Abs. 1 lit. f DSGVO). Cloudflare ist nach dem EU-US Data Privacy Framework zertifiziert. Mehr dazu in der <a href="https://www.cloudflare.com/privacypolicy/">Datenschutzerklärung von Cloudflare</a>.</p>
 
-  <h2 class="todo">Vokamon, NumNum, Orbista</h2>
-  <p><span class="todo">Abschnitt folgt: Diese Apps nutzen eigene Dienste bei Cloudflare. Was sie übertragen und speichern, wird hier noch ergänzt.</span></p>
+  <h2>Vokamon, NumNum und Orbista</h2>
+  <p>Diese drei Lern-Apps sind nicht frei zugänglich. Man braucht einen persönlichen Zugangscode, den ich an Familie und Freunde vergebe. Ein Konto mit E-Mail-Adresse oder Passwort gibt es nicht.</p>
+  <h3>Zugangscode und Spielstand</h3>
+  <p>Damit du auf mehreren Geräten weiterspielen kannst, speichert jede App deinen Spielstand zu deinem Code bei einem kleinen Dienst, den ich bei Cloudflare betreibe (Cloudflare Workers, Anbieter wie oben bei MSTR). Gespeichert werden der Code, der Lernfortschritt (zum Beispiel geübte Aufgaben, Punkte und Einstellungen) und der Zeitpunkt der letzten Speicherung. Bei Vokamon kommen eigene Vokabellisten dazu. Für die Verbindung verarbeitet Cloudflare deine IP-Adresse. Ich speichere sie nicht.</p>
+  <p>Der Spielstand bleibt gespeichert, solange der Code gilt. Wenn du einen Code nicht mehr brauchst, schreib mir, dann lösche ich ihn mit dem Spielstand. <span class="todo">Bitte prüfen: Enthält ein Code oder Spielstand den Vornamen des Kindes?</span></p>
+  <p>Rechtsgrundlage ist mein berechtigtes Interesse, dir die App mit gespeichertem Stand bereitzustellen (Art. 6 Abs. 1 lit. f DSGVO).</p>
+  <h3>Vokamon: Vokabeln aus einem Foto lesen</h3>
+  <p>Wenn du in Vokamon eine Vokabelliste fotografierst, schickt die App das Foto über meinen Dienst an die KI Claude der Anthropic, PBC, 548 Market Street, PMB 90375, San Francisco, CA 94104, USA. Claude liest die Vokabelpaare heraus und schickt sie als Text zurück. Mein Dienst speichert das Foto nicht. Er zählt nur, wie viele Fotos pro Code und Monat ausgelesen wurden (höchstens 30), und löscht diesen Zähler nach etwa 40 Tagen.</p>
+  <p>Anthropic verwendet Daten aus der Schnittstelle nach eigenen Angaben nicht zum Training seiner Modelle und löscht sie nach kurzer Zeit. Mehr dazu in der <a href="https://www.anthropic.com/legal/privacy">Datenschutzerklärung von Anthropic</a>. Fotografiere bitte nur die Vokabelliste und keine Namen, Gesichter oder andere persönliche Angaben.</p>
+  <h3>Vokamon: Aussprache</h3>
+  <p>Damit Vokamon ein Wort vorlesen kann, schickt mein Dienst das Wort und die Sprache an ElevenLabs (Eleven Labs Inc., 169 Madison Ave #2484, New York, NY 10016, USA), das daraus eine Tonaufnahme erzeugt. Dabei wird nur das Wort übertragen, nicht dein Code und nicht deine IP-Adresse. Die Aufnahme wird gespeichert und für alle wiederverwendet. Mehr dazu in der <a href="https://elevenlabs.io/privacy-policy">Datenschutzerklärung von ElevenLabs</a>.</p>
+  <p>Rechtsgrundlage für Foto und Aussprache ist mein berechtigtes Interesse, diese Funktionen anzubieten, die du selbst auslöst (Art. 6 Abs. 1 lit. f DSGVO). Dabei können Daten in die USA übertragen werden.</p>
 
   <h2>Deine Rechte</h2>
   <p>Du hast das Recht auf Auskunft, Berichtigung, Löschung und Einschränkung der Verarbeitung, auf Datenübertragbarkeit und auf Widerspruch gegen Verarbeitungen, die auf meinem berechtigten Interesse beruhen (Art. 15 bis 21 DSGVO). Schreib mir dafür einfach an <a href="mailto:hello@asimplemanslab.com">hello@asimplemanslab.com</a>. Außerdem kannst du dich bei einer Datenschutz-Aufsichtsbehörde beschweren, zum Beispiel bei der Behörde deines Bundeslandes.</p>
