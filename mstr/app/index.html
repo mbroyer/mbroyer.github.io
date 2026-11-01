@@ -200,7 +200,10 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
 .vgrp .lbl{font-family:var(--f-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--mute)}
 /* Die Knopfzeile bleibt unten sichtbar, auch wenn die Wortreihen länger sind als der Bildschirm */
 .vgo{margin-top:auto;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0 max(8px,env(safe-area-inset-bottom,0px));position:sticky;bottom:0;background:linear-gradient(transparent,var(--bg) 14px);box-shadow:0 48px 0 var(--bg);z-index:2}
-.vgo .lnk{color:var(--mute);text-decoration:underline;text-underline-offset:3px;font-size:14px}
+.pill.big.sur{height:56px;padding:0 20px 0 16px;font-size:16px;font-weight:700;gap:9px;color:var(--ink);border:1.5px solid var(--ink);background:var(--bg)}
+.pill.big.sur svg{width:22px;height:22px}
+.vgo .pill{flex:1 1 0;min-width:0}
+.vgo .pill.go.big{flex:1.4 1 0}
 .pill.go.big{height:56px;padding:0 20px 0 24px;background:var(--accent);color:var(--on-accent);border-color:transparent;font-size:17px;font-weight:700;gap:10px}
 .pill.go.big svg{width:22px;height:22px}
 /* Effekte: eine Zeile je Effekt, rechts ein Punkt wie im Raster (grau aus, Flieder an) */
@@ -228,6 +231,8 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
 .cardct .pill{height:48px}
 .pill.go{background:var(--accent);color:var(--on-accent);border-color:var(--accent);font-size:15px;height:48px}
 .shnote{margin:0;font-size:13px;color:var(--mute);text-align:center}
+/* Überschriften und Hinweise im Blatt bleiben in der Spalte (ihr margin:0 überschreibt sonst das Zentrieren am Desktop) */
+.sheet>.ed,.sheet>.shnote{margin-inline:auto}
 .fxi i{width:26px;height:26px;border-radius:50%;background:var(--off);flex:none;transition:background .15s,transform .15s}
 .fxi[aria-pressed="true"] i{background:var(--accent);transform:scale(1.1)}
 .seg2{display:grid;grid-template-columns:1fr 1fr;gap:6px}
@@ -1480,7 +1485,7 @@ var WORTE=(function(){
     openSheet('<div class="sh-top"><span class="eyebrow">'+(first?'Your beat starts here':'New beat')+'</span>'+(first?'':XB)+'</div><h2 class="ed" id="sheetT">What\u2019s the vibe?</h2>'+
       '<form class="sayf vibef" autocomplete="off"><textarea id="sayIn" rows="2" maxlength="200" enterkeyhint="send" aria-labelledby="sheetT" placeholder="Tap words, or type"></textarea></form>'+
       VIBE.map(function(g){return '<div class="vgrp"><span class="lbl">'+g[0]+'</span><div class="chips">'+g[1].map(function(w){return '<button type="button" class="chip" data-w="'+w+'" aria-pressed="false">'+w+'</button>';}).join('')+'</div></div>';}).join('')+
-      '<div class="vgo"><button type="button" class="lnk" id="vSurprise">Surprise me</button><button type="button" class="pill go big" id="sayGo">Make the beat<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>',function(el){
+      '<div class="vgo"><button type="button" class="pill big sur" id="vSurprise"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="4" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="9" cy="9" r="1.5" fill="currentColor"/><circle cx="15" cy="15" r="1.5" fill="currentColor"/><circle cx="15" cy="9" r="1.5" fill="currentColor"/><circle cx="9" cy="15" r="1.5" fill="currentColor"/></svg>Surprise me</button><button type="button" class="pill go big" id="sayGo">Make the beat<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>',function(el){
       var inp=el.querySelector('#sayIn'),chips=[].slice.call(el.querySelectorAll('.chip'));
       inp.value=typeof S.say==='string'?S.say:'';
       function has(w){return new RegExp('(^|[^a-z])'+w+'(?=[^a-z]|$)','i').test(inp.value);}
