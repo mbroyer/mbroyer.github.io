@@ -2,10 +2,10 @@
 name: MSTR release build
 on:
   pull_request:
-    paths: ['mstr/app/**']
+    paths: ['mstr/index.html', 'tools/check-mstr.sh']
   push:
     branches: [main]
-    paths: ['mstr/app/**']
+    paths: ['mstr/index.html', 'tools/check-mstr.sh']
 jobs:
   check:
     runs-on: ubuntu-latest
