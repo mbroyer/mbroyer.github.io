@@ -5,9 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
 <meta name="theme-color" content="#ebe7de">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="/fonts/vokamon.css">
 <title>Vokamon</title>
 <link rel="icon" type="image/png" href="/vokamon/favicon.png">
 <link rel="apple-touch-icon" href="/vokamon/apple-touch-icon.png">
@@ -123,6 +121,7 @@ details a,.ask a{color:var(--accent-text);font-weight:700}
   .steps button{padding-inline:3px}
   .steps strong{font-size:.85rem;-webkit-hyphens:auto;hyphens:auto;overflow-wrap:anywhere}
 }
+.legal{text-align:center;font-size:12px;opacity:.6;margin:6px 0 0}.legal a{color:inherit}
 </style>
 </head>
 <body>
@@ -149,6 +148,7 @@ details a,.ask a{color:var(--accent-text);font-weight:700}
 <details><summary>Mit welchen Vokabeln übe ich?</summary><p>Mit deinen eigenen: Fotografier eine Vokabelliste oder Hausaufgabe, oder tipp die Wörter ein. Vokamon liest die Wortpaare aus dem Foto, du prüfst sie kurz.</p></details>
 <details><summary>Auf welchen Geräten läuft Vokamon?</summary><p>Im Browser auf Handy, Tablet und Computer. Installieren muss man nichts.</p></details>
 <a class="madeby" href="/"><span>Made with love by</span><img src="/logo.png" alt="A Simple Man’s Lab" width="320" height="354"></a>
+  <p class="legal"><a href="/impressum/">Impressum</a> · <a href="/datenschutz/">Datenschutz</a></p>
 </div>
 <nav class="bar" id="bar" aria-label="Loslegen" hidden><div>
   <p><strong>Neugierig?</strong>Eine Runde geht ohne Code.</p>
@@ -169,7 +169,7 @@ details a,.ask a{color:var(--accent-text);font-weight:700}
 <div class="wait" id="w"><div class="card"><h1>Vokamon</h1><p id="wt">Lädt …</p></div></div>
 <script>
 (function(){
-  var DATA="vokamon-6d649b6e9c.bin",LISTEN="listen-435a0afac4.html",ITER=100000,URL_="https://vokamon.mark-broyer.workers.dev";
+  var DATA="vokamon-958f8f6347.bin",LISTEN="listen-56c876af17.html",ITER=100000,URL_="https://vokamon.mark-broyer.workers.dev";
   var CK='vokamon.code',SK='vokamon.schluessel',BASE='vokabel-arena-v1';
   var f=document.getElementById('f'),c=document.getElementById('c'),b=document.getElementById('b'),e=document.getElementById('e'),w=document.getElementById('w');
   function get(k){try{return localStorage.getItem(k);}catch(_){return null;}}
