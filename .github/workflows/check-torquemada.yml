@@ -1,0 +1,14 @@
+# Lehnt jeden PR ab, der den lesbaren Build von torquemada statt des Release-Builds auf die Website bringt.
+name: torquemada release build
+on:
+  pull_request:
+    paths: ['torquemada/spiel/index.html', 'tools/check-torquemada.sh', 'tools/check-release.sh']
+  push:
+    branches: [main]
+    paths: ['torquemada/spiel/index.html', 'tools/check-torquemada.sh', 'tools/check-release.sh']
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: sh tools/check-torquemada.sh
