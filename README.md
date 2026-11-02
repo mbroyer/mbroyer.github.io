@@ -9,7 +9,7 @@ Die Apps liegen hier nur als Release-Build (verkleinert, verschleiert, Domain- u
 | `mstr/` | `mbroyer/mstr` | `python3 build.py --release` |
 | `orbista/` | `mbroyer/orbista` | `python3 build.py --release`, dann `python3 web/deploy.py` |
 | `numnum/` | `mbroyer/numnum` | `python3 build.py --release`, dann `python3 web/deploy.py` |
-| `torquemada/spiel/` | `mbroyer/quartermile` | `python3 web/deploy.py` |
+| `torquestra/spiel/` | `mbroyer/quartermile` | `python3 web/deploy.py` |
 | `vokamon/` | `mbroyer/vokamon` | `python3 web/demo.py`, `node web/verschluesseln.mjs` |
 | `readster/` | `mbroyer/readster` | `python3 tools/deploy.py` |
 
