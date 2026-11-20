@@ -2,6 +2,8 @@
 <html lang="de">
 <head>
 <meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Datenschutz · A Simple Man's Lab</title>
 <meta name="robots" content="noindex">
@@ -71,7 +73,7 @@
   <h2>Readster, Vokamon, NumNum und Orbista</h2>
   <p>Diese Lern-Apps sind nicht öffentlich. Man braucht einen persönlichen Zugangscode, den ich nur an Freunde vergebe. Ein Konto mit E-Mail-Adresse oder Passwort gibt es nicht.</p>
   <h3>Zugangscode und Spielstand</h3>
-  <p>Damit du auf mehreren Geräten weiterspielen kannst, speichert jede App deinen Spielstand zu deinem Code bei einem kleinen Dienst, den ich bei Cloudflare betreibe (Cloudflare Workers, Anbieter wie oben bei MSTR). Gespeichert werden der Code, der Lernfortschritt (zum Beispiel geübte Aufgaben, Punkte und Einstellungen) und der Zeitpunkt der letzten Speicherung. Bei Vokamon kommen eigene Vokabellisten dazu. Für die Verbindung verarbeitet Cloudflare deine IP-Adresse. Ich speichere sie nicht.</p>
+  <p>Damit du auf mehreren Geräten weiterspielen kannst, speichert jede App deinen Spielstand zu deinem Code bei einem kleinen Dienst, den ich bei Cloudflare betreibe (Cloudflare Workers, Anbieter wie oben bei MSTR). Gespeichert werden der Code, der Lernfortschritt (zum Beispiel geübte Aufgaben, Punkte und Einstellungen) und der Zeitpunkt der letzten Speicherung. Bei Vokamon kommen eigene Vokabellisten dazu. Für die Verbindung verarbeitet Cloudflare deine IP-Adresse. Ich speichere sie nicht. Damit niemand fremde Codes durch Ausprobieren findet, bildet der Dienst aus der IP-Adresse einen gekürzten, nicht umkehrbaren Hashwert. Kommen von einem Absender mehr als 8 falsche Codes in einer Minute, wird nur dieser Hashwert für eine Stunde gespeichert und danach automatisch gelöscht.</p>
   <p>Der Spielstand bleibt gespeichert, solange der Code gilt. Wenn du einen Code nicht mehr brauchst, schreib mir, dann lösche ich ihn mit dem Spielstand.</p>
   <p>Rechtsgrundlage ist mein berechtigtes Interesse, dir die App mit gespeichertem Stand bereitzustellen (Art. 6 Abs. 1 lit. f DSGVO).</p>
   <h3>Readster: Vorlesen mit Mikrofon</h3>
