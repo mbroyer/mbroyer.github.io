@@ -1,0 +1,14 @@
+# Lehnt jeden PR ab, der den lesbaren Build von homima statt des Release-Builds auf die Website bringt.
+name: homima release build
+on:
+  pull_request:
+    paths: ['homima/index.html', 'tools/check-homima.sh', 'tools/check-release.sh']
+  push:
+    branches: [main]
+    paths: ['homima/index.html', 'tools/check-homima.sh', 'tools/check-release.sh']
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: sh tools/check-homima.sh

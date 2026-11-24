@@ -12,5 +12,6 @@ Die Apps liegen hier nur als Release-Build (verkleinert, verschleiert, Domain- u
 | `torquestra/spiel/` | `mbroyer/quartermile` | `python3 web/deploy.py` |
 | `vokamon/` | `mbroyer/vokamon` | `python3 web/demo.py`, `node web/verschluesseln.mjs` |
 | `readster/` | `mbroyer/readster` | `python3 tools/deploy.py` |
+| `homima/` | `mbroyer/homima` | `python3 build.py`, `node tools/release.mjs dist/index.html …/homima/index.html`, dazu `fonts/` aus `dist/` |
 
 Je App prüft eine GitHub Action (`tools/check-<app>.sh`, gemeinsame Regeln in `tools/check-release.sh`) jeden PR und Push. Schlägt sie fehl, ist der lesbare Build hereingerutscht.
